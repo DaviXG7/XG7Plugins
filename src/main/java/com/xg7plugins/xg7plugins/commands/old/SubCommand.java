@@ -1,4 +1,4 @@
-package com.xg7plugins.api.commandsmanager;
+package com.xg7plugins.xg7plugins.commands.old;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
