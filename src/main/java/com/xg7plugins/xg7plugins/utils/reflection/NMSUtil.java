@@ -5,9 +5,9 @@ import org.bukkit.Bukkit;
 
 public class NMSUtil {
 
-    static String packageName = Bukkit.getServer().getClass().getPackage().getName();
+    private static final String packageName = Bukkit.getServer().getClass().getPackage().getName();
     @Getter
-    static String version = packageName.substring(packageName.lastIndexOf('.') + 1);
+    private static final String version = packageName.substring(packageName.lastIndexOf('.') + 1);
 
 
     public static ReflectionClass getNMSClass(String className) {

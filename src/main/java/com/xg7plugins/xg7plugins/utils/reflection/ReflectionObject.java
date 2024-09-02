@@ -28,7 +28,7 @@ public class ReflectionObject {
     }
 
     @SneakyThrows
-    public <T> T getField(String name, Object value) {
+    public <T> T getField(String name) {
         Field field = objectClass.getDeclaredField(name);
         field.setAccessible(true);
         return (T) field.get(object);

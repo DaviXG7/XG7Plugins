@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface SubCommandConfig {
     String name() default "";
-    String perm() default "default";
+    String perm() default "";
     boolean isOnlyInWorld() default false;
     boolean isOnlyPlayer() default false;
 }

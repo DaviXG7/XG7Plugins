@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 
 @RequiredArgsConstructor
@@ -45,6 +46,10 @@ public class ReflectionClass {
 
     public ReflectionObject castToRObject(Object o) {
         return new ReflectionObject(aClass.cast(o));
+    }
+    @SneakyThrows
+    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+        return aClass.getAnnotation(annotationClass);
     }
 
 }

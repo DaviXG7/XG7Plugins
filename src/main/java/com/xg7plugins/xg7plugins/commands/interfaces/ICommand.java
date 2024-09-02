@@ -1,15 +1,34 @@
 package com.xg7plugins.xg7plugins.commands.interfaces;
 
+import com.xg7plugins.xg7plugins.Plugin;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 
-public interface ICommand {
-    ItemStack getIcon();
+import java.util.Collections;
+import java.util.List;
 
-    default ISubCommand[] getSubCommands() {
+@AllArgsConstructor
+@Getter
+public abstract class ICommand {
+
+    private Plugin plugin;
+
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public ISubCommand[] getSubCommands() {
         return new ISubCommand[0];
     }
 
-    default void onCommand(Command command, CommandSender sender, String label) {}
+    public void onCommand(Command command, CommandSender sender, String label) {}
+
+    public List<String> onTabComplete(Command command, CommandSender sender, String label, String[] args) {
+        return Collections.emptyList();
+    }
+
+    public abstract ItemStack getIcon();
 }

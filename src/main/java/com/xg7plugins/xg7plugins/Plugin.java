@@ -1,9 +1,25 @@
 package com.xg7plugins.xg7plugins;
 
+import com.xg7plugins.xg7plugins.commands.interfaces.ICommand;
+import com.xg7plugins.xg7plugins.configs.Config;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Collections;
+import java.util.List;
+
 public interface Plugin {
 
-    String prefix();
+    String getPrefix();
+    boolean log();
+    String getName();
 
+    JavaPlugin getPlugin();
 
+    List<ICommand> getCommands();
+    List<Config> getConfigs();
+
+    default List<String> getEnabledWorlds() {
+        return Collections.singletonList("all");
+    }
 
 }

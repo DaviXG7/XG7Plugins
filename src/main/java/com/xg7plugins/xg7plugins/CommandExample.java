@@ -2,6 +2,7 @@ package com.xg7plugins.xg7plugins;
 
 import com.xg7plugins.xg7plugins.commands.interfaces.*;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,7 +14,11 @@ import org.bukkit.inventory.ItemStack;
         syntax = "/nomezintestezin [Player]",
         aliases = {"nmztz"}
 )
-public class CommandExample implements ICommand {
+public class CommandExample extends ICommand {
+
+    public CommandExample(Plugin plugin) {
+        super(plugin);
+    }
 
     @Override
     public ISubCommand[] getSubCommands() {
@@ -36,7 +41,7 @@ public class CommandExample implements ICommand {
 
     }
 
-    static class SubCommandExample implements ISubCommand {
+    static class SubCommandExample extends ISubCommand {
 
         @Override
         public ItemStack getIcon() {
@@ -52,7 +57,7 @@ public class CommandExample implements ICommand {
                 perm = "perm2",
                 isOnlyPlayer = true
         )
-        public void onSubCommand(CommandSender sender, Player target, String label) {
+        public void onSubCommand(CommandSender sender, OfflinePlayer target, String label) {
 
         }
     }

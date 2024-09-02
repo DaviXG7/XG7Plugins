@@ -1,6 +1,5 @@
 package com.xg7plugins.xg7plugins.utils.reflection;
 
-import com.xg7plugins.api.XG7PluginManager;
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
