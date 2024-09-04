@@ -67,69 +67,10 @@ public class CommandManager implements CommandExecutor {
 
             Plugin plugin = command.getPlugin();
 
-            ISubCommand[] subCommands = command.getSubCommands();
+            if (processSubCommands(commandSender, command.getSubCommands(), plugin, strings, s, 0)) return;
 
             if (strings.length != 0) {
-                for (ISubCommand subCommand : subCommands) {
-                    switch (subCommand.getType()) {
-                        case NORMAL:
-                                SubCommandConfig subCommandConfig = ReflectionMethod.of(subCommand, "onSubCommand", CommandSender.class, String[].class, String.class).getAnnotation(SubCommandConfig.class);
-
-                                if (subCommandConfig == null) {
-                                    Log.severe(plugin, "Normal subcommands must be annotated with @SubCommandConfig to setup the subcommand!!");
-                                    continue;
-                                }
-
-                                if (!subCommandConfig.name().equalsIgnoreCase(strings[0])) {
-                                    continue;
-                                }
-
-                                if (!commandSender.hasPermission(subCommandConfig.perm())) {
-                                    //Fazer coisa de pegar na config permissão
-                                    return;
-                                }
-                                if (subCommandConfig.isOnlyPlayer() && !(commandSender instanceof Player)) {
-                                    //Fazer coisa pra pegar na config player
-                                    return;
-                                }
-                                if (commandSender instanceof Player) {
-                                    if (!subCommandConfig.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) commandSender).getWorld().getName()) && !plugin.getEnabledWorlds().contains("all")) {
-                                        //Mensagem de não no mundo
-                                        return;
-                                    }
-                                }
-
-                                subCommand.onSubCommand(commandSender,strings,s);
-                                return;
-                        case PLAYER:
-                            SubCommandConfig subCommandConfig1 = ReflectionMethod.of(subCommand, "onSubCommand", CommandSender.class, OfflinePlayer.class, String.class).getAnnotation(SubCommandConfig.class);
-
-                            if (subCommandConfig1 == null) {
-                                Log.severe(plugin, "Subcommands must be annotated with @SubCommandConfig to setup the subcommand!!");
-                                continue;
-                            }
-
-                            if (!commandSender.hasPermission(subCommandConfig1.perm())) {
-                                //Fazer coisa de pegar na config permissão
-                                return;
-                            }
-                            if (subCommandConfig1.isOnlyPlayer() && !(commandSender instanceof Player)) {
-                                //Fazer coisa pra pegar na config player
-                                return;
-                            }
-                            if (commandSender instanceof Player) {
-                                if (!subCommandConfig1.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) commandSender).getWorld().getName()) && !plugin.getEnabledWorlds().contains("all")) {
-                                    //Mensagem de não no mundo
-                                    return;
-                                }
-                            }
-
-                            OfflinePlayer player = Bukkit.getOfflinePlayer(strings[0]);
-
-                            subCommand.onSubCommand(commandSender,player,s);
-                            return;
-                    }
-                }
+                //Syntax Error
                 return;
             }
 
@@ -159,5 +100,75 @@ public class CommandManager implements CommandExecutor {
         });
 
         return true;
+    }
+
+    @SuppressWarnings("deprecated")
+    private boolean processSubCommands(CommandSender sender, ISubCommand[] subCommands, Plugin plugin, String[] args, String label, int argsIndex) {
+
+        if (args.length != argsIndex) {
+            for (ISubCommand subCommand : subCommands) {
+
+                switch (subCommand.getType()) {
+                    case NORMAL:
+                        SubCommandConfig subCommandConfig = ReflectionMethod.of(subCommand, "onSubCommand", CommandSender.class, String[].class, String.class).getAnnotation(SubCommandConfig.class);
+
+                        if (subCommandConfig == null) {
+                            Log.severe(plugin, "Normal subcommands must be annotated with @SubCommandConfig to setup the subcommand!!");
+                            continue;
+                        }
+
+                        if (!subCommandConfig.name().equalsIgnoreCase(args[argsIndex])) {
+                            continue;
+                        }
+                        if (subCommand.getSubCommands().length != 0) return processSubCommands(sender, subCommand.getSubCommands(), plugin, args, label, argsIndex + 1);
+                        if (!sender.hasPermission(subCommandConfig.perm())) {
+                            //Fazer coisa de pegar na config permissão
+                            return true;
+                        }
+                        if (subCommandConfig.isOnlyPlayer() && !(sender instanceof Player)) {
+                            //Fazer coisa pra pegar na config player
+                            return true;
+                        }
+                        if (sender instanceof Player) {
+                            if (!subCommandConfig.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) sender).getWorld().getName()) && !plugin.getEnabledWorlds().contains("all")) {
+                                //Mensagem de não no mundo
+                                return true;
+                            }
+                        }
+
+                        subCommand.onSubCommand(sender,args,label);
+                        return true;
+                    case PLAYER:
+                        SubCommandConfig subCommandConfig1 = ReflectionMethod.of(subCommand, "onSubCommand", CommandSender.class, OfflinePlayer.class, String.class).getAnnotation(SubCommandConfig.class);
+
+                        if (subCommandConfig1 == null) {
+                            Log.severe(plugin, "Subcommands must be annotated with @SubCommandConfig to setup the subcommand!!");
+                            continue;
+                        }
+
+                        if (!sender.hasPermission(subCommandConfig1.perm())) {
+                            //Fazer coisa de pegar na config permissão
+                            return true;
+                        }
+                        if (subCommandConfig1.isOnlyPlayer() && !(sender instanceof Player)) {
+                            //Fazer coisa pra pegar na config player
+                            return true;
+                        }
+                        if (sender instanceof Player) {
+                            if (!subCommandConfig1.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) sender).getWorld().getName()) && !plugin.getEnabledWorlds().contains("all")) {
+                                //Mensagem de não no mundo
+                                return true;
+                            }
+                        }
+
+                        OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
+
+                        subCommand.onSubCommand(sender,player,label);
+                        return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
