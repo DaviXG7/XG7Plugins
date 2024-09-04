@@ -1,0 +1,15 @@
+sql:
+
+  cache-expires: 30m
+  db-executor-threads: 2
+
+  type: "sqlite"
+
+  host:
+  port:
+
+  database:
+
+  user:
+  password:
+

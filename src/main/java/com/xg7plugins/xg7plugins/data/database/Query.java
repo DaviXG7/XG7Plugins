@@ -1,0 +1,91 @@
+package com.xg7plugins.xg7plugins.data.database;
+
+import com.xg7plugins.xg7plugins.Plugin;
+import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+@AllArgsConstructor
+public class Query {
+
+    private Iterator<Map<String,Object>> results;
+
+    public static CompletableFuture<Query> create(Plugin plugin, String sql, Object... params) {
+        return DBManager.executeQuery(plugin, sql,params);
+    }
+
+    public boolean hasNextLine() {
+        return results.hasNext();
+    }
+    public Map<String, Object> nextLine() {
+        return results.next();
+    }
+
+    public <T> T get(String key) {
+        return (T) results.next().get(key);
+    }
+
+    @SneakyThrows
+    public <T> T get(Class<? super Entity> clazz) {
+        Map<String, Object> values = results.next();
+
+        T instance = (T) clazz.getDeclaredConstructor().newInstance();
+
+        Object id = null;
+
+        for (Field f : clazz.getDeclaredFields()) {
+            f.setAccessible(true);
+            Object value = values.get(f.getName());
+
+            if (value == null) continue;
+
+            Entity.PKey pKey = f.getAnnotation(Entity.PKey.class);
+            if (pKey != null) {
+                if (DBManager.getEntitiesCached().asMap().containsKey(value)) return (T) DBManager.getEntitiesCached().asMap().get(f.get(instance));
+                id = value;
+            }
+
+            if (f.getType() == List.class) {
+                ParameterizedType parameterizedType = (ParameterizedType) f.getGenericType();
+                Type tipoGenerico = parameterizedType.getActualTypeArguments()[0];
+
+                List<Object> tList = new ArrayList<>();
+                Object listInstance = ((Class<?>) tipoGenerico).getDeclaredConstructor().newInstance();
+
+                for (Field fListf : ((Class<?>) tipoGenerico).getDeclaredFields()) {
+                        fListf.setAccessible(true);
+                        if (values.get(fListf.getName()) == null) continue;
+                        fListf.set(listInstance, values.get(fListf.getName()));
+                }
+                tList.add(listInstance);
+                tList.addAll(getResultList((Class<? super Entity>) tipoGenerico));
+
+                f.set(instance, tList);
+
+                continue;
+            }
+            f.set(instance, value);
+        }
+
+        DBManager.cacheEntity(id, (Entity) instance);
+
+        return instance;
+    }
+
+    public <T> List<T> getResultList(Class<? super Entity> clazz) {
+        List<T> tList = new ArrayList<>();
+        while (results.hasNext()) {
+            tList.add(get(clazz));
+        }
+        return tList;
+    }
+}
+

@@ -15,11 +15,13 @@ import org.bukkit.command.*;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
-public class CommandManager implements CommandExecutor {
+public class CommandManager implements CommandExecutor, TabCompleter {
 
     private static final HashMap<String, ICommand> commands = new HashMap<>();
 
@@ -48,6 +50,7 @@ public class CommandManager implements CommandExecutor {
             pluginCommand.setAliases(Arrays.asList(commandSetup.aliases()));
             pluginCommand.setDescription(commandSetup.description());
             pluginCommand.setUsage(commandSetup.syntax());
+            pluginCommand.setTabCompleter(XG7Plugins.getCommandManager());
             commandMap.register(commandSetup.name(), pluginCommand);
 
             commands.put(commandSetup.name(), command);
@@ -55,6 +58,10 @@ public class CommandManager implements CommandExecutor {
         }
 
 
+    }
+
+    public void unregisterCommands(Plugin plugin) {
+        plugin.getCommands().stream().map(command -> command.getClass().getAnnotation(CommandSetup.class)).map(CommandSetup::name).forEach(commands::remove);
     }
 
     @Override
@@ -163,6 +170,10 @@ public class CommandManager implements CommandExecutor {
 
                         OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
 
+                        if (!player.hasPlayedBefore()) {
+                            //Player nunca jogou antes
+                        }
+
                         subCommand.onSubCommand(sender,player,label);
                         return true;
                 }
@@ -170,5 +181,11 @@ public class CommandManager implements CommandExecutor {
         }
 
         return false;
+    }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        return List.of();
     }
 }
