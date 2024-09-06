@@ -1,6 +1,6 @@
 package com.xg7plugins.xg7plugins.commands.interfaces;
 
-import com.xg7plugins.xg7plugins.Plugin;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.command.Command;

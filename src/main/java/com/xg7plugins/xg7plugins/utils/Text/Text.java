@@ -1,6 +1,6 @@
 package com.xg7plugins.xg7plugins.utils.Text;
 
-import com.xg7plugins.xg7plugins.Plugin;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.utils.Log;
 
 import java.util.regex.Matcher;

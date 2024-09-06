@@ -1,7 +1,6 @@
 package com.xg7plugins.xg7plugins.utils;
 
-import com.xg7plugins.xg7plugins.Plugin;
-import lombok.Setter;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import org.bukkit.Bukkit;
 
 import java.util.logging.Level;
@@ -16,11 +15,11 @@ public class Log {
     }
 
     public static void fine(Plugin plugin, String message) {
-        if (plugin.log()) Bukkit.getLogger().fine("[" + plugin.getName()  + " SUCCESS] " + message);
+        if (plugin.isLogEnabled()) Bukkit.getLogger().fine("[" + plugin.getName()  + " SUCCESS] " + message);
     }
 
     public static void info(Plugin plugin, String message) {
-        if (plugin.log()) Bukkit.getLogger().info("[" + plugin.getName() + " DEBUG] " + message);
+        if (plugin.isLogEnabled()) Bukkit.getLogger().info("[" + plugin.getName() + " DEBUG] " + message);
     }
 
     public static void warn(Plugin plugin, String message) {

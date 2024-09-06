@@ -1,11 +1,11 @@
 package com.xg7plugins.xg7plugins;
 
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.commands.interfaces.*;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 @CommandSetup(

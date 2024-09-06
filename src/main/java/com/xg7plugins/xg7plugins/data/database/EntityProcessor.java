@@ -1,7 +1,7 @@
 package com.xg7plugins.xg7plugins.data.database;
 
-import com.xg7plugins.xg7plugins.Plugin;
-import lombok.SneakyThrows;
+import com.xg7plugins.xg7plugins.XG7Plugins;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.*;
 
 public class EntityProcessor {
+
     private static String getSQLType(Class<?> clazz) {
         if (clazz == String.class) return "TEXT";
         else if (clazz == int.class || clazz == Integer.class) return "INT(11)";
@@ -28,7 +29,10 @@ public class EntityProcessor {
     }
 
     public static void createTableOf(Plugin plugin, Class<?> clazz) {
-        DBManager.executor.submit(() -> {
+
+        DBManager manager = XG7Plugins.getInstance().getDatabaseManager();
+
+        manager.executor.submit(() -> {
             StringBuilder builder = new StringBuilder();
             builder.append("CREATE TABLE IF NOT EXISTS " + clazz.getSimpleName() + "(");
             Class<?> oneToManyClass = null;
@@ -76,14 +80,17 @@ public class EntityProcessor {
 
             fkeys.forEach(fkey -> builder.append(", ").append(fkey));
             builder.append(");");
-            DBManager.executeUpdate(plugin,builder.toString());
+            manager.executeUpdate(plugin,builder.toString());
             if (oneToManyClass != null) createTableOf(plugin, oneToManyClass);
 
         });
     }
 
     public static void insetEntity(Plugin plugin, Class<?> entityClass, Entity entity) {
-        DBManager.executor.submit(() -> {
+
+        DBManager manager = XG7Plugins.getInstance().getDatabaseManager();
+
+        manager.executor.submit(() -> {
             StringBuilder builder = new StringBuilder();
             builder.append("INSERT INTO " + entityClass.getSimpleName() + " VALUES (");
 
@@ -114,7 +121,7 @@ public class EntityProcessor {
                     throw new RuntimeException(e);
                 }
             }
-            DBManager.executeUpdate(plugin, builder.toString(), args.toArray());
+            manager.executeUpdate(plugin, builder.toString(), args.toArray());
             if (!childs.isEmpty()) childs.forEach(item -> insetEntity(plugin, item.getClass(), ((Entity) item)));
         });
     }

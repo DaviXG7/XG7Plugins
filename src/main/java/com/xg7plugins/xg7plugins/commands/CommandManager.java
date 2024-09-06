@@ -1,6 +1,6 @@
 package com.xg7plugins.xg7plugins.commands;
 
-import com.xg7plugins.xg7plugins.Plugin;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.commands.interfaces.*;
 import com.xg7plugins.xg7plugins.utils.Log;
@@ -23,10 +23,9 @@ import java.util.List;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
 
-    private static final HashMap<String, ICommand> commands = new HashMap<>();
+    private final HashMap<String, ICommand> commands = new HashMap<>();
 
-
-    public static void registerCommands(Plugin plugin) {
+    public void registerCommands(Plugin plugin) {
 
         CommandMap commandMap = ReflectionObject.of(Bukkit.getServer()).getField("commandMap");
 
@@ -43,14 +42,14 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
             PluginCommand pluginCommand = (PluginCommand) ReflectionClass.of(PluginCommand.class)
                     .getConstructor(String.class, org.bukkit.plugin.Plugin.class)
-                    .newInstance(commandSetup.name(), plugin.getPlugin())
+                    .newInstance(commandSetup.name(), plugin)
                     .getObject();
 
-            pluginCommand.setExecutor(XG7Plugins.getCommandManager());
+            pluginCommand.setExecutor(XG7Plugins.getInstance().getCommandManager());
             pluginCommand.setAliases(Arrays.asList(commandSetup.aliases()));
             pluginCommand.setDescription(commandSetup.description());
             pluginCommand.setUsage(commandSetup.syntax());
-            pluginCommand.setTabCompleter(XG7Plugins.getCommandManager());
+            pluginCommand.setTabCompleter(XG7Plugins.getInstance().getCommandManager());
             commandMap.register(commandSetup.name(), pluginCommand);
 
             commands.put(commandSetup.name(), command);
@@ -94,7 +93,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         return;
                     }
                     if (commandSender instanceof Player) {
-                        if (!commandConfig.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) commandSender).getWorld().getName()) && !plugin.getEnabledWorlds().contains("all")) {
+                        if (!commandConfig.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) commandSender).getWorld().getName()) && !plugin.getEnabledWorlds().isEmpty()) {
                             //Mensagem de não no mundo
                             return;
                         }
@@ -137,7 +136,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                             return true;
                         }
                         if (sender instanceof Player) {
-                            if (!subCommandConfig.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) sender).getWorld().getName()) && !plugin.getEnabledWorlds().contains("all")) {
+                            if (!subCommandConfig.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) sender).getWorld().getName()) && !plugin.getEnabledWorlds().isEmpty()) {
                                 //Mensagem de não no mundo
                                 return true;
                             }
@@ -162,7 +161,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                             return true;
                         }
                         if (sender instanceof Player) {
-                            if (!subCommandConfig1.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) sender).getWorld().getName()) && !plugin.getEnabledWorlds().contains("all")) {
+                            if (!subCommandConfig1.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) sender).getWorld().getName()) && !plugin.getEnabledWorlds().isEmpty()) {
                                 //Mensagem de não no mundo
                                 return true;
                             }
@@ -185,7 +184,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
     @Nullable
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        return List.of();
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command cmd, @NotNull String s, @NotNull String[] strings) {
+        return commands.get(cmd.getName()).onTabComplete(cmd,commandSender,s,strings);
     }
 }

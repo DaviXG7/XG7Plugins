@@ -1,6 +1,7 @@
 package com.xg7plugins.xg7plugins.data.database;
 
-import com.xg7plugins.xg7plugins.Plugin;
+import com.xg7plugins.xg7plugins.XG7Plugins;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -16,10 +17,12 @@ import java.util.concurrent.CompletableFuture;
 @AllArgsConstructor
 public class Query {
 
-    private Iterator<Map<String,Object>> results;
+    private final Iterator<Map<String,Object>> results;
+
+    private final DBManager dbManager;
 
     public static CompletableFuture<Query> create(Plugin plugin, String sql, Object... params) {
-        return DBManager.executeQuery(plugin, sql,params);
+        return XG7Plugins.getInstance().getDatabaseManager().executeQuery(plugin, sql,params);
     }
 
     public boolean hasNextLine() {
@@ -49,7 +52,7 @@ public class Query {
 
             Entity.PKey pKey = f.getAnnotation(Entity.PKey.class);
             if (pKey != null) {
-                if (DBManager.getEntitiesCached().asMap().containsKey(value)) return (T) DBManager.getEntitiesCached().asMap().get(f.get(instance));
+                if (dbManager.getEntitiesCached().asMap().containsKey(value)) return (T) dbManager.getEntitiesCached().asMap().get(f.get(instance));
                 id = value;
             }
 
@@ -75,7 +78,7 @@ public class Query {
             f.set(instance, value);
         }
 
-        DBManager.cacheEntity(id, (Entity) instance);
+        dbManager.cacheEntity(id, (Entity) instance);
 
         return instance;
     }

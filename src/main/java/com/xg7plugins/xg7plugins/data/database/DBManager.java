@@ -2,11 +2,12 @@ package com.xg7plugins.xg7plugins.data.database;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.xg7plugins.xg7plugins.Plugin;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.data.config.Configs;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
@@ -22,22 +23,24 @@ import java.util.concurrent.TimeUnit;
 
 public class DBManager {
 
-    private static final HashMap<String, Connection> connections = new HashMap<>();
+    private final XG7Plugins plugin;
 
-    protected static ExecutorService executor;
+    private final HashMap<String, Connection> connections = new HashMap<>();
+    @Getter(AccessLevel.PROTECTED)
+    protected ExecutorService executor;
 
     @Getter
-    private static Cache<Object, Entity> entitiesCached;
+    private Cache<Object, Entity> entitiesCached;
 
-    private static void initManager() {
-        entitiesCached = Caffeine.newBuilder().expireAfterWrite(Text.convertToMilliseconds(XG7Plugins.getDefaultPlugin(), Configs.getConfig(XG7Plugins.getDefaultPlugin(), "config").get("sql.cache-expires")), TimeUnit.MILLISECONDS).build();
-
+    public DBManager(XG7Plugins plugin) {
+        entitiesCached = Caffeine.newBuilder().expireAfterWrite(Text.convertToMilliseconds(plugin, plugin.getConfigsManager().getConfig(plugin, "config").get("sql.cache-expires")), TimeUnit.MILLISECONDS).build();
+        this.plugin = plugin;
     }
 
     @SneakyThrows
-    public static void connectPlugin(Plugin plugin) {
+    public void connectPlugin(Plugin plugin) {
 
-        Config pluginConfig = Configs.getConfig(plugin,"config");
+        Config pluginConfig = this.plugin.getConfigsManager().getConfig(plugin, "config");
 
         ConnectionType connectionType = ConnectionType.valueOf(((String) pluginConfig.get("sql.type")).toUpperCase());
 
@@ -51,11 +54,11 @@ public class DBManager {
             case SQLITE:
 
                 Class.forName("org.sqlite.JDBC");
-                File file = new File(plugin.getPlugin().getDataFolder(), "data.db");
+                File file = new File(plugin.getDataFolder(), "data.db");
 
                 if (!file.exists()) file.createNewFile();
 
-                connections.put(plugin.getName(), DriverManager.getConnection("jdbc:sqlite:" + plugin.getPlugin().getDataFolder().getPath() + "/data.db"));
+                connections.put(plugin.getName(), DriverManager.getConnection("jdbc:sqlite:" + plugin.getDataFolder().getPath() + "/data.db"));
 
                 return;
             case MYSQL:
@@ -75,17 +78,17 @@ public class DBManager {
 
     }
 
-    public static void cacheEntity(Object id, Entity entity) {
+    public void cacheEntity(Object id, Entity entity) {
         entitiesCached.put(id, entity);
     }
 
     @SneakyThrows
-    public static void disconnectPlugin(Plugin plugin) {
+    public void disconnectPlugin(Plugin plugin) {
         connections.get(plugin.getName()).close();
         connections.remove(plugin.getName());
     }
 
-    public static CompletableFuture<Query> executeQuery(Plugin plugin, String sql, Object... args) {
+    public CompletableFuture<Query> executeQuery(Plugin plugin, String sql, Object... args) {
         return CompletableFuture.supplyAsync(() -> {
 
             try {
@@ -108,7 +111,7 @@ public class DBManager {
                     results.add(map);
                 }
 
-                return new Query(results.iterator());
+                return new Query(results.iterator(), this);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -116,7 +119,7 @@ public class DBManager {
         },executor);
     }
 
-    public static void executeUpdate(Plugin plugin, String sql, Object... args) {
+    public void executeUpdate(Plugin plugin, String sql, Object... args) {
         executor.submit(() -> {
             try {
                 Connection connection = connections.get(plugin.getName());

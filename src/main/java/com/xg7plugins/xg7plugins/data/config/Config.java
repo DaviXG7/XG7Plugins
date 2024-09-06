@@ -1,6 +1,6 @@
 package com.xg7plugins.xg7plugins.data.config;
 
-import com.xg7plugins.xg7plugins.Plugin;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,9 +20,9 @@ public class Config {
         this.plugin = plugin;
         this.name = name;
 
-        File configFile = new File(plugin.getPlugin().getDataFolder(), name + ".yml");
+        File configFile = new File(plugin.getDataFolder(), name + ".yml");
 
-        if (!configFile.exists()) plugin.getPlugin().saveResource(name + ".yml", false);
+        if (!configFile.exists()) plugin.saveResource(name + ".yml", false);
 
         this.config = YamlConfiguration.loadConfiguration(configFile);
     }
@@ -40,7 +40,7 @@ public class Config {
 
     @SneakyThrows
     public void save() {
-        config.save(new File(plugin.getPlugin().getDataFolder(), name + ".yml"));
+        config.save(new File(plugin.getDataFolder(), name + ".yml"));
     }
 
 }
