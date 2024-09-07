@@ -23,9 +23,13 @@ import java.util.List;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
 
+    private final Plugin plugin;
+
     private final HashMap<String, ICommand> commands = new HashMap<>();
 
-    public void registerCommands(Plugin plugin) {
+    public CommandManager(Plugin plugin) {
+
+        this.plugin = plugin;
 
         CommandMap commandMap = ReflectionObject.of(Bukkit.getServer()).getField("commandMap");
 
@@ -57,10 +61,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         }
 
 
-    }
-
-    public void unregisterCommands(Plugin plugin) {
-        plugin.getCommands().stream().map(command -> command.getClass().getAnnotation(CommandSetup.class)).map(CommandSetup::name).forEach(commands::remove);
     }
 
     @Override

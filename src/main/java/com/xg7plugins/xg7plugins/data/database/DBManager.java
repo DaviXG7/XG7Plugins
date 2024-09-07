@@ -19,28 +19,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class DBManager {
-
-    private final XG7Plugins plugin;
 
     private final HashMap<String, Connection> connections = new HashMap<>();
     @Getter(AccessLevel.PROTECTED)
     protected ExecutorService executor;
 
     @Getter
-    private Cache<Object, Entity> entitiesCached;
+    private final Cache<Object, Entity> entitiesCached;
 
+
+    @SneakyThrows
     public DBManager(XG7Plugins plugin) {
-        entitiesCached = Caffeine.newBuilder().expireAfterWrite(Text.convertToMilliseconds(plugin, plugin.getConfigsManager().getConfig(plugin, "config").get("sql.cache-expires")), TimeUnit.MILLISECONDS).build();
-        this.plugin = plugin;
+
+        Config config = plugin.getConfigsManager().getConfig("config");
+
+        entitiesCached = Caffeine.newBuilder().expireAfterWrite(Text.convertToMilliseconds(plugin, config.get("sql.cache-expires")), TimeUnit.MILLISECONDS).build();
+        executor = Executors.newFixedThreadPool(config.get("sql.db-executor-threads"));
     }
 
     @SneakyThrows
     public void connectPlugin(Plugin plugin) {
 
-        Config pluginConfig = this.plugin.getConfigsManager().getConfig(plugin, "config");
+        Config pluginConfig = plugin.getConfigsManager().getConfig("config");
 
         ConnectionType connectionType = ConnectionType.valueOf(((String) pluginConfig.get("sql.type")).toUpperCase());
 
@@ -75,10 +79,9 @@ public class DBManager {
                 break;
         }
 
-
     }
 
-    public void cacheEntity(Object id, Entity entity) {
+    protected void cacheEntity(Object id, Entity entity) {
         entitiesCached.put(id, entity);
     }
 

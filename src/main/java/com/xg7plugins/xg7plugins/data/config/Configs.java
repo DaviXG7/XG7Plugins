@@ -10,15 +10,12 @@ public class Configs {
 
     private final HashMap<String, Config> configs = new HashMap<>();
 
-    public void register(Plugin plugin) {
-        plugin.getConfigs().forEach(config -> configs.put(plugin.getName() + ":" + config.getName(), config));
+    public Configs(Plugin plugin) {
+        plugin.getConfigs().forEach(config -> configs.put(config.getName(), config));
     }
 
-    public Config getConfig(Plugin plugin, String name) {
-        return configs.get(plugin.getName() + ":" + name);
-    }
-    public void unregister(Plugin plugin) {
-        configs.keySet().stream().filter(key -> key.startsWith(plugin.getName())).forEach(configs::remove);
+    public Config getConfig(String name) {
+        return configs.get(name);
     }
 
 

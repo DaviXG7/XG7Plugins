@@ -32,11 +32,13 @@ public class Query {
         return results.next();
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T get(String key) {
         return (T) results.next().get(key);
     }
 
     @SneakyThrows
+    @SuppressWarnings("unchecked")
     public <T> T get(Class<? super Entity> clazz) {
         Map<String, Object> values = results.next();
 

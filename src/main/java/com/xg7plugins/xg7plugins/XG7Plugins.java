@@ -1,11 +1,10 @@
 package com.xg7plugins.xg7plugins;
 
 import com.xg7plugins.xg7plugins.boot.Plugin;
-import com.xg7plugins.xg7plugins.commands.CommandManager;
 import com.xg7plugins.xg7plugins.commands.interfaces.ICommand;
 import com.xg7plugins.xg7plugins.data.config.Config;
-import com.xg7plugins.xg7plugins.data.config.Configs;
 import com.xg7plugins.xg7plugins.data.database.DBManager;
+import com.xg7plugins.xg7plugins.data.database.Query;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -20,11 +19,9 @@ public final class XG7Plugins extends Plugin {
 
     private static XG7Plugins plugin;
 
-    private final HashMap<String, Plugin> plugins = new HashMap<>();
+    private DBManager databaseManager;
 
-    private final CommandManager commandManager = new CommandManager();
-    private final Configs configsManager = new Configs();
-    private final DBManager databaseManager = new DBManager(this);
+    private final HashMap<String, Plugin> plugins = new HashMap<>();
 
     private XG7Plugins() {
         super("[XG7Plugins]", "XG7Plugins");
@@ -32,7 +29,7 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
+        this.databaseManager = new DBManager(this);
     }
 
     @Override
@@ -55,11 +52,11 @@ public final class XG7Plugins extends Plugin {
         return Arrays.asList(new Config(this, "config"));
     }
 
-    public void registerPlugin(Plugin plugin) {
-        plugins.put(plugin.getName(), plugin);
-        configsManager.register(plugin);
-        commandManager.registerCommands(plugin);
-        databaseManager.connectPlugin(plugin);
+    public static void register(Plugin plugin) {
+        XG7Plugins xg7Plugins = XG7Plugins.getInstance();
+
+        xg7Plugins.getPlugins().put(plugin.getName(), plugin);
+        xg7Plugins.getDatabaseManager().connectPlugin(plugin);
     }
 
     public static @NotNull XG7Plugins getInstance() {
