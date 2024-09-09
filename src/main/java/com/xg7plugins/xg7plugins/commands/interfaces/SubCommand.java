@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface SubCommandConfig {
+public @interface SubCommand {
     String name() default "";
     String perm() default "";
     boolean isOnlyInWorld() default false;

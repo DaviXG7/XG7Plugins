@@ -5,7 +5,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.data.config.Config;
-import com.xg7plugins.xg7plugins.data.config.Configs;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,7 +36,7 @@ public class DBManager {
 
         Config config = plugin.getConfigsManager().getConfig("config");
 
-        entitiesCached = Caffeine.newBuilder().expireAfterWrite(Text.convertToMilliseconds(plugin, config.get("sql.cache-expires")), TimeUnit.MILLISECONDS).build();
+        entitiesCached = Caffeine.newBuilder().expireAfterAccess(Text.convertToMilliseconds(plugin, config.get("sql.cache-expires")), TimeUnit.MILLISECONDS).build();
         executor = Executors.newFixedThreadPool(config.get("sql.db-executor-threads"));
     }
 
@@ -45,6 +44,8 @@ public class DBManager {
     public void connectPlugin(Plugin plugin) {
 
         Config pluginConfig = plugin.getConfigsManager().getConfig("config");
+
+        if (pluginConfig == null || pluginConfig.getConfigutationSection("sql") == null) return;
 
         ConnectionType connectionType = ConnectionType.valueOf(((String) pluginConfig.get("sql.type")).toUpperCase());
 
@@ -65,15 +66,13 @@ public class DBManager {
                 connections.put(plugin.getName(), DriverManager.getConnection("jdbc:sqlite:" + plugin.getDataFolder().getPath() + "/data.db"));
 
                 return;
-            case MYSQL:
+            case MARIADB:
 
-                Class.forName("org.mariadb.jdbc.Driver");
                 connections.put(plugin.getName(), DriverManager.getConnection("jdbc:mariadb://" + host + ":" + port + "/" + database, username, password));
 
                 break;
-            case MARIADB:
+            case MYSQL:
 
-                Class.forName("com.mysql.cj.jdbc.Driver");
                 connections.put(plugin.getName(), DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password));
 
                 break;
@@ -87,13 +86,12 @@ public class DBManager {
 
     @SneakyThrows
     public void disconnectPlugin(Plugin plugin) {
-        connections.get(plugin.getName()).close();
+        if (connections.get(plugin.getName()) != null)connections.get(plugin.getName()).close();
         connections.remove(plugin.getName());
     }
 
     public CompletableFuture<Query> executeQuery(Plugin plugin, String sql, Object... args) {
         return CompletableFuture.supplyAsync(() -> {
-
             try {
                 Connection connection = connections.get(plugin.getName());
 

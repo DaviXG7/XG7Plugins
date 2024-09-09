@@ -23,22 +23,15 @@ public class PlayerNMS {
         ReflectionObject craftPlayer = NMSUtil.getCraftBukkitClass("entity.CraftPlayer").castToRObject(player);
 
         ReflectionObject handle = craftPlayer.getMethod("getHandle").invokeToRObject();
+        Object playerConnection = Arrays.stream(handle.getObjectClass().getFields()).filter(field -> field.getType().getName().endsWith("PlayerConnection")).findFirst().orElse(null).get(handle.getObject());
+        Object networkManager = Arrays.stream(playerConnection.getClass().getFields()).filter(field -> field.getType().getName().endsWith("NetworkManager")).findFirst().orElse(null).get(playerConnection);
 
-        if (XG7Plugins.getVersion() < 17) {
-            Object playerConnection = Arrays.stream(handle.getObjectClass().getFields()).filter(field -> field.getType().getName().equals(NMSUtil.getNMSClass("PlayerConnection").getAClass().getName())).findFirst().orElse(null).get(handle.getObject());
-            Object networkManager = Arrays.stream(playerConnection.getClass().getFields()).filter(field -> field.getType().getName().equals(NMSUtil.getNMSClass("NetworkManager").getAClass().getName())).findFirst().orElse(null).get(playerConnection);
-            return new PlayerNMS(player, handle, ReflectionObject.of(playerConnection), ReflectionObject.of(networkManager));
-        }
-        Object playerConnection = Arrays.stream(handle.getObjectClass().getFields()).filter(field -> field.getType().getName().equals("net.minecraft.server.network.PlayerConnection")).findFirst().orElse(null).get(handle.getObject());
-        Object networkManager = Arrays.stream(playerConnection.getClass().getDeclaredFields()).filter(field -> {
-            field.setAccessible(true);
-            return field.getType().getName().equals("net.minecraft.network.NetworkManager");
-        }).findFirst().orElse(null).get(playerConnection);
         return new PlayerNMS(player, handle, ReflectionObject.of(playerConnection), ReflectionObject.of(networkManager));
+
     }
 
     public void sendPacket(Object packet) {
-        ReflectionMethod.of(playerConnection, "sendPacket", NMSUtil.getNMSClass("Packet").getAClass()).invoke(playerConnection, packet);
+        ReflectionMethod.of(playerConnection, "sendPacket", NMSUtil.getNMSClass("Packet").getAClass()).invoke(packet);
     }
 
 

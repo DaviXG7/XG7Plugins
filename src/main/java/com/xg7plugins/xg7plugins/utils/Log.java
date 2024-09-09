@@ -27,7 +27,7 @@ public class Log {
     }
 
     public static void loading(Plugin plugin, String message) {
-        Bukkit.getLogger().info(plugin.getPrefix() + message);
+        Bukkit.getLogger().info(plugin.getPrefix() + " " + message);
     }
 
 }

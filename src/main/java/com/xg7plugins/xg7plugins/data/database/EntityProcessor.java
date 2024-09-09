@@ -86,21 +86,21 @@ public class EntityProcessor {
         });
     }
 
-    public static void insetEntity(Plugin plugin, Class<?> entityClass, Entity entity) {
+    public static void insetEntity(Plugin plugin, Entity entity) {
 
         DBManager manager = XG7Plugins.getInstance().getDatabaseManager();
 
         manager.executor.submit(() -> {
             StringBuilder builder = new StringBuilder();
-            builder.append("INSERT INTO " + entityClass.getSimpleName() + " VALUES (");
+            builder.append("INSERT INTO " + entity.getClass().getSimpleName() + " VALUES (");
 
-            Arrays.stream(entityClass.getDeclaredFields()).filter(field -> !field.getType().equals(List.class)).map(field -> "?,").forEach(builder::append);
+            Arrays.stream(entity.getClass().getDeclaredFields()).filter(field -> !field.getType().equals(List.class)).map(field -> "?,").forEach(builder::append);
             builder.replace(builder.length() - 1, builder.length(), ")");
 
             List<Object> args = new ArrayList<>();
             List<Object> childs = new ArrayList<>();
 
-            for (Field field : entityClass.getDeclaredFields()) {
+            for (Field field : entity.getClass().getDeclaredFields()) {
                 field.setAccessible(true);
                 if (field.getType().equals(List.class)) {
                     ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
@@ -122,7 +122,8 @@ public class EntityProcessor {
                 }
             }
             manager.executeUpdate(plugin, builder.toString(), args.toArray());
-            if (!childs.isEmpty()) childs.forEach(item -> insetEntity(plugin, item.getClass(), ((Entity) item)));
+            if (!childs.isEmpty()) childs.forEach(item -> insetEntity(plugin, ((Entity) item)));
+
         });
     }
 

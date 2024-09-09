@@ -11,9 +11,9 @@ import java.io.File;
 @Getter
 public class Config {
 
-    private Plugin plugin;
-    private String name;
-    private YamlConfiguration config;
+    private final Plugin plugin;
+    private final String name;
+    private final YamlConfiguration config;
 
     @SneakyThrows
     public Config(Plugin plugin, String name) {

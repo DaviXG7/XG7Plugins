@@ -49,11 +49,11 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     .newInstance(commandSetup.name(), plugin)
                     .getObject();
 
-            pluginCommand.setExecutor(XG7Plugins.getInstance().getCommandManager());
+            pluginCommand.setExecutor(this);
             pluginCommand.setAliases(Arrays.asList(commandSetup.aliases()));
             pluginCommand.setDescription(commandSetup.description());
             pluginCommand.setUsage(commandSetup.syntax());
-            pluginCommand.setTabCompleter(XG7Plugins.getInstance().getCommandManager());
+            pluginCommand.setTabCompleter(this);
             commandMap.register(commandSetup.name(), pluginCommand);
 
             commands.put(commandSetup.name(), command);
@@ -71,9 +71,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
             ICommand command = commands.get(cmd.getName());
 
-            Plugin plugin = command.getPlugin();
-
-            if (processSubCommands(commandSender, command.getSubCommands(), plugin, strings, s, 0)) return;
+            if (processSubCommands(commandSender, command.getSubCommands(), strings, s, 0)) return;
 
             if (strings.length != 0) {
                 //Syntax Error
@@ -109,14 +107,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     }
 
     @SuppressWarnings("deprecated")
-    private boolean processSubCommands(CommandSender sender, ISubCommand[] subCommands, Plugin plugin, String[] args, String label, int argsIndex) {
+    private boolean processSubCommands(CommandSender sender, ISubCommand[] subCommands, String[] args, String label, int argsIndex) {
+
+        if (subCommands == null) return false;
 
         if (args.length != argsIndex) {
             for (ISubCommand subCommand : subCommands) {
 
                 switch (subCommand.getType()) {
                     case NORMAL:
-                        SubCommandConfig subCommandConfig = ReflectionMethod.of(subCommand, "onSubCommand", CommandSender.class, String[].class, String.class).getAnnotation(SubCommandConfig.class);
+                        SubCommand subCommandConfig = ReflectionMethod.of(subCommand, "onSubCommand", CommandSender.class, String[].class, String.class).getAnnotation(SubCommand.class);
 
                         if (subCommandConfig == null) {
                             Log.severe(plugin, "Normal subcommands must be annotated with @SubCommandConfig to setup the subcommand!!");
@@ -126,7 +126,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         if (!subCommandConfig.name().equalsIgnoreCase(args[argsIndex])) {
                             continue;
                         }
-                        if (subCommand.getSubCommands().length != 0) return processSubCommands(sender, subCommand.getSubCommands(), plugin, args, label, argsIndex + 1);
+                        if (subCommand.getSubCommands().length != 0) return processSubCommands(sender, subCommand.getSubCommands(), args, label, argsIndex + 1);
                         if (!sender.hasPermission(subCommandConfig.perm())) {
                             //Fazer coisa de pegar na config permissão
                             return true;
@@ -145,7 +145,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         subCommand.onSubCommand(sender,args,label);
                         return true;
                     case PLAYER:
-                        SubCommandConfig subCommandConfig1 = ReflectionMethod.of(subCommand, "onSubCommand", CommandSender.class, OfflinePlayer.class, String.class).getAnnotation(SubCommandConfig.class);
+                        SubCommand subCommandConfig1 = ReflectionMethod.of(subCommand, "onSubCommand", CommandSender.class, OfflinePlayer.class, String.class).getAnnotation(SubCommand.class);
 
                         if (subCommandConfig1 == null) {
                             Log.severe(plugin, "Subcommands must be annotated with @SubCommandConfig to setup the subcommand!!");
@@ -171,6 +171,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
                         if (!player.hasPlayedBefore()) {
                             //Player nunca jogou antes
+                            return true;
                         }
 
                         subCommand.onSubCommand(sender,player,label);

@@ -39,7 +39,7 @@ public class Query {
 
     @SneakyThrows
     @SuppressWarnings("unchecked")
-    public <T> T get(Class<? super Entity> clazz) {
+    public <T> T get(Class<?> clazz) {
         Map<String, Object> values = results.next();
 
         T instance = (T) clazz.getDeclaredConstructor().newInstance();
@@ -71,7 +71,7 @@ public class Query {
                         fListf.set(listInstance, values.get(fListf.getName()));
                 }
                 tList.add(listInstance);
-                tList.addAll(getResultList((Class<? super Entity>) tipoGenerico));
+                tList.addAll(getResultList((Class<?>) tipoGenerico));
 
                 f.set(instance, tList);
 
@@ -85,7 +85,7 @@ public class Query {
         return instance;
     }
 
-    public <T> List<T> getResultList(Class<? super Entity> clazz) {
+    public <T> List<T> getResultList(Class<?> clazz) {
         List<T> tList = new ArrayList<>();
         while (results.hasNext()) {
             tList.add(get(clazz));

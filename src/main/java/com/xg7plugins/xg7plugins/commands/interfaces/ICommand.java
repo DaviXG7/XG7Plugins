@@ -14,8 +14,6 @@ import java.util.List;
 @Getter
 public abstract class ICommand {
 
-    private Plugin plugin;
-
     public boolean isEnabled() {
         return true;
     }

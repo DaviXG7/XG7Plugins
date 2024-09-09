@@ -1,6 +1,5 @@
 package com.xg7plugins.xg7plugins;
 
-import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.commands.interfaces.*;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -15,10 +14,6 @@ import org.bukkit.inventory.ItemStack;
         aliases = {"nmztz"}
 )
 public class CommandExample extends ICommand {
-
-    public CommandExample(Plugin plugin) {
-        super(plugin);
-    }
 
     @Override
     public ISubCommand[] getSubCommands() {
@@ -53,7 +48,7 @@ public class CommandExample extends ICommand {
         }
 
         @Override
-        @SubCommandConfig(
+        @SubCommand(
                 perm = "perm2",
                 isOnlyPlayer = true
         )

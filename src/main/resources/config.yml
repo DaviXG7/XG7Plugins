@@ -1,3 +1,7 @@
+main-lang: pt-br
+lang-cache-expires: 30m
+
+
 sql:
 
   cache-expires: 30m
