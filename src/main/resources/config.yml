@@ -1,5 +1,9 @@
+
+prefix: "§8[§bXG§37P§9lu§1gins§8]"
+
 main-lang: pt-br
 lang-cache-expires: 30m
+auto-chose-lang: true
 
 
 sql:

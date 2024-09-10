@@ -43,7 +43,9 @@ public final class XG7Plugins extends Plugin {
         this.eventManager = new EventManager();
         this.eventManager.registerPlugin(this);
         this.packetEventManager = minecraftVersion < 8 ? new PacketEventManager1_7() : new PacketEventManager();
+        if (getConfigsManager().getConfig("config").get("prefix") != null) this.setCustomPrefix(getConfigsManager().getConfig("config").get("prefix"));
     }
+
 
     @Override
     public void onDisable() {

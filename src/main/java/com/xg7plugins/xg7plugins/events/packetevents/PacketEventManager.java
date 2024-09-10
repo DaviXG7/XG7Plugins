@@ -43,7 +43,7 @@ public class PacketEventManager {
                     for (Method method : event.getClass().getMethods()) {
                         if (!method.isAnnotationPresent(PacketEventHandler.class)) continue;
                         PacketEventHandler eventHandler = method.getAnnotation(PacketEventHandler.class);
-                        if (packet.getClass().getName().endsWith(eventHandler.packetName())) modPacket = method.invoke(event, player, packet);
+                        if (Arrays.stream(eventHandler.packetsName()).anyMatch(s -> packet.getClass().getName().endsWith(s))) modPacket = method.invoke(event, player, packet);
                     }
                 }
 
@@ -59,7 +59,7 @@ public class PacketEventManager {
                     for (Method method : event.getClass().getMethods()) {
                         if (!method.isAnnotationPresent(PacketEventHandler.class)) continue;
                         PacketEventHandler eventHandler = method.getAnnotation(PacketEventHandler.class);
-                        if (packet.getClass().getName().endsWith(eventHandler.packetName())) modPacket = method.invoke(event, player, packet);
+                        if (Arrays.stream(eventHandler.packetsName()).anyMatch(s -> packet.getClass().getName().endsWith(s))) modPacket = method.invoke(event, player, packet);
                     }
                 }
 

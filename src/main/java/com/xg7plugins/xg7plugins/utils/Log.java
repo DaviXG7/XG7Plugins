@@ -1,6 +1,8 @@
 package com.xg7plugins.xg7plugins.utils;
 
 import com.xg7plugins.xg7plugins.boot.Plugin;
+import lombok.AllArgsConstructor;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 
 import java.util.logging.Level;
@@ -8,26 +10,31 @@ import java.util.logging.Level;
 /**
  * This class is used to debug
  */
+@AllArgsConstructor
 public class Log {
 
-    public static void severe(Plugin plugin, String message) {
-        Bukkit.getLogger().severe("[" + plugin.getName()  + " ERROR] " + message);
+    private Plugin plugin;
+    @Setter
+    private boolean isLogEnabled;
+
+    public void severe(String message) {
+        Bukkit.getConsoleSender().sendMessage("[" + plugin.getName()  + " ERROR] " + message);
     }
 
-    public static void fine(Plugin plugin, String message) {
-        if (plugin.isLogEnabled()) Bukkit.getLogger().fine("[" + plugin.getName()  + " SUCCESS] " + message);
+    public void fine(String message) {
+        if (isLogEnabled) Bukkit.getConsoleSender().sendMessage("[" + plugin.getName()  + " SUCCESS] " + message);
     }
 
-    public static void info(Plugin plugin, String message) {
-        if (plugin.isLogEnabled()) Bukkit.getLogger().info("[" + plugin.getName() + " DEBUG] " + message);
+    public void info(String message) {
+        if (isLogEnabled) Bukkit.getConsoleSender().sendMessage("[" + plugin.getName() + " DEBUG] " + message);
     }
 
-    public static void warn(Plugin plugin, String message) {
-        Bukkit.getLogger().log(Level.WARNING, "[" + plugin.getName() + " ALERT] " + message);
+    public void warn(String message) {
+        Bukkit.getConsoleSender().sendMessage("[" + plugin.getName() + " ALERT] " + message);
     }
 
-    public static void loading(Plugin plugin, String message) {
-        Bukkit.getLogger().info(plugin.getPrefix() + " " + message);
+    public void loading(String message) {
+        Bukkit.getConsoleSender().sendMessage(plugin.getPrefix() + " " + message);
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
-public class LangEntity {
+public class LangEntity implements Entity {
 
     @Entity.PKey
     private String langId;

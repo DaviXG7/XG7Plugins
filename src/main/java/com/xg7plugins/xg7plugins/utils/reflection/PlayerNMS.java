@@ -12,10 +12,10 @@ import java.util.Arrays;
 @AllArgsConstructor
 public class PlayerNMS {
 
-    private Player player;
-    private ReflectionObject craftPlayerHandle;
-    private ReflectionObject playerConnection;
-    private ReflectionObject networkManager;
+    private final Player player;
+    private final ReflectionObject craftPlayerHandle;
+    private final ReflectionObject playerConnection;
+    private final ReflectionObject networkManager;
 
     @SneakyThrows
     public static PlayerNMS cast(Player player) {

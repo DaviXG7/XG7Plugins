@@ -3,7 +3,6 @@ package com.xg7plugins.xg7plugins.commands;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.commands.interfaces.*;
-import com.xg7plugins.xg7plugins.utils.Log;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionClass;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionMethod;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
@@ -38,7 +37,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             if (!command.isEnabled()) continue;
 
             if (command.getClass().getAnnotation(CommandSetup.class) == null) {
-                Log.severe(plugin, "Commands must be annotated with @CommandSetup to setup the command!!");
+                plugin.getLog().severe("Commands must be annotated with @CommandSetup to setup the command!!");
                 continue;
             }
 
@@ -119,7 +118,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         SubCommand subCommandConfig = ReflectionMethod.of(subCommand, "onSubCommand", CommandSender.class, String[].class, String.class).getAnnotation(SubCommand.class);
 
                         if (subCommandConfig == null) {
-                            Log.severe(plugin, "Normal subcommands must be annotated with @SubCommandConfig to setup the subcommand!!");
+                            plugin.getLog().severe("Normal subcommands must be annotated with @SubCommandConfig to setup the subcommand!!");
                             continue;
                         }
 
@@ -148,7 +147,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         SubCommand subCommandConfig1 = ReflectionMethod.of(subCommand, "onSubCommand", CommandSender.class, OfflinePlayer.class, String.class).getAnnotation(SubCommand.class);
 
                         if (subCommandConfig1 == null) {
-                            Log.severe(plugin, "Subcommands must be annotated with @SubCommandConfig to setup the subcommand!!");
+                            plugin.getLog().severe("Subcommands must be annotated with @SubCommandConfig to setup the subcommand!!");
                             continue;
                         }
 
