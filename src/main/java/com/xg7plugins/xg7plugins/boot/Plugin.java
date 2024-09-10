@@ -4,6 +4,7 @@ import com.xg7plugins.xg7plugins.commands.CommandManager;
 import com.xg7plugins.xg7plugins.commands.interfaces.ICommand;
 import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.data.config.Configs;
+import com.xg7plugins.xg7plugins.data.lang.LangManager;
 import com.xg7plugins.xg7plugins.events.Event;
 import lombok.*;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,6 +20,7 @@ public abstract class Plugin extends JavaPlugin {
 
     private final Configs configsManager;
     private final CommandManager commandManager;
+    private final LangManager langManager;
 
     private String customPrefix = prefix;
     private boolean logEnabled = false;
@@ -28,6 +30,7 @@ public abstract class Plugin extends JavaPlugin {
         this.prefix = prefix;
         this.commandManager = new CommandManager(this);
         this.configsManager = new Configs(this);
+        this.langManager = new LangManager(this);
     }
 
     @Override
