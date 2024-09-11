@@ -5,13 +5,19 @@ import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.data.config.Configs;
 import com.xg7plugins.xg7plugins.utils.Log;
+import com.xg7plugins.xg7plugins.utils.reflection.NMSUtil;
+import com.xg7plugins.xg7plugins.utils.reflection.PlayerNMS;
+import com.xg7plugins.xg7plugins.utils.reflection.ReflectionClass;
+import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -19,6 +25,7 @@ import java.awt.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Getter
 public class Text {
 
     private static final Pattern GRADIENT_PATTERN = Pattern.compile("\\[g#([0-9a-fA-F]{6})](.*?)\\[/g#([0-9a-fA-F]{6})]");
@@ -28,7 +35,7 @@ public class Text {
 
     public Text(String text, Plugin plugin) {
         if (XG7Plugins.getMinecraftVersion() >= 16) {
-            text = applyGradients(text);
+            text = applyGradients();
             Matcher matcher = HEX_PATTERN.matcher(text);
             while (matcher.find()) {
                 String color = text.substring(matcher.start(), matcher.end());
@@ -43,58 +50,59 @@ public class Text {
     public static Text format(String text, Plugin plugin) {
         return new Text(text,plugin);
     }
-    public static Text fromConfig(Config config, String path) {
-        return new Text(text,plugin);
+    public static com.xg7plugins.xg7plugins.utils.Text.TextComponent fromConfig(Config config, String path) {
+        Text text1 = new Text(config.get(path), config.getPlugin());
+        return new com.xg7plugins.xg7plugins.utils.Text.TextComponent(text1.getText());
     }
+
 
     public void send(String text, CommandSender sender) {
         if (text == null || text.isEmpty()) return;
+
+
+
         if (sender instanceof Player) {
+
+            String transleted = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, text) : text;
+
             text = text.replace("[PLAYER]", sender.getName());
             if (text.startsWith("[ACTION] ")) {
-                sendActionBar(text.substring(9), ((Player) sender));
+                sendActionBar(transleted.substring(9), ((Player) sender));
                 return;
             }
 
-            sender.sendMessage(getFormatedText(((Player) sender), text));
+            sender.sendMessage(getCentralizedText(PixelsSize.CHAT.pixels));
             return;
         }
-        sender.sendMessage(translateColorCodes(text));
+        sender.sendMessage(getCentralizedText(PixelsSize.CHAT.pixels));
     }
 
     @SneakyThrows
-    public static void sendActionBar(String text, Player player) {
-        if (Integer.parseInt(Bukkit.getServer().getVersion().split("\\.")[1].replace(")", "")) >= 9) {
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(getFormatedText(player, text)));
+    public void sendActionBar(String text, Player player) {
+
+        if (XG7Plugins.getMinecraftVersion() < 8) return;
+
+        if (XG7Plugins.getMinecraftVersion() > 8) {
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(text));
             return;
         }
 
-        Class<?> craftPlayerClass = NMSUtil.getCraftBukkitClass("entity.CraftPlayer");
-        Object craftPlayer = craftPlayerClass.cast(player);
+        PlayerNMS playerNMS = PlayerNMS.cast(player);
 
-        Class<?> packetPlayOutChatClass = NMSUtil.getNMSClass("PacketPlayOutChat");
-        Class<?> iChatBaseComponentClass = NMSUtil.getNMSClass("IChatBaseComponent");
-        Class<?> chatComponentTextClass = NMSUtil.getNMSClass("ChatComponentText");
+        ReflectionObject chatComponent = NMSUtil.getNMSClass("IChatBaseComponent").getConstructor(String.class).newInstance(text);
 
-        Object chatComponent = chatComponentTextClass.getConstructor(String.class).newInstance(getFormatedText(player, text));
-        Object packet = packetPlayOutChatClass.getConstructor(iChatBaseComponentClass, byte.class)
-                .newInstance(chatComponent, (byte) 2);
+        ReflectionObject packet = NMSUtil.getNMSClass("PacketPlayOutChat")
+                .getConstructor(NMSUtil.getNMSClass("IChatBaseComponent").getAClass(), byte.class)
+                .newInstance(chatComponent.getObject(), (byte) 2);
 
-        Object craftPlayerHandle = craftPlayerClass.getMethod("getHandle").invoke(craftPlayer);
-        Object playerConnection = craftPlayerHandle.getClass().getField("playerConnection").get(craftPlayerHandle);
-        playerConnection.getClass().getMethod("sendPacket", NMSUtil.getNMSClass("Packet")).invoke(playerConnection, packet);
+        playerNMS.sendPacket(packet.getObject());
 
     }
 
-    public static String getFormatedText(Player player, String text) {
-        if (text.startsWith("[CENTER] ")) return translateColorCodes(getCentralizedText(PixelsSize.CHAT.getPixels(), setPlaceholders(text.substring(9), player)));
-        return translateColorCodes(setPlaceholders(text, player));
-    }
-    public String setPlaceholders(String text, Player player) {
-        return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders(player, text) : text;
-    }
+    public String getCentralizedText(int pixels) {
 
-    public String getCentralizedText(int pixels, String text) {
+        if (!text.startsWith("[CENTER] ")) return text;
+        text = text.substring(9);
 
         int textWidht = 0;
         boolean cCode = false;
@@ -167,7 +175,7 @@ public class Text {
         return res;
     }
 
-    private String applyGradients(String text) {
+    private String applyGradients() {
 
         Matcher matcher = GRADIENT_PATTERN.matcher(text);
         StringBuffer result = new StringBuffer();
@@ -196,7 +204,7 @@ public class Text {
 
         return result.toString();
     }
-    private static int getCharSize(char c, boolean isBold) {
+    private int getCharSize(char c, boolean isBold) {
         String[] chars = new String[]{"~@", "1234567890ABCDEFGHJKLMNOPQRSTUVWXYZabcedjhmnopqrsuvxwyz/\\+=-_^?&%$#", "{}fk*\"<>()", "It[] ", "'l`", "!|:;,.i", "¨´"};
         for (int i = 0; i < chars.length; i++) {
             if (chars[i].contains(String.valueOf(c))) {
@@ -245,7 +253,7 @@ public class Text {
                     milliseconds += value * 86400000;
                     break;
                 default:
-                    Log.severe(plugin,"Invalid time unit: " + unit);
+                    plugin.getLog().severe("Invalid time unit: " + unit);
             }
         }
 
