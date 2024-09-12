@@ -5,6 +5,7 @@ main-lang: pt-br
 lang-cache-expires: 30m
 auto-chose-lang: true
 
+task-threads: 1
 
 sql:
 

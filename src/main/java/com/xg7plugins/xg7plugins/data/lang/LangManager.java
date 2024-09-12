@@ -1,4 +1,4 @@
-package com.xg7plugins.xg7plugins.data;
+package com.xg7plugins.xg7plugins.data.lang;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -6,7 +6,6 @@ import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.data.database.EntityProcessor;
 import com.xg7plugins.xg7plugins.data.database.Query;
-import com.xg7plugins.xg7plugins.data.database.mainData.LangEntity;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
 import lombok.SneakyThrows;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -55,15 +54,26 @@ public class LangManager {
         File file = new File(plugin.getDataFolder(), "langs/" + lang + ".yml");
         if (!file.exists()) plugin.saveResource("langs/" + lang + ".yml", false);
 
-        return YamlConfiguration.loadConfiguration(file);
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
+
+        langs.put(lang, configuration);
+
+        return configuration;
+    }
+
+    public String getPath(Player player, String path) {
+        return getLangByPlayer(player.getUniqueId(), player.getLocale()).getString(path);
     }
 
     @SneakyThrows
-    public LangEntity getLangByPlayer(Player player) {
+    public YamlConfiguration getLangByPlayer(UUID id, String playerLocale) {
 
-        if (players.asMap().containsKey(player.getUniqueId())) return players.asMap().get(player.getUniqueId());
+        if (id == null) return getLang(mainLang);
 
-        return Query.create(plugin,"SELECT * FROM langentity WHERE playeruuid = ?", player.getUniqueId())
+        if (players.asMap().containsKey(id)) return getLang(players.asMap().get(id).getLangId());
+
+
+        return (YamlConfiguration) Query.create(plugin,"SELECT * FROM langentity WHERE playeruuid = ?", id)
                 .thenApplyAsync(q -> {
 
                             if (!q.hasNextLine()) {
@@ -74,31 +84,31 @@ public class LangManager {
 
                                     for (YamlConfiguration cfg : langs.asMap().values()) {
                                         String locale = cfg.getString("lang-locale");
-                                        if (player.getLocale().equals(locale)) {
-                                            LangEntity newLang = new LangEntity(cfg.getName(), player.getUniqueId());
+                                        if (playerLocale.equals(locale)) {
+                                            LangEntity newLang = new LangEntity(cfg.getName(), id);
 
-                                            players.put(player.getUniqueId(), newLang);
+                                            players.put(id, newLang);
 
                                             EntityProcessor.insetEntity(plugin, newLang);
 
-                                            return newLang;
+                                            return getLang(newLang.getLangId());
                                         }
                                     }
 
                                 }
 
-                                LangEntity newLang = new LangEntity(mainLang, player.getUniqueId());
+                                LangEntity newLang = new LangEntity(mainLang, id);
 
                                 EntityProcessor.insetEntity(plugin, newLang);
 
-                                players.put(player.getUniqueId(), newLang);
+                                players.put(id, newLang);
                                 return newLang;
                             }
 
                             LangEntity entity = q.get(LangEntity.class);
-                            players.put(player.getUniqueId(), entity);
+                            players.put(id, entity);
 
-                            return entity;
+                            return getLang(entity.getLangId());
 
                         }
                 ).get();

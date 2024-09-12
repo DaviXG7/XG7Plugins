@@ -1,4 +1,4 @@
-package com.xg7plugins.xg7plugins.data.database.mainData;
+package com.xg7plugins.xg7plugins.data.lang;
 
 import com.xg7plugins.xg7plugins.data.database.Entity;
 import lombok.AllArgsConstructor;

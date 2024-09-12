@@ -59,8 +59,6 @@ public class Text {
     public void send(String text, CommandSender sender) {
         if (text == null || text.isEmpty()) return;
 
-
-
         if (sender instanceof Player) {
 
             String transleted = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, text) : text;
