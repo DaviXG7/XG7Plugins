@@ -7,21 +7,21 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class TaskManager {
 
-    protected ExecutorService executor;
+    protected ScheduledExecutorService executor;
 
     private BukkitTask mainScheduler;
 
     public TaskManager(XG7Plugins plugin) {
         Config config = plugin.getConfigsManager().getConfig("config");
 
-        executor = Executors.newFixedThreadPool(config.get("task-threads"));
+        executor = (ScheduledExecutorService) Executors.newFixedThreadPool(config.get("task-threads"));
 
         Thread thread = new Thread();
 
-        mainScheduler = Bukkit.getScheduler().runTaskTimerAsynchronously()
 
     }
 
