@@ -71,10 +71,10 @@ public class Text {
                 return;
             }
 
-            sender.sendMessage(getCentralizedText(PixelsSize.CHAT.pixels));
+            sender.sendMessage(getCentralizedText(PixelsSize.CHAT.pixels, text));
             return;
         }
-        sender.sendMessage(getCentralizedText(PixelsSize.CHAT.pixels));
+        sender.sendMessage(getCentralizedText(PixelsSize.CHAT.pixels, text));
     }
 
     @SneakyThrows
@@ -99,7 +99,7 @@ public class Text {
 
     }
 
-    public String getCentralizedText(int pixels) {
+    public static String getCentralizedText(int pixels, String text) {
 
         if (!text.startsWith("[CENTER] ")) return text;
         text = text.substring(9);
@@ -167,6 +167,11 @@ public class Text {
         return builder + text;
 
     }
+
+    public static String getCentralizedSpaces(int pixels, String text) {
+        return getCentralizedText(pixels,text).replace(text, "");
+    }
+
     private double[] linear(double from, double to, int max) {
         final double[] res = new double[max];
         for (int i = 0; i < max; i++) {
@@ -204,7 +209,7 @@ public class Text {
 
         return result.toString();
     }
-    private int getCharSize(char c, boolean isBold) {
+    private static int getCharSize(char c, boolean isBold) {
         String[] chars = new String[]{"~@", "1234567890ABCDEFGHJKLMNOPQRSTUVWXYZabcedjhmnopqrsuvxwyz/\\+=-_^?&%$#", "{}fk*\"<>()", "It[] ", "'l`", "!|:;,.i", "¨´"};
         for (int i = 0; i < chars.length; i++) {
             if (chars[i].contains(String.valueOf(c))) {
