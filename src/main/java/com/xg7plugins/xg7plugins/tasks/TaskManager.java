@@ -23,20 +23,26 @@ public class TaskManager {
 
     }
 
-    public addRepeatingTask(Plugin plugin, Runnable runnable, long delay) {
+    public void addRepeatingTask(Plugin plugin, Runnable runnable, long delay) {
         tasksRunning.putIfAbsent(plugin, new HashMap<>());
         tasksRunning.get(plugin).put(UUID.randomUUID(), executor.schedule(runnable, delay, TimeUnit.MILLISECONDS));
     }
-    public addCooldownTask(Plugin plugin, Runnable runnable, int seconds) {
+    public void addCooldownTask(Plugin plugin, Runnable runnable, int seconds) {
         tasksRunning.putIfAbsent(plugin, new HashMap<>());
 
         UUID taskId = UUID.randomUUID();
 
         tasksRunning.get(plugin).put(taskId, executor.schedule(runnable, seconds, TimeUnit.SECONDS));
+
         executor.submit(() -> {
             tasksRunning.get(plugin).get(taskId).cancel(false);
             tasksRunning.get(plugin).remove(taskId);
         });
+    }
+    public void cancelTask(Plugin plugin, UUID id) {
+        tasksRunning.get(plugin).get(id).cancel(false);
+        tasksRunning.get(plugin).remove(id);
+        tasksRunning.remove(plugin);
     }
 
 

@@ -1,8 +1,13 @@
 package com.xg7plugins.xg7plugins.utils.Text;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -13,10 +18,9 @@ import java.util.regex.Pattern;
 public class TextComponent {
 
     private static final Pattern pattern = Pattern.compile("\\[(CLICK|HOVER|CLICKHOVER)(.*?)](.*?)\\[/\\1]", Pattern.DOTALL);
-    Pattern value = Pattern.compile("value=(%?[^ ]+%?)");
-    Pattern textP = Pattern.compile("text=(%?[^ ]+%?)");
-    Pattern src = Pattern.compile("src=(%?[^ ]+%?)");
-    Pattern action = Pattern.compile("action=(%?[^ ]+%?)");
+    private static final Pattern value = Pattern.compile("value=%(.*?)%");
+    private static final Pattern textP = Pattern.compile("text=%(.*?)%");
+    private static final Pattern action = Pattern.compile("action=%(.*?)%");
 
 
     private String text;
@@ -26,80 +30,26 @@ public class TextComponent {
 
         String rawText = text.replaceAll("\\[(CLICK|HOVER|CLICKHOVER)(.*?)](.*?)\\[/\\1]", "$3");
 
-        if (rawText.startsWith("[CENTER] ")) rawText = Text.getCentralizedText(Text.PixelsSize.CHAT.getPixels(), rawText);
+        if (rawText.startsWith("[CENTER] ")) rawText = rawText.substring(9);
 
         this.text = text;
         this.rawText = rawText;
 
-        // Expressão regular para encontrar tags [CLICK], [HOVER], [CLICKHOVER] e capturar os atributos
-        Pattern pattern = Pattern.compile("\\[(CLICK|HOVER|CLICKHOVER)(.*?)\\](.*?)\\[/\\1\\]", Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(text);
-
-        List<String> parts = new ArrayList<>();
-        int lastIndex = 0;
-
-        // Separar a string entre as tags e capturar os atributos
-        while (matcher.find()) {
-            // Adicionar o texto antes da tag
-            if (lastIndex < matcher.start()) {
-                parts.add(text.substring(lastIndex, matcher.start()));
-            }
-
-            // Adicionar a tag completa
-            String fullTag = matcher.group(0);
-            parts.add(fullTag);
-
-            // Capturar os atributos dentro da tag
-            String tagName = matcher.group(1);
-            String attributes = matcher.group(2).trim();
-            String content = matcher.group(3).trim();
-
-            System.out.println("Tag: " + tagName);
-            System.out.println("Conteúdo: " + content);
-
-            // Expressão regular para capturar os atributos no formato chave=valor
-            Pattern attrPattern = Pattern.compile("(\\w+)=(%?[^ ]+%?)");
-            Matcher attrMatcher = attrPattern.matcher(attributes);
-
-            System.out.println("Atributos:");
-            while (attrMatcher.find()) {
-                String attrName = attrMatcher.group(1);
-                String attrValue = attrMatcher.group(2);
-                System.out.println("  " + attrName + ": " + attrValue);
-            }
-
-            // Atualizar o índice para o próximo segmento
-            lastIndex = matcher.end();
-        }
-
-        // Adicionar o texto restante após a última tag
-        if (lastIndex < text.length()) {
-            parts.add(text.substring(lastIndex));
-        }
-
-        System.out.println("\nSeparado em partes:");
-        for (String part : parts) {
-            System.out.println("\"" + part + "\"");
-        }
-
-        // Remover as tags para obter o texto sem elas
-        String textWithoutTags = text.replaceAll("\\[(CLICK|HOVER|CLICKHOVER)(.*?)\\](.*?)\\[/\\1\\]", "$3");
-
-        System.out.println("\nTexto sem as tags:");
-        System.out.println(textWithoutTags.trim());
-
-
     }
 
     public void send(Player player) {
+
+        String transletedRawText = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders(player, rawText) : rawText;
+
+        String transletedText = Text.getSpacesCentralized(Text.PixelsSize.CHAT.getPixels(), transletedRawText) + (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders(player, text) : text);
+
         if (XG7Plugins.getMinecraftVersion() < 8) {
-            player.sendMessage(rawText);
+            player.sendMessage(transletedRawText);
             return;
         }
 
-        Matcher matcher = pattern.matcher(text);
+        Matcher matcher = pattern.matcher(transletedText);
 
-        List<String> parts = new ArrayList<>();
         int lastIndex = 0;
 
         ComponentBuilder builder = new ComponentBuilder();
@@ -108,15 +58,11 @@ public class TextComponent {
 
             if (lastIndex < matcher.start()) {
 
-                String noTagText = text.substring(lastIndex, matcher.start());
+                String noTagText = transletedText.substring(lastIndex, matcher.start());
                 builder.append(noTagText);
-
-                parts.add(noTagText);
             }
 
 
-            String fullTag = matcher.group(0);
-            parts.add(fullTag);
 
             String tagName = matcher.group(1);
             String attributes = matcher.group(2).trim();
@@ -124,26 +70,60 @@ public class TextComponent {
 
             net.md_5.bungee.api.chat.TextComponent textComponent = new net.md_5.bungee.api.chat.TextComponent(content);
 
+            Matcher valMatch = value.matcher(attributes);
+            Matcher textMatch = textP.matcher(attributes);
+            Matcher actionMatch = action.matcher(attributes);
+
             switch (tagName) {
                 case "CLICK":
-                    textComponent.setClickEvent(textP.set);
+                    if (!valMatch.find() || !actionMatch.find()) {
+                        XG7Plugins.getInstance().getLog().warn("Click tag with content " + content + " have a syntax error!");
+                        return;
+                    }
+
+
+                    textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.valueOf(actionMatch.group(0)), valMatch.group(0)));
+
+                    builder.append(textComponent);
+                    continue;
+
+                case "HOVER":
+                    if (!textMatch.find()) {
+                        XG7Plugins.getInstance().getLog().warn("Hover tag with content " + content + " have a syntax error!");
+                        return;
+                    }
+
+
+                    textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.hover.content.Text(textMatch.group(0))));
+
+                    builder.append(textComponent);
+                    continue;
+                case "CLICKHOVER":
+                    if (!valMatch.find() || !actionMatch.find() || !textMatch.find()) {
+                        XG7Plugins.getInstance().getLog().warn("Click and hover tag with content " + content + " have a syntax error!");
+                        return;
+                    }
+
+
+                    textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.hover.content.Text(textMatch.group(0))));
+
+                    textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.valueOf(actionMatch.group(0)), valMatch.group(0)));
+
+                    builder.append(textComponent);
+                    continue;
+
+
             }
 
-
-
-            Pattern attrPattern = Pattern.compile("(\\w+)=(%?[^ ]+%?)");
-            Matcher attrMatcher = attrPattern.matcher(attributes);
-
-            System.out.println("Atributos:");
-            while (attrMatcher.find()) {
-                String attrName = attrMatcher.group(1);
-                String attrValue = attrMatcher.group(2);
-                System.out.println("  " + attrName + ": " + attrValue);
-            }
-
-            // Atualizar o índice para o próximo segmento
             lastIndex = matcher.end();
         }
+
+        if (lastIndex < text.length()) {
+            String noTagText = transletedText.substring(lastIndex, matcher.start());
+            builder.append(noTagText);
+        }
+
+        player.spigot().sendMessage(builder.create());
 
     }
 

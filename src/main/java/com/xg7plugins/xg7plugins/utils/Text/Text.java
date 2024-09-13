@@ -55,6 +55,10 @@ public class Text {
         return new com.xg7plugins.xg7plugins.utils.Text.TextComponent(text1.getText());
     }
 
+    public String getWithPlaceholders(String text, Player player) {
+        return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, text) : text;
+    }
+
 
     public void send(String text, CommandSender sender) {
         if (text == null || text.isEmpty()) return;
@@ -98,6 +102,12 @@ public class Text {
     }
 
     public static String getCentralizedText(int pixels, String text) {
+        return getCentralizedSpaces(pixels,text) + text;
+
+    }
+
+
+    public static String getSpacesCentralized(int pixels, String text) {
 
         if (!text.startsWith("[CENTER] ")) return text;
         text = text.substring(9);
@@ -162,10 +172,9 @@ public class Text {
             compensated += 4;
         }
 
-        return builder + text;
+        return builder.toString();
 
     }
-
     public static String getCentralizedSpaces(int pixels, String text) {
         return getCentralizedText(pixels,text).replace(text, "");
     }
@@ -217,6 +226,7 @@ public class Text {
 
         return 4;
     }
+
 
     @Getter
     public enum PixelsSize {

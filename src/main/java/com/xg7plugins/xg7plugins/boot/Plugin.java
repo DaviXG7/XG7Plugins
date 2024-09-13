@@ -8,6 +8,7 @@ import com.xg7plugins.xg7plugins.data.lang.LangManager;
 import com.xg7plugins.xg7plugins.events.Event;
 import com.xg7plugins.xg7plugins.utils.Log;
 import lombok.*;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,6 +30,13 @@ public abstract class Plugin extends JavaPlugin {
     private List<String> enabledWorlds = Collections.emptyList();
 
     public Plugin(String prefix) {
+
+        if (Bukkit.getPluginManager().getPlugin("XG7Plugins") == null) {
+
+            //Baixar
+
+        }
+
         this.prefix = prefix;
         this.commandManager = new CommandManager(this);
         this.configsManager = new Configs(this);
@@ -36,7 +44,9 @@ public abstract class Plugin extends JavaPlugin {
         this.log = new Log(this, false);
     }
 
-    public void sendMessage(CommandSender sender, String path) {}
+    public void sendMessage(CommandSender sender, String path) {
+
+    }
 
     @Override
     public abstract void onEnable();
