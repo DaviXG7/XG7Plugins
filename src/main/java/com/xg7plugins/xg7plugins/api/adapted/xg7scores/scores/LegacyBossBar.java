@@ -27,8 +27,8 @@ public class LegacyBossBar extends Score {
     private final HashMap<UUID, Integer> entities = new HashMap<>();
 
     @SneakyThrows
-    public LegacyBossBar(long delay, String[] text, String id, ScoreCondition condition, float healthPercent, Plugin plugin) {
-        super(delay, text, id, condition, plugin);
+    public LegacyBossBar(long delay, String[] text, String id, ScoreCondition condition, float healthPercent) {
+        super(delay, text, id, condition);
         this.healthPercent = healthPercent;
         XG7Plugins.getInstance().getScoreManager().registerScore(this);
     }
@@ -127,8 +127,8 @@ public class LegacyBossBar extends Score {
 
             ReflectionMethod aMethod = dataWatcher.getMethod("a", int.class, Object.class);
 
-            aMethod.invoke( 10, Text.format(getToUpdate()[getIndexUpdating()],plugin).getWithPlaceholders(player));
-            aMethod.invoke( 2, Text.format(getToUpdate()[getIndexUpdating()],plugin).getWithPlaceholders(player));
+            aMethod.invoke( 10, Text.format(getToUpdate()[getIndexUpdating()]).getWithPlaceholders(player));
+            aMethod.invoke( 2, Text.format(getToUpdate()[getIndexUpdating()]).getWithPlaceholders(player));
 
             ReflectionObject packetMetaData = NMSUtil.getNMSClass("PacketPlayOutEntityMetadata")
                     .getConstructor(int.class, dataWatcher.getObjectClass(),boolean.class)

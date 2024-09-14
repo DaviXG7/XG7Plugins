@@ -11,32 +11,32 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemBuilder extends BaseItemBuilder<ItemBuilder> {
 
-    public ItemBuilder(ItemStack stack,Plugin plugin) {
-        super(stack,plugin);
+    public ItemBuilder(ItemStack stack) {
+        super(stack);
     }
 
     @Contract("_ -> new")
-    public static @NotNull ItemBuilder from(Material material,Plugin plugin) {
-        return new ItemBuilder(new ItemStack(material),plugin);
+    public static @NotNull ItemBuilder from(Material material) {
+        return new ItemBuilder(new ItemStack(material));
     }
     @Contract("_ -> new")
-    public static @NotNull ItemBuilder from(@NotNull MaterialData material,Plugin plugin) {
-        return new ItemBuilder(material.toItemStack(),plugin);
+    public static @NotNull ItemBuilder from(@NotNull MaterialData material) {
+        return new ItemBuilder(material.toItemStack());
     }
     @Contract("_ -> new")
-    public static @NotNull ItemBuilder from(ItemStack itemStack,Plugin plugin) {
-        return new ItemBuilder(itemStack,plugin);
+    public static @NotNull ItemBuilder from(ItemStack itemStack) {
+        return new ItemBuilder(itemStack);
     }
-    public static <B extends BaseItemBuilder<B>> B from(@NotNull String material, Plugin plugin) {
+    public static <B extends BaseItemBuilder<B>> B from(@NotNull String material) {
 
-        if (material.startsWith("eyJ0")) return (B) new SkullItemBuilder(plugin).setValue(material);
-        if (material.equals("THIS_PLAYER")) return (B) new SkullItemBuilder(plugin).renderSkullPlayer();
+        if (material.startsWith("eyJ0")) return (B) new SkullItemBuilder().setValue(material);
+        if (material.equals("THIS_PLAYER")) return (B) new SkullItemBuilder().renderSkullPlayer();
         if (material.split(", ").length == 2) {
             String[] args = material.split(", ");
-            return (B) from(new MaterialData(XMaterial.valueOf(args[0]).parseMaterial(), Byte.parseByte(args[0])),plugin);
+            return (B) from(new MaterialData(XMaterial.valueOf(args[0]).parseMaterial(), Byte.parseByte(args[0])));
         }
 
-        return (B) from(XMaterial.valueOf(material).parseItem(),plugin);
+        return (B) from(XMaterial.valueOf(material).parseItem());
     }
 
 }

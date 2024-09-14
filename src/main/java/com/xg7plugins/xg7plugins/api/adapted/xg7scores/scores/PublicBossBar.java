@@ -16,8 +16,8 @@ public class PublicBossBar extends Score {
     
     private BossBar bossBar;
     
-    public PublicBossBar(long delay, String[] title, String id, ScoreCondition condition, BarColor color, BarStyle style, double progress, Plugin plugin) {
-        super(delay, title, id, condition, plugin);
+    public PublicBossBar(long delay, String[] title, String id, ScoreCondition condition, BarColor color, BarStyle style, double progress) {
+        super(delay, title, id, condition);
 
         bossBar = Bukkit.createBossBar(title[0],color,style);
         bossBar.setProgress(progress);
@@ -42,7 +42,7 @@ public class PublicBossBar extends Score {
     @Override
     public void update() {
         for (Player player : super.getPlayers()) {
-            bossBar.setTitle(Text.format(getToUpdate()[getIndexUpdating()],plugin).getText());
+            bossBar.setTitle(Text.format(getToUpdate()[getIndexUpdating()]).getText());
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.xg7plugins.xg7plugins.api.adapted.xg7scores.scores;
 
-import com.xg7plugins.xg7entities.api.XG7Scores;
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.api.adapted.xg7scores.*;
 import com.xg7plugins.xg7plugins.boot.Plugin;
@@ -9,10 +8,7 @@ import com.xg7plugins.xg7plugins.utils.reflection.NMSUtil;
 import com.xg7plugins.xg7plugins.utils.reflection.PlayerNMS;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import lombok.SneakyThrows;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import java.lang.reflect.Field;
 
 public class Tablist extends Score {
 
@@ -23,8 +19,8 @@ public class Tablist extends Score {
     private String playerPrefix;
     private String playerSuffix;
 
-    public Tablist(long delay, String[] header, String[] footer, String playerPrefix, String playerSuffix, String id, ScoreCondition condition, Plugin plugin) {
-        super(delay, header.length > footer.length ? header : footer, id, condition, plugin);
+    public Tablist(long delay, String[] header, String[] footer, String playerPrefix, String playerSuffix, String id, ScoreCondition condition) {
+        super(delay, header.length > footer.length ? header : footer, id, condition);
         if (XG7Plugins.getMinecraftVersion() < 8) throw new RuntimeException("This version doesn't support Tablist");
         this.header = header;
         this.footer = footer;
@@ -36,11 +32,11 @@ public class Tablist extends Score {
     @Override
     public void update() {
         for (Player player : super.getPlayers()) {
-            player.setPlayerListName(Text.format(playerPrefix,plugin).getWithPlaceholders(player) + player.getName() + Text.format(playerSuffix,plugin).getWithPlaceholders(player));
+            player.setPlayerListName(Text.format(playerPrefix).getWithPlaceholders(player) + player.getName() + Text.format(playerSuffix).getWithPlaceholders(player));
             String headerl = header.length <= super.getIndexUpdating() ? header[header.length - 1] : header[super.getIndexUpdating()];
             String footerl = footer.length <= super.getIndexUpdating() ? footer[footer.length - 1] : footer[super.getIndexUpdating()];
 
-            send(player, Text.format(headerl, plugin).getText(), Text.format(footerl, plugin).getText());
+            send(player, Text.format(headerl).getText(), Text.format(footerl).getText());
         }
     }
 

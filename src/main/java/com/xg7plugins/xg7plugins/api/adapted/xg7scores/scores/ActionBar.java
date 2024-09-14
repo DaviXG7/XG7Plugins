@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 
 public class ActionBar extends Score {
 
-    public ActionBar(long delay, String[] text, String id, ScoreCondition condition, Plugin plugin) {
-        super(delay, text, id, condition,plugin);
+    public ActionBar(long delay, String[] text, String id, ScoreCondition condition) {
+        super(delay, text, id, condition);
         if (XG7Plugins.getMinecraftVersion() < 8) throw new RuntimeException("This version doesn't support ActionBar");
         XG7Plugins.getInstance().getScoreManager().registerScore(this);
     }
@@ -18,7 +18,7 @@ public class ActionBar extends Score {
     public void update() {
         for (Player player : super.getPlayers()) {
             if (XG7Plugins.getInstance().getScoreManager().getSendActionBlackList().contains(player.getUniqueId())) continue;
-            Text.format(super.getToUpdate()[super.getIndexUpdating()],plugin).sendScoreActionBar(player);
+            Text.format(super.getToUpdate()[super.getIndexUpdating()]).sendScoreActionBar(player);
         }
     }
 

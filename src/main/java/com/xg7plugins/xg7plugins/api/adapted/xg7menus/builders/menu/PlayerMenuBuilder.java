@@ -12,9 +12,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PlayerMenuBuilder extends BaseMenuBuilder<PlayerMenuBuilder> {
-    public PlayerMenuBuilder(Plugin plugin) {
-        super(plugin);
-    }
 
     @Override
     public PlayerMenu build(Player player) {
@@ -31,6 +28,6 @@ public class PlayerMenuBuilder extends BaseMenuBuilder<PlayerMenuBuilder> {
                                     return builder.setPlaceHolders(player).toItemStack();
                                 }
 
-                        )), clickEventMap, allowedPermissions, player,plugin);
+                        )), clickEventMap, allowedPermissions, player);
     }
 }

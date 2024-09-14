@@ -23,8 +23,8 @@ public class TextComponent {
     private static final Pattern action = Pattern.compile("action=%(.*?)%");
 
 
-    private String text;
-    private String rawText;
+    private final String text;
+    private final String rawText;
 
     public TextComponent(String text) {
 

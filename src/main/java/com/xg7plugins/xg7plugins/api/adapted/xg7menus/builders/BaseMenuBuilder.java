@@ -19,12 +19,6 @@ import java.util.function.Consumer;
 
 public abstract class BaseMenuBuilder<B extends BaseMenuBuilder<B>> {
 
-    protected Plugin plugin;
-
-    public BaseMenuBuilder(Plugin plugin) {
-        this.plugin = plugin;
-    }
-
     protected Map<Integer, BaseItemBuilder<?>> items = new HashMap<>();
     protected Map<Integer,Consumer<ClickEvent>> clickEventMap = new HashMap<>();
     protected Consumer<ClickEvent> defaultClickEvent;
@@ -67,17 +61,17 @@ public abstract class BaseMenuBuilder<B extends BaseMenuBuilder<B>> {
     }
     public abstract <T extends BaseMenu> T build(Player player);
 
-    public static @NotNull MenuBuilder gui(Plugin plugin) {
-        return new MenuBuilder(plugin);
+    public static @NotNull MenuBuilder gui() {
+        return new MenuBuilder();
     }
-    public static @NotNull StorageMenuBuilder storage(Plugin plugin) {
-        return new StorageMenuBuilder(plugin);
+    public static @NotNull StorageMenuBuilder storage() {
+        return new StorageMenuBuilder();
     }
-    public static @NotNull PageMenuBuilder page(Plugin plugin) {
-        return new PageMenuBuilder(plugin);
+    public static @NotNull PageMenuBuilder page() {
+        return new PageMenuBuilder();
     }
-    public static @NotNull PlayerMenuBuilder player(Plugin plugin) {
-        return new PlayerMenuBuilder(plugin);
+    public static @NotNull PlayerMenuBuilder player() {
+        return new PlayerMenuBuilder();
     }
 
 

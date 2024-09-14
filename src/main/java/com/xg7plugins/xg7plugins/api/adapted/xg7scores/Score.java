@@ -1,6 +1,5 @@
 package com.xg7plugins.xg7plugins.api.adapted.xg7scores;
 
-import com.xg7plugins.xg7plugins.boot.Plugin;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 
@@ -18,15 +17,12 @@ public abstract class Score {
     private Set<Player> players;
     private ScoreCondition condition;
 
-    protected Plugin plugin;
-
-    public Score(long delay, String[] toUpdate, String id, ScoreCondition condition, Plugin plugin) {
+    public Score(long delay, String[] toUpdate, String id, ScoreCondition condition) {
         this.delay = delay;
         this.toUpdate = toUpdate;
         this.players = new HashSet<>();
         this.id = id;
         this.condition = condition;
-        this.plugin = plugin;
     }
 
     public void addPlayer(Player player) {

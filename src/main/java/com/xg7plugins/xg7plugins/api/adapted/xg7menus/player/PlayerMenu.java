@@ -1,5 +1,7 @@
 package com.xg7plugins.xg7plugins.api.adapted.xg7menus.player;
 
+import com.xg7plugins.xg7plugins.XG7Plugins;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.MenuManager;
 import com.xg7plugins.xg7plugins.api.adapted.xg7menus.MenuPermissions;
 import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.BaseMenu;
 import com.xg7plugins.xg7plugins.api.adapted.xg7menus.events.ClickEvent;
@@ -20,20 +22,20 @@ public class PlayerMenu extends BaseMenu {
 
     private final Map<Integer, ItemStack> oldItems = new HashMap<>();
 
-    public PlayerMenu(Consumer<ClickEvent> defaultClickEvent, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clickEvents, EnumSet<MenuPermissions> permissions, Player player, Plugin plugin) {
-        super(defaultClickEvent, openEvent, closeEvent, items, clickEvents,permissions,player,plugin);
+    public PlayerMenu(Consumer<ClickEvent> defaultClickEvent, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clickEvents, EnumSet<MenuPermissions> permissions, Player player) {
+        super(defaultClickEvent, openEvent, closeEvent, items, clickEvents,permissions,player);
     }
     public void give() {
         IntStream.range(0, player.getInventory().getSize()).filter(i -> player.getInventory().getItem(i) != null).forEach(i -> oldItems.put(i, player.getInventory().getItem(i)));
         player.getInventory().clear();
         items.forEach((key, value) -> player.getInventory().setItem(key, value));
-        plugin.getMenuManager().getPlayerMenuMap().put(player.getUniqueId(),this);
+        XG7Plugins.getInstance().getMenuManager().getPlayerMenuMap().put(player.getUniqueId(),this);
     }
     public void clear() {
         player.getInventory().clear();
         oldItems.forEach((key, value) -> player.getInventory().setItem(key, value));
         oldItems.clear();
-        plugin.getMenuManager().getPlayerMenuMap().remove(player.getUniqueId());
+        XG7Plugins.getInstance().getMenuManager().getPlayerMenuMap().remove(player.getUniqueId());
     }
 
     public void setItem(int slot, ItemStack item) {

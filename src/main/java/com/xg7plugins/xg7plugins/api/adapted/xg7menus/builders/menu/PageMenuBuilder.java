@@ -7,7 +7,6 @@ import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.BaseMenuBuilder;
 import com.xg7plugins.xg7plugins.api.adapted.xg7menus.gui.ItemsPageMenu;
 import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.item.ItemBuilder;
 import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.item.SkullItemBuilder;
-import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -32,10 +31,6 @@ public class PageMenuBuilder extends BaseMenuBuilder<PageMenuBuilder> {
     private Slot initSlot;
     private Slot finalSlot;
     private boolean keepSavingPageIndex = false;
-
-    public PageMenuBuilder(Plugin plugin) {
-        super(plugin);
-    }
 
     public PageMenuBuilder title(String title) {
         this.title = title;
@@ -110,7 +105,7 @@ public class PageMenuBuilder extends BaseMenuBuilder<PageMenuBuilder> {
                         )
                 );
 
-        ItemsPageMenu menu = type == null ? new ItemsPageMenu(Text.format(title,super.plugin).getWithPlaceholders(player), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,pageItems,keepSavingPageIndex,plugin) : new ItemsPageMenu(Text.format(title,super.plugin).getWithPlaceholders(player), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,pageItems,keepSavingPageIndex,plugin);
+        ItemsPageMenu menu = type == null ? new ItemsPageMenu(Text.format(title).getWithPlaceholders(player), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,pageItems,keepSavingPageIndex) : new ItemsPageMenu(Text.format(title).getWithPlaceholders(player), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,pageItems,keepSavingPageIndex);
         return menu;
     }
 }

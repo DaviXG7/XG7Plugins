@@ -47,8 +47,25 @@ public class Text {
         this.text = ChatColor.translateAlternateColorCodes('&', text.replace("[PREFIX]", plugin.getCustomPrefix()));
     }
 
+    public Text(String text) {
+        if (XG7Plugins.getMinecraftVersion() >= 16) {
+            text = applyGradients();
+            Matcher matcher = HEX_PATTERN.matcher(text);
+            while (matcher.find()) {
+                String color = text.substring(matcher.start(), matcher.end());
+                text = text.replace(color, net.md_5.bungee.api.ChatColor.of(color.substring(1)) + "");
+                matcher = HEX_PATTERN.matcher(text);
+            }
+        }
+
+        this.text = ChatColor.translateAlternateColorCodes('&', text);
+    }
+
     public static Text format(String text, Plugin plugin) {
         return new Text(text,plugin);
+    }
+    public static Text format(String text) {
+        return new Text(text);
     }
     public static com.xg7plugins.xg7plugins.utils.Text.TextComponent fromConfig(Config config, String path) {
         Text text1 = new Text(config.get(path), config.getPlugin());
@@ -69,7 +86,7 @@ public class Text {
 
             text = text.replace("[PLAYER]", sender.getName());
             if (text.startsWith("[ACTION] ")) {
-                sendActionBar(transleted.substring(9), ((Player) sender));
+                sendActionBar(((Player) sender));
                 return;
             }
 

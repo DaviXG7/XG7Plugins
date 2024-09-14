@@ -21,10 +21,6 @@ public class MenuBuilder extends BaseMenuBuilder<MenuBuilder> {
     protected int size;
     protected InventoryType type;
 
-    public MenuBuilder(Plugin plugin) {
-        super(plugin);
-    }
-
     public MenuBuilder title(String title) {
         this.title = title;
         return this;
@@ -63,7 +59,7 @@ public class MenuBuilder extends BaseMenuBuilder<MenuBuilder> {
                         )
         );
 
-        Menu menu = type == null ? new Menu(Text.format(title,plugin).getWithPlaceholders(player), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,plugin) : new Menu(Text.format(title,plugin).getWithPlaceholders(player), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,plugin);
+        Menu menu = type == null ? new Menu(Text.format(title).getWithPlaceholders(player), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player) : new Menu(Text.format(title).getWithPlaceholders(player), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player);
         return menu;
     }
 }

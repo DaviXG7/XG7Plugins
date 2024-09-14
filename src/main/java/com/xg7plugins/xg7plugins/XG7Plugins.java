@@ -1,5 +1,8 @@
 package com.xg7plugins.xg7plugins;
 
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.MenuManager;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.listeners.MenuListener;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.listeners.PlayerMenuListener;
 import com.xg7plugins.xg7plugins.api.adapted.xg7scores.ScoreManager;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.commands.interfaces.ICommand;
@@ -34,6 +37,7 @@ public final class XG7Plugins extends Plugin {
     private TaskManager taskManager;
     private ScoreManager scoreManager;
     private Object packetEventManager;
+    private MenuManager menuManager;
 
     private final HashMap<String, Plugin> plugins = new HashMap<>();
 
@@ -48,6 +52,7 @@ public final class XG7Plugins extends Plugin {
         this.taskManager = new TaskManager(this);
         this.scoreManager = new ScoreManager(this);
         this.eventManager.registerPlugin(this);
+        this.menuManager = new MenuManager(this);
         this.packetEventManager = minecraftVersion < 8 ? new PacketEventManager1_7() : new PacketEventManager();
         if (getConfigsManager().getConfig("config").get("prefix") != null) this.setCustomPrefix(getConfigsManager().getConfig("config").get("prefix"));
     }
@@ -75,7 +80,7 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public List<Event> getEvents() {
-        return Arrays.asList(new InicializePacketEvents());
+        return Arrays.asList(new InicializePacketEvents(), new PlayerMenuListener(menuManager), new MenuListener());
     }
 
     @Override

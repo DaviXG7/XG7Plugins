@@ -23,13 +23,13 @@ public class Menu extends BaseMenu implements InventoryHolder {
 
     protected Inventory inventory;
 
-    public Menu(String title, int size, Map<Integer, ItemStack> items, Map<Integer,Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Plugin plugin) {
-        super(defaultClick,openEvent,closeEvent,items,clicks,permissions,player,plugin);
+    public Menu(String title, int size, Map<Integer, ItemStack> items, Map<Integer,Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player) {
+        super(defaultClick,openEvent,closeEvent,items,clicks,permissions,player);
         this.inventory = Bukkit.createInventory(this, size, title);
         update();
     }
-    public Menu(String title, InventoryType type, Map<Integer, ItemStack> items, Map<Integer,Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Plugin plugin) {
-        super(defaultClick, openEvent, closeEvent, items, clicks, permissions, player,plugin);
+    public Menu(String title, InventoryType type, Map<Integer, ItemStack> items, Map<Integer,Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player) {
+        super(defaultClick, openEvent, closeEvent, items, clicks, permissions, player);
         this.inventory = Bukkit.createInventory(this, type, title);
         update();
     }

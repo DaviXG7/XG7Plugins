@@ -27,7 +27,6 @@ public abstract class Plugin extends JavaPlugin {
     private final CommandManager commandManager;
     private final LangManager langManager;
     private final Log log;
-    private final MenuManager menuManager;
 
     private String customPrefix;
     private List<String> enabledWorlds = Collections.emptyList();
@@ -42,7 +41,6 @@ public abstract class Plugin extends JavaPlugin {
 
         this.prefix = prefix;
         this.customPrefix = prefix;
-        this.menuManager = new MenuManager(this);
         this.commandManager = new CommandManager(this);
         this.configsManager = new Configs(this);
         this.langManager = new LangManager(this);

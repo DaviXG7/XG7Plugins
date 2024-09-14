@@ -32,15 +32,13 @@ import java.util.stream.Collectors;
 
 public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
 
-    protected Plugin plugin;
 
     protected ItemStack itemStack;
     @Getter
     private Consumer<ClickEvent> event;
 
-    public BaseItemBuilder(ItemStack stack, Plugin plugin) {
+    public BaseItemBuilder(ItemStack stack) {
         this.itemStack = stack;
-        this.plugin = plugin;
     }
     public B setAmount(int amount) {
         this.itemStack.setAmount(amount);
@@ -68,13 +66,13 @@ public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
     }
     public B lore(@NotNull List<String> lore) {
         ItemMeta meta = this.itemStack.getItemMeta();
-        meta.setLore(lore.stream().map(text -> Text.format(text,plugin).getText()).collect(Collectors.toList()));
+        meta.setLore(lore.stream().map(text -> Text.format(text).getText()).collect(Collectors.toList()));
         meta(meta);
         return (B) this;
     }
     public B name(String name) {
         ItemMeta meta = this.itemStack.getItemMeta();
-        meta.setDisplayName(Text.format(name,plugin).getText());
+        meta.setDisplayName(Text.format(name).getText());
         meta(meta);
         return (B) this;
     }
@@ -109,8 +107,8 @@ public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
     }
     public B setPlaceHolders(Player player) {
         if (itemStack.getItemMeta() == null) return (B) this;
-        if (itemStack.getItemMeta().getDisplayName() != null) name(Text.format(itemStack.getItemMeta().getDisplayName(),plugin).getWithPlaceholders(player));
-        if (itemStack.getItemMeta().getLore() != null) lore(itemStack.getItemMeta().getLore().stream().map(l -> Text.format(l,plugin).getWithPlaceholders(player)).collect(Collectors.toList()));
+        if (itemStack.getItemMeta().getDisplayName() != null) name(Text.format(itemStack.getItemMeta().getDisplayName()).getWithPlaceholders(player));
+        if (itemStack.getItemMeta().getLore() != null) lore(itemStack.getItemMeta().getLore().stream().map(l -> Text.format(l).getWithPlaceholders(player)).collect(Collectors.toList()));
         return (B) this;
     }
     @SneakyThrows
@@ -153,9 +151,11 @@ public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
         }
         return null;
     }
+
     public ItemStack toItemStack() {
         return this.itemStack;
     }
+
     public static BaseItemBuilder chose(boolean chose, BaseItemBuilder item1, BaseItemBuilder item2) {
         return chose ? item1 : item2;
     }

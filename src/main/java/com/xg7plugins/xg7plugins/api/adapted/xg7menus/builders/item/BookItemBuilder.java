@@ -1,5 +1,6 @@
 package com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.item;
 
+import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.BaseItemBuilder;
 import com.xg7plugins.xg7plugins.api.adapted.xg7menus.MenuException;
 import com.xg7plugins.xg7plugins.boot.Plugin;
@@ -19,27 +20,27 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.NotNull;
 
 public class BookItemBuilder extends BaseItemBuilder<BookItemBuilder> {
-    public BookItemBuilder(Plugin plugin) {
-        super(new ItemStack(Material.WRITTEN_BOOK),plugin);
+    public BookItemBuilder() {
+        super(new ItemStack(Material.WRITTEN_BOOK));
         title("Blank");
         author("None");
     }
-    public BookItemBuilder(ItemStack book, Plugin plugin) {
-        super(book,plugin);
+    public BookItemBuilder(ItemStack book) {
+        super(book);
         title("Blank");
         author("None");
     }
 
-    public static @NotNull BookItemBuilder from(@NotNull ItemStack book,Plugin plugin) {
+    public static @NotNull BookItemBuilder from(@NotNull ItemStack book) {
         if (!book.getType().equals(Material.WRITTEN_BOOK)) throw new MenuException("This item isn't a writable book!");
-        return new BookItemBuilder(book,plugin);
+        return new BookItemBuilder(book);
     }
-    public static @NotNull BookItemBuilder builder(Plugin plugin) {
-        return new BookItemBuilder(plugin);
+    public static @NotNull BookItemBuilder builder() {
+        return new BookItemBuilder();
     }
     public BookItemBuilder title(String title) {
         BookMeta meta = (BookMeta) this.itemStack.getItemMeta();
-        meta.setTitle(Text.format(title,plugin).getText());
+        meta.setTitle(Text.format(title).getText());
         super.meta(meta);
         return this;
     }
@@ -51,7 +52,7 @@ public class BookItemBuilder extends BaseItemBuilder<BookItemBuilder> {
     }
     public BookItemBuilder addPage(String text) {
         BookMeta meta = (BookMeta) this.itemStack.getItemMeta();
-        meta.addPage(Text.format(text,super.plugin).getText());
+        meta.addPage(Text.format(text).getText());
         super.meta(meta);
         return this;
     }
@@ -64,7 +65,7 @@ public class BookItemBuilder extends BaseItemBuilder<BookItemBuilder> {
             return this;
         } catch (Exception ignored) {
             if (Integer.parseInt(Bukkit.getServer().getVersion().split("\\.")[1].replace(")", "")) < 8) {
-                plugin.getLog().warn("Books with base component is not supported on this version!");
+                XG7Plugins.getInstance().getLog().warn("Books with base component is not supported on this version!");
                 return this;
             }
         }
@@ -81,7 +82,7 @@ public class BookItemBuilder extends BaseItemBuilder<BookItemBuilder> {
         }
 
         if (Integer.parseInt(Bukkit.getServer().getVersion().split("\\.")[1].replace(")", "")) < 8) {
-            plugin.getLog().warn("Books is not supported on version under of 1.8!");
+            XG7Plugins.getInstance().getLog().warn("Books is not supported on version under of 1.8!");
             return;
         }
 

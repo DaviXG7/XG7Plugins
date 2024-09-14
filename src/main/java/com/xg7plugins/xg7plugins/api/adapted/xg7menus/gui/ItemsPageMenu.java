@@ -25,8 +25,8 @@ public class ItemsPageMenu extends Menu {
     private final int area;
     private final boolean keepSavingPageIndex;
 
-    public ItemsPageMenu(String title, int size, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Slot initSlot, Slot finalSlot, List<ItemBuilder> pageItems, boolean keepSavingPageIndex, Plugin plugin) {
-        super(title, size, items, clicks, defaultClick, openEvent, closeEvent, permissions, player,plugin);
+    public ItemsPageMenu(String title, int size, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Slot initSlot, Slot finalSlot, List<ItemBuilder> pageItems, boolean keepSavingPageIndex) {
+        super(title, size, items, clicks, defaultClick, openEvent, closeEvent, permissions, player);
         this.initSlot = initSlot;
         this.finalSlot = finalSlot;
         this.pageItems = pageItems;
@@ -34,8 +34,8 @@ public class ItemsPageMenu extends Menu {
         this.keepSavingPageIndex = keepSavingPageIndex;
     }
 
-    public ItemsPageMenu(String title, InventoryType type, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Slot initSlot, Slot finalSlot, List<ItemBuilder> pageItems, boolean keepSavingPageIndex, Plugin plugin) {
-        super(title, type, items, clicks, defaultClick, openEvent, closeEvent, permissions, player,plugin);
+    public ItemsPageMenu(String title, InventoryType type, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Slot initSlot, Slot finalSlot, List<ItemBuilder> pageItems, boolean keepSavingPageIndex) {
+        super(title, type, items, clicks, defaultClick, openEvent, closeEvent, permissions, player);
         this.initSlot = initSlot;
         this.finalSlot = finalSlot;
         this.pageItems = pageItems;
@@ -72,7 +72,7 @@ public class ItemsPageMenu extends Menu {
         for (int x = initSlot.getRow(); x <= finalSlot.getRow(); x++) {
             for (int y = initSlot.getColumn(); y <= finalSlot.getColumn(); y++) {
                 if (indexToAdd >= itemsToAdd.size()) {
-                    if (inventory.getItem(Slot.get(x,y)) != null) setItem(Slot.get(x,y), ItemBuilder.from(Material.AIR,plugin).toItemStack());
+                    if (inventory.getItem(Slot.get(x,y)) != null) setItem(Slot.get(x,y), ItemBuilder.from(Material.AIR).toItemStack());
                     continue;
                 }
                 setItem(Slot.get(x,y), itemsToAdd.get(indexToAdd).toItemStack());

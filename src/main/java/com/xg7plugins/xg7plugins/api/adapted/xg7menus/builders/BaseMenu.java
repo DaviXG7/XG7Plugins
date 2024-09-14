@@ -23,8 +23,6 @@ public abstract class BaseMenu {
     protected EnumSet<MenuPermissions> permissions;
     protected HumanEntity player;
 
-    protected Plugin plugin;
-
     public BaseMenu(
             Consumer<ClickEvent> defaultClickEvent,
             Consumer<MenuEvent> openEvent,
@@ -32,8 +30,7 @@ public abstract class BaseMenu {
             Map<Integer,ItemStack> items,
             Map<Integer,Consumer<ClickEvent>> clickEvents,
             EnumSet<MenuPermissions> permissions,
-            HumanEntity player,
-            Plugin plugin
+            HumanEntity player
     )
     {
         this.items = items;
@@ -43,7 +40,6 @@ public abstract class BaseMenu {
         this.closeEvent = closeEvent;
         this.permissions = permissions;
         this.player = player;
-        this.plugin = plugin;
     }
 
 }
