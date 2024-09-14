@@ -22,3 +22,5 @@ sql:
   username:
   password:
 
+
+example: "lang:[example.example]"

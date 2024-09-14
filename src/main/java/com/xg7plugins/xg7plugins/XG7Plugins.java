@@ -1,9 +1,9 @@
 package com.xg7plugins.xg7plugins;
 
-import com.xg7plugins.xg7plugins.api.adapted.xg7menus.MenuManager;
-import com.xg7plugins.xg7plugins.api.adapted.xg7menus.listeners.MenuListener;
-import com.xg7plugins.xg7plugins.api.adapted.xg7menus.listeners.PlayerMenuListener;
-import com.xg7plugins.xg7plugins.api.adapted.xg7scores.ScoreManager;
+import com.xg7plugins.xg7plugins.libs.xg7menus.MenuManager;
+import com.xg7plugins.xg7plugins.libs.xg7menus.listeners.MenuListener;
+import com.xg7plugins.xg7plugins.libs.xg7menus.listeners.PlayerMenuListener;
+import com.xg7plugins.xg7plugins.libs.xg7scores.ScoreManager;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.commands.interfaces.ICommand;
 import com.xg7plugins.xg7plugins.data.config.Config;

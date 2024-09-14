@@ -4,6 +4,7 @@ import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.data.config.Configs;
+import com.xg7plugins.xg7plugins.data.lang.LangEntity;
 import com.xg7plugins.xg7plugins.utils.Log;
 import com.xg7plugins.xg7plugins.utils.reflection.NMSUtil;
 import com.xg7plugins.xg7plugins.utils.reflection.PlayerNMS;
@@ -19,6 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
@@ -30,8 +32,10 @@ public class Text {
 
     private static final Pattern GRADIENT_PATTERN = Pattern.compile("\\[g#([0-9a-fA-F]{6})](.*?)\\[/g#([0-9a-fA-F]{6})]");
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
+    private static final Pattern LANG_PATTERN = Pattern.compile("lang:\\[(.*?)]");
 
     private String text;
+    private Plugin plugin;
 
     public Text(String text, Plugin plugin) {
         if (XG7Plugins.getMinecraftVersion() >= 16) {
@@ -47,32 +51,43 @@ public class Text {
         this.text = ChatColor.translateAlternateColorCodes('&', text.replace("[PREFIX]", plugin.getCustomPrefix()));
     }
 
-    public Text(String text) {
-        if (XG7Plugins.getMinecraftVersion() >= 16) {
-            text = applyGradients();
-            Matcher matcher = HEX_PATTERN.matcher(text);
-            while (matcher.find()) {
-                String color = text.substring(matcher.start(), matcher.end());
-                text = text.replace(color, net.md_5.bungee.api.ChatColor.of(color.substring(1)) + "");
-                matcher = HEX_PATTERN.matcher(text);
-            }
-        }
-
-        this.text = ChatColor.translateAlternateColorCodes('&', text);
-    }
-
     public static Text format(String text, Plugin plugin) {
         return new Text(text,plugin);
     }
-    public static Text format(String text) {
-        return new Text(text);
-    }
     public static com.xg7plugins.xg7plugins.utils.Text.TextComponent fromConfig(Config config, String path) {
         Text text1 = new Text(config.get(path), config.getPlugin());
-        return new com.xg7plugins.xg7plugins.utils.Text.TextComponent(text1.getText());
+        return new com.xg7plugins.xg7plugins.utils.Text.TextComponent(text1.getText(),config.getPlugin());
     }
 
     public String getWithPlaceholders(Player player) {
+
+        YamlConfiguration entity = this.plugin.getLangManager().getLangByPlayer(player.getUniqueId(),player.getLocale());
+
+        String textToTraslate = text;
+
+        Matcher matcher = LANG_PATTERN.matcher(textToTraslate);
+
+        while (matcher.find()) {
+            String lang = matcher.group(0);
+            textToTraslate = textToTraslate.replace(textToTraslate.substring(matcher.start(), matcher.end()), entity.getString(lang));
+        }
+
+
+        return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, textToTraslate) : textToTraslate;
+    }
+
+    public static String getWithPlaceholders(Plugin plugin, String text, Player player) {
+
+        YamlConfiguration entity = plugin.getLangManager().getLangByPlayer(player.getUniqueId(),player.getLocale());
+
+        Matcher matcher = LANG_PATTERN.matcher(text);
+
+        while (matcher.find()) {
+            String lang = matcher.group(0);
+            text = text.replace(text.substring(matcher.start(), matcher.end()), entity.getString(lang));
+        }
+
+
         return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, text) : text;
     }
 
@@ -82,7 +97,7 @@ public class Text {
 
         if (sender instanceof Player) {
 
-            String transleted = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, text) : text;
+            String transleted = getWithPlaceholders((Player) sender);
 
             text = text.replace("[PLAYER]", sender.getName());
             if (text.startsWith("[ACTION] ")) {
@@ -114,7 +129,7 @@ public class Text {
 
         if (XG7Plugins.getMinecraftVersion() < 8) return;
 
-        String finalText = text;
+        String finalText = getWithPlaceholders(player);
 
         if (text.startsWith("[ACTION] ")) {
             finalText = finalText.substring(9);
@@ -144,7 +159,7 @@ public class Text {
 
     public static String getSpacesCentralized(int pixels, String text) {
 
-        if (!text.startsWith("[CENTER] ")) return text;
+        if (!text.startsWith("[CENTER] ")) return "";
         text = text.substring(9);
 
         int textWidht = 0;

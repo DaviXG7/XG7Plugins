@@ -1,6 +1,7 @@
 package com.xg7plugins.xg7plugins.utils.Text;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -26,7 +27,9 @@ public class TextComponent {
     private final String text;
     private final String rawText;
 
-    public TextComponent(String text) {
+    private Plugin plugin;
+
+    public TextComponent(String text, Plugin plugin) {
 
         String rawText = text.replaceAll("\\[(CLICK|HOVER|CLICKHOVER)(.*?)](.*?)\\[/\\1]", "$3");
 
@@ -35,13 +38,15 @@ public class TextComponent {
         this.text = text;
         this.rawText = rawText;
 
+        this.plugin = plugin;
+
     }
 
     public void send(Player player) {
 
-        String transletedRawText = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders(player, rawText) : rawText;
+        String transletedRawText = Text.getWithPlaceholders(plugin,rawText,player);
 
-        String transletedText = Text.getSpacesCentralized(Text.PixelsSize.CHAT.getPixels(), transletedRawText) + (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders(player, text) : text);
+        String transletedText = Text.getSpacesCentralized(Text.PixelsSize.CHAT.getPixels(), transletedRawText) + Text.getWithPlaceholders(plugin,text,player);
 
         if (XG7Plugins.getMinecraftVersion() < 8) {
             player.sendMessage(transletedRawText);
@@ -61,8 +66,6 @@ public class TextComponent {
                 String noTagText = transletedText.substring(lastIndex, matcher.start());
                 builder.append(noTagText);
             }
-
-
 
             String tagName = matcher.group(1);
             String attributes = matcher.group(2).trim();

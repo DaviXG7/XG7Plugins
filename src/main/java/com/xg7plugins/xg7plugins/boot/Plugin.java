@@ -1,7 +1,5 @@
 package com.xg7plugins.xg7plugins.boot;
 
-import com.xg7plugins.xg7plugins.api.adapted.xg7menus.MenuManager;
-import com.xg7plugins.xg7plugins.api.adapted.xg7scores.ScoreManager;
 import com.xg7plugins.xg7plugins.commands.CommandManager;
 import com.xg7plugins.xg7plugins.commands.interfaces.ICommand;
 import com.xg7plugins.xg7plugins.data.config.Config;
@@ -45,10 +43,6 @@ public abstract class Plugin extends JavaPlugin {
         this.configsManager = new Configs(this);
         this.langManager = new LangManager(this);
         this.log = new Log(this, false);
-    }
-
-    public void sendMessage(CommandSender sender, String path) {
-
     }
 
     @Override
