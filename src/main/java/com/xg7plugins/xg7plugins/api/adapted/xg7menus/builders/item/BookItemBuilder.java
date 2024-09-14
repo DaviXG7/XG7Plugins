@@ -1,10 +1,12 @@
-package com.xg7plugins.xg7plugins.api.adapted.xg7menus.item;
+package com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.item;
 
-import com.xg7plugins.xg7menus.api.menus.MenuException;
-import com.xg7plugins.xg7menus.api.menus.builders.BaseItemBuilder;
-import com.xg7plugins.xg7menus.api.utils.Log;
-import com.xg7plugins.xg7menus.api.utils.NMSUtil;
-import com.xg7plugins.xg7menus.api.utils.Text;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.BaseItemBuilder;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.MenuException;
+import com.xg7plugins.xg7plugins.boot.Plugin;
+import com.xg7plugins.xg7plugins.utils.Text.Text;
+import com.xg7plugins.xg7plugins.utils.reflection.NMSUtil;
+import com.xg7plugins.xg7plugins.utils.reflection.PlayerNMS;
+import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.SneakyThrows;
@@ -14,33 +16,30 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class BookItemBuilder extends BaseItemBuilder<BookItemBuilder> {
-    public BookItemBuilder() {
-        super(new ItemStack(Material.WRITTEN_BOOK));
+    public BookItemBuilder(Plugin plugin) {
+        super(new ItemStack(Material.WRITTEN_BOOK),plugin);
         title("Blank");
         author("None");
     }
-    public BookItemBuilder(ItemStack book) {
-        super(book);
+    public BookItemBuilder(ItemStack book, Plugin plugin) {
+        super(book,plugin);
         title("Blank");
         author("None");
     }
 
-    @Contract("_ -> new")
-    public static @NotNull BookItemBuilder from(@NotNull ItemStack book) {
+    public static @NotNull BookItemBuilder from(@NotNull ItemStack book,Plugin plugin) {
         if (!book.getType().equals(Material.WRITTEN_BOOK)) throw new MenuException("This item isn't a writable book!");
-        return new BookItemBuilder(book);
+        return new BookItemBuilder(book,plugin);
     }
-    @Contract(" -> new")
-    public static @NotNull BookItemBuilder builder() {
-        return new BookItemBuilder();
+    public static @NotNull BookItemBuilder builder(Plugin plugin) {
+        return new BookItemBuilder(plugin);
     }
     public BookItemBuilder title(String title) {
         BookMeta meta = (BookMeta) this.itemStack.getItemMeta();
-        meta.setTitle(Text.format(title).getText());
+        meta.setTitle(Text.format(title,plugin).getText());
         super.meta(meta);
         return this;
     }
@@ -52,7 +51,7 @@ public class BookItemBuilder extends BaseItemBuilder<BookItemBuilder> {
     }
     public BookItemBuilder addPage(String text) {
         BookMeta meta = (BookMeta) this.itemStack.getItemMeta();
-        meta.addPage(Text.format(text).getText());
+        meta.addPage(Text.format(text,super.plugin).getText());
         super.meta(meta);
         return this;
     }
@@ -65,7 +64,7 @@ public class BookItemBuilder extends BaseItemBuilder<BookItemBuilder> {
             return this;
         } catch (Exception ignored) {
             if (Integer.parseInt(Bukkit.getServer().getVersion().split("\\.")[1].replace(")", "")) < 8) {
-                Log.warn("Books with base component is not supported on this version!");
+                plugin.getLog().warn("Books with base component is not supported on this version!");
                 return this;
             }
         }
@@ -82,7 +81,7 @@ public class BookItemBuilder extends BaseItemBuilder<BookItemBuilder> {
         }
 
         if (Integer.parseInt(Bukkit.getServer().getVersion().split("\\.")[1].replace(")", "")) < 8) {
-            Log.warn("Books is not supported on version under of 1.8!");
+            plugin.getLog().warn("Books is not supported on version under of 1.8!");
             return;
         }
 
@@ -94,16 +93,11 @@ public class BookItemBuilder extends BaseItemBuilder<BookItemBuilder> {
         buf.setByte(0, 0);
         buf.writerIndex(1);
 
-        Object packet = NMSUtil.getNMSClass("PacketPlayOutCustomPayload")
-                .getConstructor(
-                        String.class,
-                        NMSUtil.getNMSClass("PacketDataSerializer")
-                ).newInstance("MC|BOpen", NMSUtil.getNMSClass("PacketDataSerializer").getConstructor(ByteBuf.class).newInstance(buf));
-        Class<?> craftPlayerClass = NMSUtil.getCraftBukkitClass("entity.CraftPlayer");
-        Object cPlayer = NMSUtil.getCraftBukkitClass("entity.CraftPlayer").cast(player);
-        Object craftPlayerHandle = craftPlayerClass.getMethod("getHandle").invoke(cPlayer);
-        Object playerConnection = craftPlayerHandle.getClass().getField("playerConnection").get(craftPlayerHandle);
-        playerConnection.getClass().getMethod("sendPacket", NMSUtil.getNMSClass("Packet")).invoke(playerConnection, packet);
+        ReflectionObject packet = NMSUtil.getNMSClass("PacketPlayOutCustomPayload")
+                .getConstructor(String.class, NMSUtil.getNMSClass("PacketDataSerializer").getAClass())
+                .newInstance("MC|BOpen", NMSUtil.getNMSClass("PacketDataSerializer").getConstructor(ByteBuf.class).newInstance(buf).getObject());
+
+        PlayerNMS.cast(player).sendPacket(packet.getObject());
 
         player.getInventory().setItem(slot, old);
     }

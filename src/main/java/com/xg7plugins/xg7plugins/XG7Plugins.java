@@ -1,5 +1,6 @@
 package com.xg7plugins.xg7plugins;
 
+import com.xg7plugins.xg7plugins.api.adapted.xg7scores.ScoreManager;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.commands.interfaces.ICommand;
 import com.xg7plugins.xg7plugins.data.config.Config;
@@ -9,6 +10,7 @@ import com.xg7plugins.xg7plugins.events.bukkitevents.EventManager;
 import com.xg7plugins.xg7plugins.events.defaultevents.InicializePacketEvents;
 import com.xg7plugins.xg7plugins.events.packetevents.PacketEventManager;
 import com.xg7plugins.xg7plugins.events.packetevents.PacketEventManager1_7;
+import com.xg7plugins.xg7plugins.tasks.TaskManager;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,6 +31,8 @@ public final class XG7Plugins extends Plugin {
 
     private DBManager databaseManager;
     private EventManager eventManager;
+    private TaskManager taskManager;
+    private ScoreManager scoreManager;
     private Object packetEventManager;
 
     private final HashMap<String, Plugin> plugins = new HashMap<>();
@@ -41,6 +45,8 @@ public final class XG7Plugins extends Plugin {
     public void onEnable() {
         this.databaseManager = new DBManager(this);
         this.eventManager = new EventManager();
+        this.taskManager = new TaskManager(this);
+        this.scoreManager = new ScoreManager(this);
         this.eventManager.registerPlugin(this);
         this.packetEventManager = minecraftVersion < 8 ? new PacketEventManager1_7() : new PacketEventManager();
         if (getConfigsManager().getConfig("config").get("prefix") != null) this.setCustomPrefix(getConfigsManager().getConfig("config").get("prefix"));

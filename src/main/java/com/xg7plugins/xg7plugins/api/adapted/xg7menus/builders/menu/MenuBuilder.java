@@ -1,10 +1,11 @@
-package com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders;
+package com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.menu;
 
-import com.xg7plugins.xg7plugins.api.adapted.xg7menus.BaseItemBuilder;
-import com.xg7plugins.xg7plugins.api.adapted.xg7menus.BaseMenuBuilder;
 import com.xg7plugins.xg7plugins.api.adapted.xg7menus.MenuException;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.BaseItemBuilder;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.BaseMenuBuilder;
 import com.xg7plugins.xg7plugins.api.adapted.xg7menus.gui.Menu;
-import com.xg7plugins.xg7plugins.api.adapted.xg7menus.item.SkullItemBuilder;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.item.SkullItemBuilder;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -19,6 +20,10 @@ public class MenuBuilder extends BaseMenuBuilder<MenuBuilder> {
     protected String title;
     protected int size;
     protected InventoryType type;
+
+    public MenuBuilder(Plugin plugin) {
+        super(plugin);
+    }
 
     public MenuBuilder title(String title) {
         this.title = title;
@@ -58,7 +63,7 @@ public class MenuBuilder extends BaseMenuBuilder<MenuBuilder> {
                         )
         );
 
-        Menu menu = type == null ? new Menu(Text.format(title,null).setPlaceholders(player).getText(), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player) : new Menu(Text.format(title).setPlaceholders(player).getText(), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player);
+        Menu menu = type == null ? new Menu(Text.format(title,plugin).getWithPlaceholders(player), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,plugin) : new Menu(Text.format(title,plugin).getWithPlaceholders(player), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,plugin);
         return menu;
     }
 }

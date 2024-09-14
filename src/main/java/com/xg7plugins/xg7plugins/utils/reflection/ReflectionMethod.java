@@ -13,8 +13,8 @@ public class ReflectionMethod {
     private Method method;
 
     @SneakyThrows
-    public Object invoke(Object... args) {
-        return this.method.invoke(object, args);
+    public <T> T invoke(Object... args) {
+        return (T) this.method.invoke(object, args);
     }
     @SneakyThrows
     public ReflectionObject invokeToRObject(Object... args) {

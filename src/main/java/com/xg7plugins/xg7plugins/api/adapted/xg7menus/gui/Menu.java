@@ -1,10 +1,11 @@
 package com.xg7plugins.xg7plugins.api.adapted.xg7menus.gui;
 
-import com.xg7plugins.xg7menus.api.menus.BaseMenu;
-import com.xg7plugins.xg7menus.api.menus.MenuPermissions;
-import com.xg7plugins.xg7menus.api.menus.builders.item.ItemBuilder;
-import com.xg7plugins.xg7menus.api.menus.events.ClickEvent;
-import com.xg7plugins.xg7menus.api.menus.events.MenuEvent;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.MenuPermissions;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.BaseMenu;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.events.ClickEvent;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.events.MenuEvent;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.item.ItemBuilder;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
@@ -22,13 +23,13 @@ public class Menu extends BaseMenu implements InventoryHolder {
 
     protected Inventory inventory;
 
-    public Menu(String title, int size, Map<Integer, ItemStack> items, Map<Integer,Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player) {
-        super(defaultClick,openEvent,closeEvent,items,clicks,permissions,player);
+    public Menu(String title, int size, Map<Integer, ItemStack> items, Map<Integer,Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Plugin plugin) {
+        super(defaultClick,openEvent,closeEvent,items,clicks,permissions,player,plugin);
         this.inventory = Bukkit.createInventory(this, size, title);
         update();
     }
-    public Menu(String title, InventoryType type, Map<Integer, ItemStack> items, Map<Integer,Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player) {
-        super(defaultClick, openEvent, closeEvent, items, clicks, permissions, player);
+    public Menu(String title, InventoryType type, Map<Integer, ItemStack> items, Map<Integer,Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Plugin plugin) {
+        super(defaultClick, openEvent, closeEvent, items, clicks, permissions, player,plugin);
         this.inventory = Bukkit.createInventory(this, type, title);
         update();
     }

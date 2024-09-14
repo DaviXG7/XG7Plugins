@@ -1,5 +1,7 @@
 package com.xg7plugins.xg7plugins.boot;
 
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.MenuManager;
+import com.xg7plugins.xg7plugins.api.adapted.xg7scores.ScoreManager;
 import com.xg7plugins.xg7plugins.commands.CommandManager;
 import com.xg7plugins.xg7plugins.commands.interfaces.ICommand;
 import com.xg7plugins.xg7plugins.data.config.Config;
@@ -25,8 +27,9 @@ public abstract class Plugin extends JavaPlugin {
     private final CommandManager commandManager;
     private final LangManager langManager;
     private final Log log;
+    private final MenuManager menuManager;
 
-    private String customPrefix = prefix;
+    private String customPrefix;
     private List<String> enabledWorlds = Collections.emptyList();
 
     public Plugin(String prefix) {
@@ -38,6 +41,8 @@ public abstract class Plugin extends JavaPlugin {
         }
 
         this.prefix = prefix;
+        this.customPrefix = prefix;
+        this.menuManager = new MenuManager(this);
         this.commandManager = new CommandManager(this);
         this.configsManager = new Configs(this);
         this.langManager = new LangManager(this);

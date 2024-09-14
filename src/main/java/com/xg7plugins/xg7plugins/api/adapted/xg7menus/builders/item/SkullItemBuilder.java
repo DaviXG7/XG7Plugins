@@ -1,4 +1,4 @@
-package com.xg7plugins.xg7plugins.api.adapted.xg7menus.item;
+package com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.item;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -6,9 +6,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.xg7plugins.xg7menus.api.menus.builders.BaseItemBuilder;
-import com.xg7plugins.xg7menus.api.utils.Log;
-import com.xg7plugins.xg7menus.api.utils.XSeries.XMaterial;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.BaseItemBuilder;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.XSeries.XMaterial;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -25,11 +25,11 @@ public class SkullItemBuilder extends BaseItemBuilder<SkullItemBuilder> {
 
     private static final Cache<String, ItemMeta> cachedSkulls = Caffeine.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).build();
 
-    public SkullItemBuilder() {
-        super(XMaterial.PLAYER_HEAD.parseItem());
+    public SkullItemBuilder(Plugin plugin) {
+        super(XMaterial.PLAYER_HEAD.parseItem(),plugin);
     }
-    public static SkullItemBuilder builder() {
-        return new SkullItemBuilder();
+    public static SkullItemBuilder builder(Plugin plugin) {
+        return new SkullItemBuilder(plugin);
     }
     public SkullItemBuilder renderSkullPlayer() {
         setOwner("THIS_PLAYER");
@@ -102,7 +102,7 @@ public class SkullItemBuilder extends BaseItemBuilder<SkullItemBuilder> {
 
 
             if (conn.getResponseCode() != 200) {
-                Log.severe("Erro ao colocar valor de player na skin da cabeça!");
+                plugin.getLog().severe("Erro ao colocar valor de player na skin da cabeça!");
                 return this;
             }
             BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));

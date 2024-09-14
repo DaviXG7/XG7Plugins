@@ -23,11 +23,13 @@ public class TaskManager {
 
     }
 
-    public void addRepeatingTask(Plugin plugin, Runnable runnable, long delay) {
+    public UUID addRepeatingTask(Plugin plugin, Runnable runnable, long delay) {
+        UUID taskId = UUID.randomUUID();
         tasksRunning.putIfAbsent(plugin, new HashMap<>());
-        tasksRunning.get(plugin).put(UUID.randomUUID(), executor.schedule(runnable, delay, TimeUnit.MILLISECONDS));
+        tasksRunning.get(plugin).put(taskId, executor.schedule(runnable, delay, TimeUnit.MILLISECONDS));
+        return taskId;
     }
-    public void addCooldownTask(Plugin plugin, Runnable runnable, int seconds) {
+    public UUID addCooldownTask(Plugin plugin, Runnable runnable, int seconds) {
         tasksRunning.putIfAbsent(plugin, new HashMap<>());
 
         UUID taskId = UUID.randomUUID();
@@ -38,6 +40,7 @@ public class TaskManager {
             tasksRunning.get(plugin).get(taskId).cancel(false);
             tasksRunning.get(plugin).remove(taskId);
         });
+        return taskId;
     }
     public void cancelTask(Plugin plugin, UUID id) {
         tasksRunning.get(plugin).get(id).cancel(false);

@@ -1,9 +1,10 @@
-package com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders;
+package com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.menu;
 
-import com.xg7plugins.xg7menus.api.menus.builders.BaseItemBuilder;
-import com.xg7plugins.xg7menus.api.menus.builders.BaseMenuBuilder;
-import com.xg7plugins.xg7menus.api.menus.builders.item.SkullItemBuilder;
-import com.xg7plugins.xg7menus.api.menus.player.PlayerMenu;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.BaseItemBuilder;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.BaseMenuBuilder;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.item.SkullItemBuilder;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.player.PlayerMenu;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -11,9 +12,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PlayerMenuBuilder extends BaseMenuBuilder<PlayerMenuBuilder> {
+    public PlayerMenuBuilder(Plugin plugin) {
+        super(plugin);
+    }
+
     @Override
     public PlayerMenu build(Player player) {
-        return new PlayerMenu(defaultClickEvent,openMenuEvent,closeMenuEvent,items.entrySet().stream().collect(
+        return new PlayerMenu(defaultClickEvent,openMenuEvent,closeMenuEvent,items.entrySet().stream()
+                .collect(
                         Collectors.toMap(
                                 Map.Entry::getKey,
                                 entry -> {
@@ -25,6 +31,6 @@ public class PlayerMenuBuilder extends BaseMenuBuilder<PlayerMenuBuilder> {
                                     return builder.setPlaceHolders(player).toItemStack();
                                 }
 
-                        )), clickEventMap, allowedPermissions, player);
+                        )), clickEventMap, allowedPermissions, player,plugin);
     }
 }

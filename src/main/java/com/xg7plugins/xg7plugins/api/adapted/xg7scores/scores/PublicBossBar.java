@@ -1,8 +1,10 @@
 package com.xg7plugins.xg7plugins.api.adapted.xg7scores.scores;
 
+import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.api.adapted.xg7scores.Score;
 import com.xg7plugins.xg7plugins.api.adapted.xg7scores.ScoreCondition;
-import com.xg7plugins.xg7plugins.api.adapted.xg7scores.ScoreManager;
+import com.xg7plugins.xg7plugins.boot.Plugin;
+import com.xg7plugins.xg7plugins.utils.Text.Text;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -14,12 +16,12 @@ public class PublicBossBar extends Score {
     
     private BossBar bossBar;
     
-    public PublicBossBar(long delay, String[] title, String id, ScoreCondition condition, BarColor color, BarStyle style, double progress) {
-        super(delay, title, id, condition);
+    public PublicBossBar(long delay, String[] title, String id, ScoreCondition condition, BarColor color, BarStyle style, double progress, Plugin plugin) {
+        super(delay, title, id, condition, plugin);
 
         bossBar = Bukkit.createBossBar(title[0],color,style);
         bossBar.setProgress(progress);
-        ScoreManager.registerScore(this);
+        XG7Plugins.getInstance().getScoreManager().registerScore(this);
     }
 
     @SneakyThrows
@@ -40,7 +42,7 @@ public class PublicBossBar extends Score {
     @Override
     public void update() {
         for (Player player : super.getPlayers()) {
-            bossBar.setTitle(Text.format(getToUpdate()[getIndexUpdating()]).getText());
+            bossBar.setTitle(Text.format(getToUpdate()[getIndexUpdating()],plugin).getText());
         }
     }
 }

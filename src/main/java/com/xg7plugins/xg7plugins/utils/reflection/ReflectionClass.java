@@ -40,6 +40,11 @@ public class ReflectionClass {
         return new ReflectionClass(clazz);
     }
 
+    @SneakyThrows
+    public ReflectionMethod getMethod(String name, Class<?>... parameterTypes) {
+        return new ReflectionMethod(null, aClass.getMethod(name, parameterTypes));
+    }
+
     public Object cast(Object o) {
         return aClass.cast(o);
     }

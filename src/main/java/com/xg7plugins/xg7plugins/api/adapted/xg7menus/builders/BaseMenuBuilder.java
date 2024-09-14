@@ -1,13 +1,14 @@
-package com.xg7plugins.xg7plugins.api.adapted.xg7menus;
+package com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders;
 
-import com.xg7plugins.xg7menus.api.menus.builders.menu.MenuBuilder;
-import com.xg7plugins.xg7menus.api.menus.builders.menu.PageMenuBuilder;
-import com.xg7plugins.xg7menus.api.menus.builders.menu.PlayerMenuBuilder;
-import com.xg7plugins.xg7menus.api.menus.builders.menu.StorageMenuBuilder;
-import com.xg7plugins.xg7menus.api.menus.events.ClickEvent;
-import com.xg7plugins.xg7menus.api.menus.events.MenuEvent;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.MenuPermissions;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.menu.MenuBuilder;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.menu.PageMenuBuilder;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.menu.PlayerMenuBuilder;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.menu.StorageMenuBuilder;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.events.ClickEvent;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.events.MenuEvent;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -17,6 +18,12 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public abstract class BaseMenuBuilder<B extends BaseMenuBuilder<B>> {
+
+    protected Plugin plugin;
+
+    public BaseMenuBuilder(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     protected Map<Integer, BaseItemBuilder<?>> items = new HashMap<>();
     protected Map<Integer,Consumer<ClickEvent>> clickEventMap = new HashMap<>();
@@ -60,21 +67,17 @@ public abstract class BaseMenuBuilder<B extends BaseMenuBuilder<B>> {
     }
     public abstract <T extends BaseMenu> T build(Player player);
 
-    @Contract(value = " -> new", pure = true)
-    public static @NotNull MenuBuilder gui() {
-        return new MenuBuilder();
+    public static @NotNull MenuBuilder gui(Plugin plugin) {
+        return new MenuBuilder(plugin);
     }
-    @Contract(value = " -> new", pure = true)
-    public static @NotNull StorageMenuBuilder storage() {
-        return new StorageMenuBuilder();
+    public static @NotNull StorageMenuBuilder storage(Plugin plugin) {
+        return new StorageMenuBuilder(plugin);
     }
-    @Contract(value = " -> new", pure = true)
-    public static @NotNull PageMenuBuilder page() {
-        return new PageMenuBuilder();
+    public static @NotNull PageMenuBuilder page(Plugin plugin) {
+        return new PageMenuBuilder(plugin);
     }
-    @Contract(value = " -> new", pure = true)
-    public static @NotNull PlayerMenuBuilder player() {
-        return new PlayerMenuBuilder();
+    public static @NotNull PlayerMenuBuilder player(Plugin plugin) {
+        return new PlayerMenuBuilder(plugin);
     }
 
 

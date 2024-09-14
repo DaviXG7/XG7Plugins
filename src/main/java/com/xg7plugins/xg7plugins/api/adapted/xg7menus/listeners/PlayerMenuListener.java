@@ -1,12 +1,14 @@
 package com.xg7plugins.xg7plugins.api.adapted.xg7menus.listeners;
 
-import com.xg7plugins.xg7menus.api.menus.MenuPermissions;
-import com.xg7plugins.xg7menus.api.menus.events.ClickEvent;
-import com.xg7plugins.xg7menus.api.menus.events.DragEvent;
-import com.xg7plugins.xg7menus.api.menus.player.PlayerMenu;
+
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.MenuPermissions;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.events.ClickEvent;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.events.DragEvent;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.player.PlayerMenu;
+import com.xg7plugins.xg7plugins.boot.Plugin;
+import com.xg7plugins.xg7plugins.events.Event;
+import com.xg7plugins.xg7plugins.events.bukkitevents.EventHandler;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -16,13 +18,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.PlayerInventory;
 
-public class PlayerMenuListener implements Listener {
+public class PlayerMenuListener implements Event {
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!PlayerMenu.getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
+    public void onPlayerInteract(PlayerInteractEvent event, Plugin plugin) {
+        if (!plugin.getMenuManager().getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
 
-        PlayerMenu menu = PlayerMenu.getPlayerMenuMap().get(event.getPlayer().getUniqueId());
+        PlayerMenu menu = plugin.getMenuManager().getPlayerMenuMap().get(event.getPlayer().getUniqueId());
 
         ClickEvent clickEvent = new ClickEvent(
                 event.getPlayer(),
@@ -46,35 +48,35 @@ public class PlayerMenuListener implements Listener {
     }
 
     @EventHandler
-    public void onBreak(BlockBreakEvent event) {
-        if (!PlayerMenu.getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
-        event.setCancelled(!PlayerMenu.getPlayerMenuMap().get(event.getPlayer().getUniqueId()).getPermissions().contains(MenuPermissions.BREAK_BLOCKS));
+    public void onBreak(BlockBreakEvent event, Plugin plugin) {
+        if (!plugin.getMenuManager().getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
+        event.setCancelled(!plugin.getMenuManager().getPlayerMenuMap().get(event.getPlayer().getUniqueId()).getPermissions().contains(MenuPermissions.BREAK_BLOCKS));
     }
 
     @EventHandler
-    public void onPlace(BlockPlaceEvent event) {
-        if (!PlayerMenu.getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
-        event.setCancelled(!PlayerMenu.getPlayerMenuMap().get(event.getPlayer().getUniqueId()).getPermissions().contains(MenuPermissions.PLACE_BLOCKS));
+    public void onPlace(BlockPlaceEvent event, Plugin plugin) {
+        if (!plugin.getMenuManager().getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
+        event.setCancelled(!plugin.getMenuManager().getPlayerMenuMap().get(event.getPlayer().getUniqueId()).getPermissions().contains(MenuPermissions.PLACE_BLOCKS));
     }
 
     @EventHandler
-    public void onDrop(PlayerDropItemEvent event) {
-        if (!PlayerMenu.getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
-        event.setCancelled(!PlayerMenu.getPlayerMenuMap().get(event.getPlayer().getUniqueId()).getPermissions().contains(MenuPermissions.DROP));
+    public void onDrop(PlayerDropItemEvent event, Plugin plugin) {
+        if (!plugin.getMenuManager().getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
+        event.setCancelled(!plugin.getMenuManager().getPlayerMenuMap().get(event.getPlayer().getUniqueId()).getPermissions().contains(MenuPermissions.DROP));
     }
 
     @EventHandler
-    public void onPickup(PlayerPickupItemEvent event) {
-        if (!PlayerMenu.getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
-        event.setCancelled(!PlayerMenu.getPlayerMenuMap().get(event.getPlayer().getUniqueId()).getPermissions().contains(MenuPermissions.PICKUP));
+    public void onPickup(PlayerPickupItemEvent event, Plugin plugin) {
+        if (!plugin.getMenuManager().getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
+        event.setCancelled(!plugin.getMenuManager().getPlayerMenuMap().get(event.getPlayer().getUniqueId()).getPermissions().contains(MenuPermissions.PICKUP));
     }
 
     @EventHandler
-    public void onClick(InventoryClickEvent event) {
-        if (!PlayerMenu.getPlayerMenuMap().containsKey(event.getWhoClicked().getUniqueId())) return;
+    public void onClick(InventoryClickEvent event, Plugin plugin) {
+        if (!plugin.getMenuManager().getPlayerMenuMap().containsKey(event.getWhoClicked().getUniqueId())) return;
         if (!(event.getClickedInventory() instanceof PlayerInventory)) return;
 
-        PlayerMenu menu = PlayerMenu.getPlayerMenuMap().get(event.getWhoClicked().getUniqueId());
+        PlayerMenu menu = plugin.getMenuManager().getPlayerMenuMap().get(event.getWhoClicked().getUniqueId());
 
         ClickEvent clickEvent = new ClickEvent(
                 (Player) event.getWhoClicked(),
@@ -100,8 +102,8 @@ public class PlayerMenuListener implements Listener {
     }
 
     @EventHandler
-    public void onDrag(final InventoryDragEvent event) {
-        if (!PlayerMenu.getPlayerMenuMap().containsKey(event.getWhoClicked().getUniqueId())) return;
+    public void onDrag(final InventoryDragEvent event,Plugin plugin) {
+        if (!plugin.getMenuManager().getPlayerMenuMap().containsKey(event.getWhoClicked().getUniqueId())) return;
         if (!(event.getInventory() instanceof PlayerInventory)) return;
 
         PlayerMenu playerMenu = (PlayerMenu) event.getInventory().getHolder();
@@ -121,5 +123,8 @@ public class PlayerMenuListener implements Listener {
     }
 
 
-
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

@@ -1,7 +1,9 @@
 package com.xg7plugins.xg7plugins.api.adapted.xg7scores.scores;
 
-import com.xg7plugins.xg7entities.api.XG7Scores;
+import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.api.adapted.xg7scores.*;
+import com.xg7plugins.xg7plugins.boot.Plugin;
+import com.xg7plugins.xg7plugins.utils.Text.Text;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -23,8 +25,8 @@ public class ScoreBoard extends Score {
 
     private Scoreboard scoreboard;
 
-    public ScoreBoard(String title, String[] lines, String id, ScoreCondition condition, long delay) {
-        super(delay, new String[]{title},id, condition);
+    public ScoreBoard(String title, String[] lines, String id, ScoreCondition condition, long delay, Plugin plugin) {
+        super(delay, new String[]{title},id, condition, plugin);
         this.lines = lines;
 
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -42,12 +44,12 @@ public class ScoreBoard extends Score {
 
             Team team = scoreboard.registerNewTeam(id + ":Team=" + index);
 
-            s = Text.format(s).getText();
+            s = Text.format(s,plugin).getText();
 
             String prefix = s.substring(0, Math.min(s.length(), 16));
             String suffix = null;
             if (s.length() > 16) {
-                suffix = XG7Scores.getVersion() > 12 ? s.substring(16) : s.substring(16, Math.min(s.length(), 32));
+                suffix = XG7Plugins.getMinecraftVersion() > 12 ? s.substring(16) : s.substring(16, Math.min(s.length(), 32));
                 suffix = ChatColor.getLastColors(prefix) + suffix;
                 if (suffix.length() > 16) suffix = s.substring(0,16);
             }
@@ -61,12 +63,12 @@ public class ScoreBoard extends Score {
 
         }
 
-        ScoreManager.registerScore(this);
+        XG7Plugins.getInstance().getScoreManager().registerScore(this);
 
     }
 
-    public ScoreBoard(String[] title, String[] lines, String id, ScoreCondition condition, long taskDelay) {
-        super(taskDelay, title,id,condition);
+    public ScoreBoard(String[] title, String[] lines, String id, ScoreCondition condition, long taskDelay, Plugin plugin) {
+        super(taskDelay, title,id,condition,plugin);
         this.lines = lines;
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
@@ -83,12 +85,12 @@ public class ScoreBoard extends Score {
 
             Team team = scoreboard.registerNewTeam(id + ":Team=" + index);
 
-            s = Text.format(s).getText();
+            s = Text.format(s,plugin).getText();
 
             String prefix = s.substring(0, Math.min(s.length(), 16));
             String suffix = null;
             if (s.length() > 16) {
-                suffix = XG7Scores.getVersion() > 12 ? s.substring(16) : s.substring(16, Math.min(s.length(), 32));
+                suffix = XG7Plugins.getMinecraftVersion() > 12 ? s.substring(16) : s.substring(16, Math.min(s.length(), 32));
                 suffix = ChatColor.getLastColors(prefix) + suffix;
                 if (suffix.length() > 16) suffix = s.substring(0,16);
             }
@@ -103,7 +105,7 @@ public class ScoreBoard extends Score {
 
         }
 
-        ScoreManager.registerScore(this);
+        XG7Plugins.getInstance().getScoreManager().registerScore(this);
 
     }
 
@@ -115,7 +117,7 @@ public class ScoreBoard extends Score {
 
             Objective objective = scoreboard.getObjective(super.getId());
 
-            objective.setDisplayName(Text.format(super.getToUpdate()[super.getIndexUpdating()]).setPlaceholders(player).getText());
+            objective.setDisplayName(Text.format(super.getToUpdate()[super.getIndexUpdating()],plugin).getWithPlaceholders(player));
 
             int index = lines.length + 1;
 
@@ -127,12 +129,12 @@ public class ScoreBoard extends Score {
 
                 Team team = scoreboard.getTeam(super.getId() + ":Team=" + index);
 
-                s = Text.format(s).setPlaceholders(player).getText();
+                s = Text.format(s,plugin).getWithPlaceholders(player);
 
                 String prefix = s.substring(0, Math.min(s.length(), 16));
                 String suffix = null;
                 if (s.length() > 16) {
-                    suffix = XG7Scores.getVersion() > 12 ? s.substring(16) : s.substring(16, Math.min(s.length(), 32));
+                    suffix = XG7Plugins.getMinecraftVersion() > 12 ? s.substring(16) : s.substring(16, Math.min(s.length(), 32));
                     suffix = ChatColor.getLastColors(prefix) + suffix;
                     if (suffix.length() > 16) suffix = s.substring(0,16);
                 }
@@ -151,6 +153,6 @@ public class ScoreBoard extends Score {
     @Override
     public void removePlayer(Player player) {
         super.removePlayer(player);
-        Bukkit.getScheduler().runTask(XG7Scores.getPlugin(), () -> player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard()));
+        Bukkit.getScheduler().runTask(XG7Plugins.getInstance(), () -> player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard()));
     }
 }

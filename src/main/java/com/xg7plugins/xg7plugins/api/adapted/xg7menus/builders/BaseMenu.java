@@ -1,7 +1,9 @@
-package com.xg7plugins.xg7plugins.api.adapted.xg7menus;
+package com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders;
 
-import com.xg7plugins.xg7menus.api.menus.events.ClickEvent;
-import com.xg7plugins.xg7menus.api.menus.events.MenuEvent;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.MenuPermissions;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.events.ClickEvent;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.events.MenuEvent;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import lombok.Getter;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
@@ -9,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.function.Consumer;
+
 @Getter
 public abstract class BaseMenu {
 
@@ -20,6 +23,8 @@ public abstract class BaseMenu {
     protected EnumSet<MenuPermissions> permissions;
     protected HumanEntity player;
 
+    protected Plugin plugin;
+
     public BaseMenu(
             Consumer<ClickEvent> defaultClickEvent,
             Consumer<MenuEvent> openEvent,
@@ -27,7 +32,8 @@ public abstract class BaseMenu {
             Map<Integer,ItemStack> items,
             Map<Integer,Consumer<ClickEvent>> clickEvents,
             EnumSet<MenuPermissions> permissions,
-            HumanEntity player
+            HumanEntity player,
+            Plugin plugin
     )
     {
         this.items = items;
@@ -37,6 +43,7 @@ public abstract class BaseMenu {
         this.closeEvent = closeEvent;
         this.permissions = permissions;
         this.player = player;
+        this.plugin = plugin;
     }
 
 }

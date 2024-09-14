@@ -1,6 +1,8 @@
 package com.xg7plugins.xg7plugins.api.adapted.xg7scores;
 
 
+import com.xg7plugins.xg7plugins.XG7Plugins;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -8,39 +10,42 @@ import org.bukkit.entity.Player;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Getter
 public class ScoreManager {
 
-    @Getter
-    private static final Set<Score> scoreboards = new HashSet<>();
+    private XG7Plugins plugin;
 
-    @Getter
-    private static final List<UUID> sendActionBlackList = new ArrayList<>();
+    private final HashMap<String, Score> scoreboards = new HashMap<>();
+    private final List<UUID> sendActionBlackList = new ArrayList<>();
 
-    @Getter
-    private static int taskid;
+    private UUID taskId;
 
-    public static void registerScore(final Score score) {
-        scoreboards.add(score);
-    }
-    public static Score getByPlayer(Player player) {
-        return scoreboards.stream().filter(sc -> sc.getPlayers().contains(player)).findFirst().orElse(null);
-    }
-    public static Score getById(String id) {
-        return scoreboards.stream().filter(sc -> sc.getId().equals(id)).findFirst().orElse(null);
+    public ScoreManager(XG7Plugins plugin) {
+        this.plugin = plugin;
     }
 
-    public static void removePlayers() {
-        scoreboards.forEach(sc -> sc.getPlayers().forEach(sc::removePlayer));
+    public void registerScore(final Score score) {
+        scoreboards.put(score.getId(), score);
+    }
+    public Score getByPlayer(Player player) {
+        return scoreboards.values().stream().filter(sc -> sc.getPlayers().contains(player)).findFirst().orElse(null);
+    }
+    public Score getById(String id) {
+        return scoreboards.get(id);
     }
 
-    public static void cancelTask() {
-        Bukkit.getScheduler().cancelTask(taskid);
+    public void removePlayers() {
+        scoreboards.values().forEach(sc -> sc.getPlayers().forEach(sc::removePlayer));
     }
 
-    public static void initTask() {
+    public void cancelTask() {
+        plugin.getTaskManager().cancelTask(plugin, this.taskId);
+    }
+
+    public void initTask() {
         AtomicLong counter = new AtomicLong();
-        taskid = Bukkit.getScheduler().runTaskTimerAsynchronously(XG7Scores.getPlugin(), () -> {
-            scoreboards.forEach(score -> {
+        this.taskId = plugin.getTaskManager().addRepeatingTask(plugin, () -> {
+            scoreboards.values().forEach(score -> {
 
                         Bukkit.getOnlinePlayers().forEach(p -> {
                             if (score.getCondition().condition(p)) score.addPlayer(p);
@@ -55,7 +60,7 @@ public class ScoreManager {
                     }
             );
             counter.incrementAndGet();
-        },0,1).getTaskId();
+        },1);
     }
 
 }

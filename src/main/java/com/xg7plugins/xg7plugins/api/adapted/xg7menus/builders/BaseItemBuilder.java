@@ -1,10 +1,15 @@
-package com.xg7plugins.xg7plugins.api.adapted.xg7menus;
+package com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.xg7plugins.xg7menus.api.menus.events.ClickEvent;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.events.ClickEvent;
+import com.xg7plugins.xg7plugins.boot.Plugin;
+import com.xg7plugins.xg7plugins.utils.Text.Text;
+import com.xg7plugins.xg7plugins.utils.reflection.NMSUtil;
+import com.xg7plugins.xg7plugins.utils.reflection.ReflectionClass;
+import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -26,12 +31,16 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
+
+    protected Plugin plugin;
+
     protected ItemStack itemStack;
     @Getter
     private Consumer<ClickEvent> event;
 
-    public BaseItemBuilder(ItemStack stack) {
+    public BaseItemBuilder(ItemStack stack, Plugin plugin) {
         this.itemStack = stack;
+        this.plugin = plugin;
     }
     public B setAmount(int amount) {
         this.itemStack.setAmount(amount);
@@ -59,13 +68,13 @@ public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
     }
     public B lore(@NotNull List<String> lore) {
         ItemMeta meta = this.itemStack.getItemMeta();
-        meta.setLore(lore.stream().map(text -> Text.format(text).getText()).collect(Collectors.toList()));
+        meta.setLore(lore.stream().map(text -> Text.format(text,plugin).getText()).collect(Collectors.toList()));
         meta(meta);
         return (B) this;
     }
     public B name(String name) {
         ItemMeta meta = this.itemStack.getItemMeta();
-        meta.setDisplayName(Text.format(name).getText());
+        meta.setDisplayName(Text.format(name,plugin).getText());
         meta(meta);
         return (B) this;
     }
@@ -100,8 +109,8 @@ public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
     }
     public B setPlaceHolders(Player player) {
         if (itemStack.getItemMeta() == null) return (B) this;
-        if (itemStack.getItemMeta().getDisplayName() != null) name(Text.format(itemStack.getItemMeta().getDisplayName()).setPlaceholders(player).getText());
-        if (itemStack.getItemMeta().getLore() != null) lore(itemStack.getItemMeta().getLore().stream().map(l -> Text.format(l).setPlaceholders(player).getText()).collect(Collectors.toList()));
+        if (itemStack.getItemMeta().getDisplayName() != null) name(Text.format(itemStack.getItemMeta().getDisplayName(),plugin).getWithPlaceholders(player));
+        if (itemStack.getItemMeta().getLore() != null) lore(itemStack.getItemMeta().getLore().stream().map(l -> Text.format(l,plugin).getWithPlaceholders(player)).collect(Collectors.toList()));
         return (B) this;
     }
     @SneakyThrows
@@ -109,29 +118,22 @@ public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
 
         Gson gson = new Gson();
 
-        Class<?> craftItemStackClass = NMSUtil.getCraftBukkitClass("inventory.CraftItemStack");
+        ReflectionClass nbtTagCompoundClass = NMSUtil.getNMSClass("NBTTagCompound");
+        ReflectionClass nmsItemStackClass = NMSUtil.getNMSClass("ItemStack");
+        ReflectionClass craftItemStackClass = NMSUtil.getCraftBukkitClass("inventory.CraftItemStack");
 
-        Class<?> nmsItemStackClass = NMSUtil.getNMSClass("ItemStack");
+        ReflectionObject nmsItem = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invokeToRObject(itemStack);
+        ReflectionObject tag = nmsItemStackClass.getMethod("getTag").invokeToRObject(nmsItem);
 
-        Class<?> nbtTagCompoundClass = NMSUtil.getNMSClass("NBTTagCompound");
-
-        Object nmsItem = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, itemStack);
-
-        Object tag = nmsItemStackClass.getMethod("getTag").invoke(nmsItem);
-
-        if (tag == null) tag = nbtTagCompoundClass.getDeclaredConstructor().newInstance();
+        if (tag.getObject() == null) tag = nbtTagCompoundClass.newInstance();
 
         String jsonValue = gson.toJson(value);
 
-        Method setStringMethod = nbtTagCompoundClass.getMethod("setString", String.class, String.class);
-        setStringMethod.invoke(tag, key, jsonValue);
+        tag.getMethod("setTag", String.class, String.class).invoke(key, jsonValue);
 
-        Method setTagMethod = nmsItemStackClass.getMethod("setTag", nbtTagCompoundClass);
-        setTagMethod.invoke(nmsItem, tag);
+        nmsItem.getMethod("setTag", nbtTagCompoundClass.getAClass()).invoke(tag.getObject());
 
-        Method asBukkitCopyMethod = craftItemStackClass.getMethod("asBukkitCopy", nmsItemStackClass);
-
-        this.itemStack = (ItemStack) craftItemStackClass.getMethod("asBukkitCopy", nmsItemStackClass).invoke(null, nmsItem);
+        this.itemStack = craftItemStackClass.getMethod("asBukkitCopy", nmsItemStackClass.getAClass()).invoke(nmsItem);
         return (B) this;
     }
 
@@ -139,18 +141,14 @@ public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
     public static <T> T getNBTTagValue(ItemStack stack, String key, Class<T> clazz) {
         Gson gson = new Gson();
 
-        Class<?> craftItemStackClass = NMSUtil.getCraftBukkitClass("inventory.CraftItemStack");
+        ReflectionClass nmsItemStackClass = NMSUtil.getNMSClass("ItemStack");
+        ReflectionClass craftItemStackClass = NMSUtil.getCraftBukkitClass("inventory.CraftItemStack");
 
-        Class<?> nmsItemStackClass = NMSUtil.getNMSClass("ItemStack");
-
-        Class<?> nbtTagCompoundClass = NMSUtil.getNMSClass("NBTTagCompound");
-
-        Object nmsItem = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, stack);
-
-        Object tag = nmsItemStackClass.getMethod("getTag").invoke(nmsItem);
+        ReflectionObject nmsItem = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invokeToRObject(stack);
+        ReflectionObject tag = nmsItemStackClass.getMethod("getTag").invokeToRObject(nmsItem);
 
         if (tag != null) {
-            String jsonValue = (String) nbtTagCompoundClass.getMethod("getString", String.class).invoke(tag, key);
+            String jsonValue = tag.getMethod("getString", String.class).invoke(key);
             return gson.fromJson(jsonValue, clazz);
         }
         return null;

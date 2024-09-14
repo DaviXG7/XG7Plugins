@@ -1,14 +1,15 @@
-package com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders;
+package com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.menu;
 
-import com.xg7plugins.xg7menus.api.menus.MenuException;
-import com.xg7plugins.xg7menus.api.menus.Slot;
-import com.xg7plugins.xg7menus.api.menus.builders.BaseItemBuilder;
-import com.xg7plugins.xg7menus.api.menus.builders.BaseMenuBuilder;
-import com.xg7plugins.xg7menus.api.menus.builders.item.SkullItemBuilder;
-import com.xg7plugins.xg7menus.api.menus.events.ClickEvent;
-import com.xg7plugins.xg7menus.api.menus.events.DragEvent;
-import com.xg7plugins.xg7menus.api.menus.gui.StorageMenu;
-import com.xg7plugins.xg7menus.api.utils.Text;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.MenuException;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.Slot;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.BaseItemBuilder;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.BaseMenuBuilder;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.events.ClickEvent;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.events.DragEvent;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.gui.StorageMenu;
+import com.xg7plugins.xg7plugins.api.adapted.xg7menus.builders.item.SkullItemBuilder;
+import com.xg7plugins.xg7plugins.boot.Plugin;
+import com.xg7plugins.xg7plugins.utils.Text.Text;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -27,6 +28,10 @@ public class StorageMenuBuilder extends BaseMenuBuilder<StorageMenuBuilder> {
     private Map<Integer, ItemStack> storageItems = new HashMap<>();
     private Slot initStorageSlot;
     private Slot finalStorageSlot;
+
+    public StorageMenuBuilder(Plugin plugin) {
+        super(plugin);
+    }
 
     public StorageMenuBuilder title(String title) {
         this.title = title;
@@ -96,6 +101,6 @@ public class StorageMenuBuilder extends BaseMenuBuilder<StorageMenuBuilder> {
             event.setCancelled(!(clickSlot.getRow() >= initStorageSlot.getRow() && clickSlot.getRow() <= finalStorageSlot.getRow() && clickSlot.getColumn() >= initStorageSlot.getColumn() -1 && clickSlot.getColumn() <= finalStorageSlot.getColumn()));
         });
 
-        return type == null ? new StorageMenu(Text.format(title).setPlaceholders(player).getText(), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player, initStorageSlot, finalStorageSlot, storageItems) : new StorageMenu(Text.format(title).setPlaceholders(player).getText(), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player, initStorageSlot, finalStorageSlot, storageItems);
+        return type == null ? new StorageMenu(Text.format(title,plugin).getWithPlaceholders(player), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player, initStorageSlot, finalStorageSlot, storageItems,plugin) : new StorageMenu(Text.format(title,plugin).getWithPlaceholders(player), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player, initStorageSlot, finalStorageSlot, storageItems,plugin);
     }
 }

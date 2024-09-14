@@ -55,12 +55,12 @@ public class Text {
         return new com.xg7plugins.xg7plugins.utils.Text.TextComponent(text1.getText());
     }
 
-    public String getWithPlaceholders(String text, Player player) {
+    public String getWithPlaceholders(Player player) {
         return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, text) : text;
     }
 
 
-    public void send(String text, CommandSender sender) {
+    public void send(CommandSender sender) {
         if (text == null || text.isEmpty()) return;
 
         if (sender instanceof Player) {
@@ -80,24 +80,42 @@ public class Text {
     }
 
     @SneakyThrows
-    public void sendActionBar(String text, Player player) {
+    public void sendActionBar(Player player) {
 
         if (XG7Plugins.getMinecraftVersion() < 8) return;
 
-        if (XG7Plugins.getMinecraftVersion() > 8) {
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(text));
+        XG7Plugins.getInstance().getScoreManager().getSendActionBlackList().add(player.getUniqueId());
+
+        sendScoreActionBar(player);
+
+        Bukkit.getScheduler().runTaskLater(XG7Plugins.getInstance(), () -> XG7Plugins.getInstance().getScoreManager().getSendActionBlackList().remove(player.getUniqueId()),60L);
+
+    }
+
+    @SneakyThrows
+    public void sendScoreActionBar(Player player) {
+
+        if (XG7Plugins.getMinecraftVersion() < 8) return;
+
+        String finalText = text;
+
+        if (text.startsWith("[ACTION] ")) {
+            finalText = finalText.substring(9);
             return;
         }
 
-        PlayerNMS playerNMS = PlayerNMS.cast(player);
+        if (XG7Plugins.getMinecraftVersion() > 8) {
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(finalText));
+            return;
+        }
 
-        ReflectionObject chatComponent = NMSUtil.getNMSClass("IChatBaseComponent").getConstructor(String.class).newInstance(text);
+        ReflectionObject chatComponent = NMSUtil.getNMSClass("IChatBaseComponent").getConstructor(String.class).newInstance(finalText);
 
         ReflectionObject packet = NMSUtil.getNMSClass("PacketPlayOutChat")
                 .getConstructor(NMSUtil.getNMSClass("IChatBaseComponent").getAClass(), byte.class)
                 .newInstance(chatComponent.getObject(), (byte) 2);
 
-        playerNMS.sendPacket(packet.getObject());
+        PlayerNMS.cast(player).sendPacket(packet.getObject());
 
     }
 
