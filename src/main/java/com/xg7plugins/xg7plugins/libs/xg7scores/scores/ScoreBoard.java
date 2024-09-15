@@ -1,6 +1,7 @@
 package com.xg7plugins.xg7plugins.libs.xg7scores.scores;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.libs.xg7scores.Score;
 import com.xg7plugins.xg7plugins.libs.xg7scores.ScoreCondition;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
@@ -25,8 +26,8 @@ public class ScoreBoard extends Score {
 
     private Scoreboard scoreboard;
 
-    public ScoreBoard(String title, String[] lines, String id, ScoreCondition condition, long delay) {
-        super(delay, new String[]{title},id, condition);
+    public ScoreBoard(String title, String[] lines, String id, ScoreCondition condition, long delay, Plugin plugin) {
+        super(delay, new String[]{title},id, condition, plugin);
         this.lines = lines;
 
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -44,7 +45,7 @@ public class ScoreBoard extends Score {
 
             Team team = scoreboard.registerNewTeam(id + ":Team=" + index);
 
-            s = Text.format(s).getText();
+            s = Text.format(s,plugin).getText();
 
             String prefix = s.substring(0, Math.min(s.length(), 16));
             String suffix = null;
@@ -67,8 +68,8 @@ public class ScoreBoard extends Score {
 
     }
 
-    public ScoreBoard(String[] title, String[] lines, String id, ScoreCondition condition, long taskDelay) {
-        super(taskDelay, title,id,condition);
+    public ScoreBoard(String[] title, String[] lines, String id, ScoreCondition condition, long taskDelay,Plugin plugin) {
+        super(taskDelay, title,id,condition,plugin);
         this.lines = lines;
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
@@ -85,7 +86,7 @@ public class ScoreBoard extends Score {
 
             Team team = scoreboard.registerNewTeam(id + ":Team=" + index);
 
-            s = Text.format(s).getText();
+            s = Text.format(s,plugin).getText();
 
             String prefix = s.substring(0, Math.min(s.length(), 16));
             String suffix = null;
@@ -117,7 +118,7 @@ public class ScoreBoard extends Score {
 
             Objective objective = scoreboard.getObjective(super.getId());
 
-            objective.setDisplayName(Text.format(super.getToUpdate()[super.getIndexUpdating()]).getWithPlaceholders(player));
+            objective.setDisplayName(Text.format(super.getToUpdate()[super.getIndexUpdating()],plugin).getWithPlaceholders(player));
 
             int index = lines.length + 1;
 
@@ -129,7 +130,7 @@ public class ScoreBoard extends Score {
 
                 Team team = scoreboard.getTeam(super.getId() + ":Team=" + index);
 
-                s = Text.format(s).getWithPlaceholders(player);
+                s = Text.format(s,plugin).getWithPlaceholders(player);
 
                 String prefix = s.substring(0, Math.min(s.length(), 16));
                 String suffix = null;

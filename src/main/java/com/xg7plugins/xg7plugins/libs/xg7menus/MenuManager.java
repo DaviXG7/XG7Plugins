@@ -1,7 +1,7 @@
 package com.xg7plugins.xg7plugins.libs.xg7menus;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
-import com.xg7plugins.xg7plugins.libs.xg7menus.player.PlayerMenu;
+import com.xg7plugins.xg7plugins.libs.xg7menus.menus.player.PlayerMenu;
 import lombok.Getter;
 
 import java.util.HashMap;

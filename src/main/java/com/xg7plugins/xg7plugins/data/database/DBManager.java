@@ -65,6 +65,7 @@ public class DBManager {
 
                 connections.put(plugin.getName(), DriverManager.getConnection("jdbc:sqlite:" + plugin.getDataFolder().getPath() + "/data.db"));
 
+
                 return;
             case MARIADB:
 
@@ -90,7 +91,7 @@ public class DBManager {
         connections.remove(plugin.getName());
     }
 
-    public CompletableFuture<Query> executeQuery(Plugin plugin, String sql, Object... args) {
+    public synchronized CompletableFuture<Query> executeQuery(Plugin plugin, String sql, Object... args) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 Connection connection = connections.get(plugin.getName());
@@ -120,7 +121,7 @@ public class DBManager {
         },executor);
     }
 
-    public void executeUpdate(Plugin plugin, String sql, Object... args) {
+    public synchronized void executeUpdate(Plugin plugin, String sql, Object... args) {
         executor.submit(() -> {
             try {
                 Connection connection = connections.get(plugin.getName());

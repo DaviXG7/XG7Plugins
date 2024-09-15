@@ -6,6 +6,7 @@ import com.xg7plugins.xg7plugins.events.bukkitevents.EventHandler;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class InicializePacketEvents implements Event {
     @Override
@@ -18,7 +19,7 @@ public class InicializePacketEvents implements Event {
         ReflectionObject.of(XG7Plugins.getInstance().getPacketEventManager()).getMethod("create", Player.class).invoke(event.getPlayer());
     }
     @EventHandler
-    public void onLeave(PlayerJoinEvent event) {
+    public void onLeave(PlayerQuitEvent event) {
         ReflectionObject.of(XG7Plugins.getInstance().getPacketEventManager()).getMethod("stopEvent", Player.class).invoke(event.getPlayer());
     }
 }

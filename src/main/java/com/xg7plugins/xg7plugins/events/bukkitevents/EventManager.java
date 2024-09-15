@@ -54,18 +54,18 @@ public class EventManager {
                                         }
                                     }
 
-                                    try {
-                                        method.invoke(event, event2);
-                                    } catch (IllegalAccessException | InvocationTargetException e) {
-
-                                        //Events then needs a plugin
-
+                                    if (method.getParameterTypes().length == 2) {
                                         try {
-                                            method.invoke(event, event2,plugin);
+                                            method.invoke(event, event2, plugin);
                                         } catch (IllegalAccessException | InvocationTargetException ex) {
                                             throw new RuntimeException(ex);
                                         }
+                                        return;
+                                    }
 
+                                    try {
+                                        method.invoke(event, event2);
+                                    } catch (IllegalAccessException | InvocationTargetException e) {
                                         throw new RuntimeException(e);
                                     }
                                 }),

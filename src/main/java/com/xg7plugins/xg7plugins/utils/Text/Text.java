@@ -24,18 +24,31 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Getter
 public class Text {
 
-    private static final Pattern GRADIENT_PATTERN = Pattern.compile("\\[g#([0-9a-fA-F]{6})](.*?)\\[/g#([0-9a-fA-F]{6})]");
+    private static final Pattern GRADIENT_PATTERN = Pattern.compile("\\[g#([0-9a-fA-F]{6})\\](.*)\\[/g#([0-9a-fA-F]{6})\\]");
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
-    private static final Pattern LANG_PATTERN = Pattern.compile("lang:\\[(.*?)]");
+    private static final Pattern LANG_PATTERN = Pattern.compile("lang:\\[([A-Za-z0-9\\.]*)\\]");
+
+    private static ReflectionObject packetPlayOutChat;
+
+    static {
+        try {
+            packetPlayOutChat = NMSUtil.getNMSClass("PacketPlayOutChat").newInstance();
+        } catch (Exception ignored) {
+            //Not is the version
+        }
+    }
+
+
 
     private String text;
-    private Plugin plugin;
+    private final Plugin plugin;
 
     public Text(String text, Plugin plugin) {
         if (XG7Plugins.getMinecraftVersion() >= 16) {
@@ -47,6 +60,8 @@ public class Text {
                 matcher = HEX_PATTERN.matcher(text);
             }
         }
+
+        this.plugin = plugin;
 
         this.text = ChatColor.translateAlternateColorCodes('&', text.replace("[PREFIX]", plugin.getCustomPrefix()));
     }
@@ -61,14 +76,14 @@ public class Text {
 
     public String getWithPlaceholders(Player player) {
 
-        YamlConfiguration entity = this.plugin.getLangManager().getLangByPlayer(player.getUniqueId(),player.getLocale());
+        YamlConfiguration entity = this.plugin.getLangManager().getLangByPlayer(player.getUniqueId(), XG7Plugins.getMinecraftVersion() >= 12 ? player.getLocale() : PlayerNMS.cast(player).getCraftPlayerHandle().getField("locale"));
 
         String textToTraslate = text;
 
         Matcher matcher = LANG_PATTERN.matcher(textToTraslate);
 
         while (matcher.find()) {
-            String lang = matcher.group(0);
+            String lang = matcher.group(1);
             textToTraslate = textToTraslate.replace(textToTraslate.substring(matcher.start(), matcher.end()), entity.getString(lang));
         }
 
@@ -143,11 +158,10 @@ public class Text {
 
         ReflectionObject chatComponent = NMSUtil.getNMSClass("IChatBaseComponent").getConstructor(String.class).newInstance(finalText);
 
-        ReflectionObject packet = NMSUtil.getNMSClass("PacketPlayOutChat")
-                .getConstructor(NMSUtil.getNMSClass("IChatBaseComponent").getAClass(), byte.class)
-                .newInstance(chatComponent.getObject(), (byte) 2);
+        packetPlayOutChat.setField("a",chatComponent.getObject());
+        packetPlayOutChat.setField("b",(byte) 2);
 
-        PlayerNMS.cast(player).sendPacket(packet.getObject());
+        PlayerNMS.cast(player).sendPacket(packetPlayOutChat.getObject());
 
     }
 

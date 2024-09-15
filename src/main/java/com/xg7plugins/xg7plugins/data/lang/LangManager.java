@@ -2,6 +2,7 @@ package com.xg7plugins.xg7plugins.data.lang;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.data.database.EntityProcessor;
@@ -19,14 +20,13 @@ import java.util.concurrent.TimeUnit;
 
 public class LangManager {
 
-    private Plugin plugin;
-    private Cache<String, YamlConfiguration> langs;
-    private Cache<UUID, LangEntity> players;
-    private String mainLang;
+    private final Plugin plugin;
+    private final Cache<String, YamlConfiguration> langs;
+    private final Cache<UUID, LangEntity> players;
+    private final String mainLang;
 
     public LangManager(Plugin plugin) {
-
-        this.plugin = plugin;
+         this.plugin = plugin;
 
         Config config = plugin.getConfigsManager().getConfig("config");
 
@@ -38,13 +38,10 @@ public class LangManager {
 
         mainLang = config.get("main-lang");
 
-        File file = new File(dir, mainLang);
-        Arrays.stream(Objects.requireNonNull(dir.listFiles())).filter(lang -> !lang.exists()).forEach(lang -> plugin.saveResource(lang.getName(), false));
+        File file = new File(dir, mainLang + ".yml");
+        if (!file.exists()) plugin.saveResource("langs/" + mainLang + ".yml", false);
 
-
-        langs.put(file.getName(), YamlConfiguration.loadConfiguration(file));
-
-        EntityProcessor.createTableOf(plugin, LangEntity.class);
+        langs.put(mainLang, YamlConfiguration.loadConfiguration(file));
 
     }
 
@@ -73,7 +70,7 @@ public class LangManager {
         if (players.asMap().containsKey(id)) return getLang(players.asMap().get(id).getLangId());
 
 
-        return (YamlConfiguration) Query.create(plugin,"SELECT * FROM langentity WHERE playeruuid = ?", id)
+        return Query.create(XG7Plugins.getInstance(),"SELECT * FROM LangEntity WHERE playeruuid = ?", id)
                 .thenApplyAsync(q -> {
 
                             if (!q.hasNextLine()) {
@@ -85,11 +82,11 @@ public class LangManager {
                                     for (YamlConfiguration cfg : langs.asMap().values()) {
                                         String locale = cfg.getString("lang-locale");
                                         if (playerLocale.equals(locale)) {
-                                            LangEntity newLang = new LangEntity(cfg.getName(), id);
+                                            LangEntity newLang = new LangEntity(id,cfg.getName());
 
                                             players.put(id, newLang);
 
-                                            EntityProcessor.insetEntity(plugin, newLang);
+                                            EntityProcessor.insetEntity(XG7Plugins.getInstance(), newLang);
 
                                             return getLang(newLang.getLangId());
                                         }
@@ -97,12 +94,12 @@ public class LangManager {
 
                                 }
 
-                                LangEntity newLang = new LangEntity(mainLang, id);
+                                LangEntity newLang = new LangEntity(id,mainLang);
 
-                                EntityProcessor.insetEntity(plugin, newLang);
+                                EntityProcessor.insetEntity(XG7Plugins.getInstance(), newLang);
 
                                 players.put(id, newLang);
-                                return newLang;
+                                return getLang(newLang.getLangId());
                             }
 
                             LangEntity entity = q.get(LangEntity.class);

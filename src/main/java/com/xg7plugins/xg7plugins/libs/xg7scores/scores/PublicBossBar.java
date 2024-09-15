@@ -1,6 +1,7 @@
 package com.xg7plugins.xg7plugins.libs.xg7scores.scores;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.libs.xg7scores.Score;
 import com.xg7plugins.xg7plugins.libs.xg7scores.ScoreCondition;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
@@ -15,8 +16,8 @@ public class PublicBossBar extends Score {
     
     private BossBar bossBar;
     
-    public PublicBossBar(long delay, String[] title, String id, ScoreCondition condition, BarColor color, BarStyle style, double progress) {
-        super(delay, title, id, condition);
+    public PublicBossBar(long delay, String[] title, String id, ScoreCondition condition, BarColor color, BarStyle style, double progress, Plugin plugin) {
+        super(delay, title, id, condition, plugin);
 
         bossBar = Bukkit.createBossBar(title[0],color,style);
         bossBar.setProgress(progress);
@@ -41,7 +42,7 @@ public class PublicBossBar extends Score {
     @Override
     public void update() {
         for (Player player : super.getPlayers()) {
-            bossBar.setTitle(Text.format(getToUpdate()[getIndexUpdating()]).getText());
+            bossBar.setTitle(Text.format(getToUpdate()[getIndexUpdating()],plugin).getText());
         }
     }
 }

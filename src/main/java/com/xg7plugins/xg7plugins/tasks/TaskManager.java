@@ -19,14 +19,14 @@ public class TaskManager {
     public TaskManager(XG7Plugins plugin) {
         Config config = plugin.getConfigsManager().getConfig("config");
 
-        executor = (ScheduledExecutorService) Executors.newFixedThreadPool(config.get("task-threads"));
+        executor = Executors.newScheduledThreadPool(config.get("task-threads"));
 
     }
 
     public UUID addRepeatingTask(Plugin plugin, Runnable runnable, long delay) {
         UUID taskId = UUID.randomUUID();
         tasksRunning.putIfAbsent(plugin, new HashMap<>());
-        tasksRunning.get(plugin).put(taskId, executor.schedule(runnable, delay, TimeUnit.MILLISECONDS));
+        tasksRunning.get(plugin).put(taskId, executor.scheduleWithFixedDelay(runnable, 0, delay, TimeUnit.MILLISECONDS));
         return taskId;
     }
     public UUID addCooldownTask(Plugin plugin, Runnable runnable, int seconds) {
@@ -34,7 +34,7 @@ public class TaskManager {
 
         UUID taskId = UUID.randomUUID();
 
-        tasksRunning.get(plugin).put(taskId, executor.schedule(runnable, seconds, TimeUnit.SECONDS));
+        tasksRunning.get(plugin).put(taskId, executor.scheduleWithFixedDelay(runnable, 0, seconds, TimeUnit.SECONDS));
 
         executor.submit(() -> {
             tasksRunning.get(plugin).get(taskId).cancel(false);

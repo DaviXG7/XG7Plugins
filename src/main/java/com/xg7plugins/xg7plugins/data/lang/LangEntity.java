@@ -11,8 +11,8 @@ import java.util.UUID;
 public class LangEntity implements Entity {
 
     @Entity.PKey
-    private String langId;
     private UUID playerUUID;
+    private String langId;
 
     public LangEntity() {}
 }

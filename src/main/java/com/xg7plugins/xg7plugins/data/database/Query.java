@@ -8,10 +8,7 @@ import lombok.SneakyThrows;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @AllArgsConstructor
@@ -75,6 +72,10 @@ public class Query {
 
                 f.set(instance, tList);
 
+                continue;
+            }
+            if (f.getType() == UUID.class) {
+                f.set(instance, UUID.fromString((String) values.get(f.getName())));
                 continue;
             }
             f.set(instance, value);

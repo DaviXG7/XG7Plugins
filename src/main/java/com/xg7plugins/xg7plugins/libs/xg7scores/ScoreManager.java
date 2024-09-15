@@ -3,6 +3,9 @@ package com.xg7plugins.xg7plugins.libs.xg7scores;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import lombok.Getter;
+import net.kyori.adventure.chat.ChatType;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -12,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Getter
 public class ScoreManager {
 
-    private XG7Plugins plugin;
+    private final XG7Plugins plugin;
 
     private final HashMap<String, Score> scoreboards = new HashMap<>();
     private final List<UUID> sendActionBlackList = new ArrayList<>();

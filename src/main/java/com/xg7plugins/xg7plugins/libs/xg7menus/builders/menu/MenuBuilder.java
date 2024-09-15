@@ -4,7 +4,7 @@ import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuException;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseMenuBuilder;
-import com.xg7plugins.xg7plugins.libs.xg7menus.gui.Menu;
+import com.xg7plugins.xg7plugins.libs.xg7menus.menus.gui.Menu;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.SkullItemBuilder;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
 import org.bukkit.entity.Player;
@@ -59,7 +59,6 @@ public class MenuBuilder extends BaseMenuBuilder<MenuBuilder> {
                         )
         );
 
-        Menu menu = type == null ? new Menu(Text.format(title,plugin).getWithPlaceholders(player), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player) : new Menu(Text.format(title,plugin).getWithPlaceholders(player), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player);
-        return menu;
+        return type == null ? new Menu(Text.format(title,plugin).getWithPlaceholders(player), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player) : new Menu(Text.format(title,plugin).getWithPlaceholders(player), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player);
     }
 }

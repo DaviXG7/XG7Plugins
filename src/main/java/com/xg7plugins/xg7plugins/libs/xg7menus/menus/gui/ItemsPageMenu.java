@@ -1,4 +1,4 @@
-package com.xg7plugins.xg7plugins.libs.xg7menus.gui;
+package com.xg7plugins.xg7plugins.libs.xg7menus.menus.gui;
 
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuException;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuPermissions;
@@ -8,6 +8,7 @@ import com.xg7plugins.xg7plugins.libs.xg7menus.events.MenuEvent;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
@@ -71,7 +72,7 @@ public class ItemsPageMenu extends Menu {
         for (int x = initSlot.getRow(); x <= finalSlot.getRow(); x++) {
             for (int y = initSlot.getColumn(); y <= finalSlot.getColumn(); y++) {
                 if (indexToAdd >= itemsToAdd.size()) {
-                    if (inventory.getItem(Slot.get(x,y)) != null) setItem(Slot.get(x,y), ItemBuilder.from(Material.AIR).toItemStack());
+                    if (inventory.getItem(Slot.get(x,y)) != null) setItem(Slot.get(x,y), new ItemStack(Material.AIR));
                     continue;
                 }
                 setItem(Slot.get(x,y), itemsToAdd.get(indexToAdd).toItemStack());

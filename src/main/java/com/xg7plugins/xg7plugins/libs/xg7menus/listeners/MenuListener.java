@@ -4,7 +4,7 @@ import com.xg7plugins.xg7plugins.libs.xg7menus.MenuPermissions;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.ClickEvent;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.DragEvent;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.MenuEvent;
-import com.xg7plugins.xg7plugins.libs.xg7menus.gui.Menu;
+import com.xg7plugins.xg7plugins.libs.xg7menus.menus.gui.Menu;
 import com.xg7plugins.xg7plugins.events.Event;
 import com.xg7plugins.xg7plugins.events.bukkitevents.EventHandler;
 import org.bukkit.entity.Player;

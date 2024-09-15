@@ -1,4 +1,4 @@
-package com.xg7plugins.xg7plugins.libs.xg7menus.player;
+package com.xg7plugins.xg7plugins.libs.xg7menus.menus.player;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuPermissions;

@@ -1,5 +1,7 @@
 package com.xg7plugins.xg7plugins;
 
+import com.xg7plugins.xg7plugins.data.database.EntityProcessor;
+import com.xg7plugins.xg7plugins.data.lang.LangEntity;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuManager;
 import com.xg7plugins.xg7plugins.libs.xg7menus.listeners.MenuListener;
 import com.xg7plugins.xg7plugins.libs.xg7menus.listeners.PlayerMenuListener;
@@ -29,6 +31,8 @@ import java.util.List;
 @Getter(AccessLevel.PUBLIC)
 public final class XG7Plugins extends Plugin {
 
+    private static XG7Plugins instance;
+
     @Getter
     private static final int minecraftVersion = Integer.parseInt(Bukkit.getServer().getVersion().split("\\.")[1].replace(")", ""));
 
@@ -43,16 +47,19 @@ public final class XG7Plugins extends Plugin {
 
     public XG7Plugins() {
         super("[XG7Plugins]");
+        instance = this;
     }
 
     @Override
     public void onEnable() {
         this.databaseManager = new DBManager(this);
+        this.menuManager = new MenuManager(this);
         this.eventManager = new EventManager();
         this.taskManager = new TaskManager(this);
         this.scoreManager = new ScoreManager(this);
         this.eventManager.registerPlugin(this);
-        this.menuManager = new MenuManager(this);
+        this.databaseManager.connectPlugin(this);
+        EntityProcessor.createTableOf(this, LangEntity.class);
         this.packetEventManager = minecraftVersion < 8 ? new PacketEventManager1_7() : new PacketEventManager();
         if (getConfigsManager().getConfig("config").get("prefix") != null) this.setCustomPrefix(getConfigsManager().getConfig("config").get("prefix"));
     }
@@ -80,7 +87,7 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public List<Event> getEvents() {
-        return Arrays.asList(new InicializePacketEvents(), new PlayerMenuListener(menuManager), new MenuListener());
+        return Arrays.asList(new InicializePacketEvents(), new MenuListener(), new PlayerMenuListener());
     }
 
     @Override

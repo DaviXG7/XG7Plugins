@@ -1,9 +1,10 @@
 package com.xg7plugins.xg7plugins.libs.xg7menus.builders.menu;
 
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseMenuBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.SkullItemBuilder;
-import com.xg7plugins.xg7plugins.libs.xg7menus.player.PlayerMenu;
+import com.xg7plugins.xg7plugins.libs.xg7menus.menus.player.PlayerMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 public class PlayerMenuBuilder extends BaseMenuBuilder<PlayerMenuBuilder> {
 
     @Override
-    public PlayerMenu build(Player player) {
+    public PlayerMenu build(Player player, Plugin plugin) {
         return new PlayerMenu(defaultClickEvent,openMenuEvent,closeMenuEvent,items.entrySet().stream()
                 .collect(
                         Collectors.toMap(

@@ -1,4 +1,4 @@
-package com.xg7plugins.xg7plugins.libs.xg7menus.gui;
+package com.xg7plugins.xg7plugins.libs.xg7menus.menus.gui;
 
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuPermissions;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseMenu;

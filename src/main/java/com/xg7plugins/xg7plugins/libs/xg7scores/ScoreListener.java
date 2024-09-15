@@ -1,17 +1,23 @@
 package com.xg7plugins.xg7plugins.libs.xg7scores;
 
+import com.xg7plugins.xg7plugins.XG7Plugins;
+import com.xg7plugins.xg7plugins.events.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class ScoreListener implements Listener {
+public class ScoreListener implements Event {
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
-        Score score = ScoreManager.getByPlayer(event.getPlayer());
+        Score score = XG7Plugins.getInstance().getScoreManager().getByPlayer(event.getPlayer());
         if (score == null) return;
         score.removePlayer(event.getPlayer());
     }
 
 
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

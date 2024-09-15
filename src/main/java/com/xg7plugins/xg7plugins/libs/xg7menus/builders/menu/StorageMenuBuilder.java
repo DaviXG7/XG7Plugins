@@ -1,12 +1,13 @@
 package com.xg7plugins.xg7plugins.libs.xg7menus.builders.menu;
 
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuException;
 import com.xg7plugins.xg7plugins.libs.xg7menus.Slot;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseMenuBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.ClickEvent;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.DragEvent;
-import com.xg7plugins.xg7plugins.libs.xg7menus.gui.StorageMenu;
+import com.xg7plugins.xg7plugins.libs.xg7menus.menus.gui.StorageMenu;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.SkullItemBuilder;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
 import org.bukkit.entity.Player;
@@ -63,7 +64,7 @@ public class StorageMenuBuilder extends BaseMenuBuilder<StorageMenuBuilder> {
     }
 
     @Override
-    public StorageMenu build(Player player) {
+    public StorageMenu build(Player player, Plugin plugin) {
 
         if (title == null) throw new MenuException("The inventory must have a title!");
         if (initStorageSlot == null || finalStorageSlot == null) throw new MenuException("The inventory must have a area to put storedItems!");
@@ -96,6 +97,6 @@ public class StorageMenuBuilder extends BaseMenuBuilder<StorageMenuBuilder> {
             event.setCancelled(!(clickSlot.getRow() >= initStorageSlot.getRow() && clickSlot.getRow() <= finalStorageSlot.getRow() && clickSlot.getColumn() >= initStorageSlot.getColumn() -1 && clickSlot.getColumn() <= finalStorageSlot.getColumn()));
         });
 
-        return type == null ? new StorageMenu(Text.format(title).getWithPlaceholders(player), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player, initStorageSlot, finalStorageSlot, storageItems) : new StorageMenu(Text.format(title).getWithPlaceholders(player), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player, initStorageSlot, finalStorageSlot, storageItems);
+        return type == null ? new StorageMenu(Text.format(title,plugin).getWithPlaceholders(player), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player, initStorageSlot, finalStorageSlot, storageItems) : new StorageMenu(Text.format(title,plugin).getWithPlaceholders(player), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player, initStorageSlot, finalStorageSlot, storageItems);
     }
 }

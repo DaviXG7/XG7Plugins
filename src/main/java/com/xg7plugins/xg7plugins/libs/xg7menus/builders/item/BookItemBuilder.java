@@ -1,6 +1,7 @@
 package com.xg7plugins.xg7plugins.libs.xg7menus.builders.item;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuException;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
@@ -19,23 +20,23 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.NotNull;
 
 public class BookItemBuilder extends BaseItemBuilder<BookItemBuilder> {
-    public BookItemBuilder() {
-        super(new ItemStack(Material.WRITTEN_BOOK));
+    public BookItemBuilder(Plugin plugin) {
+        super(new ItemStack(Material.WRITTEN_BOOK),plugin);
         title("Blank");
         author("None");
     }
-    public BookItemBuilder(ItemStack book) {
-        super(book);
+    public BookItemBuilder(ItemStack book,Plugin plugin) {
+        super(book,plugin);
         title("Blank");
         author("None");
     }
 
-    public static @NotNull BookItemBuilder from(@NotNull ItemStack book) {
+    public static @NotNull BookItemBuilder from(@NotNull ItemStack book,Plugin plugin) {
         if (!book.getType().equals(Material.WRITTEN_BOOK)) throw new MenuException("This item isn't a writable book!");
-        return new BookItemBuilder(book);
+        return new BookItemBuilder(book,plugin);
     }
-    public static @NotNull BookItemBuilder builder() {
-        return new BookItemBuilder();
+    public static @NotNull BookItemBuilder builder(Plugin plugin) {
+        return new BookItemBuilder(plugin);
     }
     public BookItemBuilder title(String title) {
         BookMeta meta = (BookMeta) this.itemStack.getItemMeta();

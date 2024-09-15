@@ -1,6 +1,7 @@
 package com.xg7plugins.xg7plugins.libs.xg7scores.scores;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.libs.xg7scores.Score;
 import com.xg7plugins.xg7plugins.libs.xg7scores.ScoreCondition;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
@@ -12,6 +13,15 @@ import org.bukkit.entity.Player;
 
 public class Tablist extends Score {
 
+    private static ReflectionObject packetPlayOutListHeaderFooter;
+
+    static {
+        try {
+            packetPlayOutListHeaderFooter = NMSUtil.getNMSClass("PacketPlayOutPlayerListHeaderFooter").newInstance();
+        } catch (Exception ignored) {
+            //Not is the version
+        }
+    }
 
     private String[] header;
     private String[] footer;
@@ -19,8 +29,8 @@ public class Tablist extends Score {
     private String playerPrefix;
     private String playerSuffix;
 
-    public Tablist(long delay, String[] header, String[] footer, String playerPrefix, String playerSuffix, String id, ScoreCondition condition) {
-        super(delay, header.length > footer.length ? header : footer, id, condition);
+    public Tablist(long delay, String[] header, String[] footer, String playerPrefix, String playerSuffix, String id, ScoreCondition condition, Plugin plugin) {
+        super(delay, header.length > footer.length ? header : footer, id, condition, plugin);
         if (XG7Plugins.getMinecraftVersion() < 8) throw new RuntimeException("This version doesn't support Tablist");
         this.header = header;
         this.footer = footer;
@@ -32,11 +42,11 @@ public class Tablist extends Score {
     @Override
     public void update() {
         for (Player player : super.getPlayers()) {
-            player.setPlayerListName(Text.format(playerPrefix).getWithPlaceholders(player) + player.getName() + Text.format(playerSuffix).getWithPlaceholders(player));
+            player.setPlayerListName(Text.format(playerPrefix,plugin).getWithPlaceholders(player) + player.getName() + Text.format(playerSuffix,plugin).getWithPlaceholders(player));
             String headerl = header.length <= super.getIndexUpdating() ? header[header.length - 1] : header[super.getIndexUpdating()];
             String footerl = footer.length <= super.getIndexUpdating() ? footer[footer.length - 1] : footer[super.getIndexUpdating()];
 
-            send(player, Text.format(headerl).getText(), Text.format(footerl).getText());
+            send(player, Text.format(headerl,plugin).getText(), Text.format(footerl,plugin).getText());
         }
     }
 
@@ -51,8 +61,6 @@ public class Tablist extends Score {
             player.setPlayerListFooter(footer);
             return;
         }
-
-        ReflectionObject packetPlayOutListHeaderFooter = NMSUtil.getNMSClass("PacketPlayOutPlayerListHeaderFooter").newInstance();
 
         packetPlayOutListHeaderFooter.setField("a",NMSUtil.getNMSClass("ChatComponentText").getConstructor(String.class).newInstance(header));
         packetPlayOutListHeaderFooter.setField("b",NMSUtil.getNMSClass("ChatComponentText").getConstructor(String.class).newInstance(footer));
