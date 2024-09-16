@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 @AllArgsConstructor
@@ -12,9 +13,16 @@ public class ReflectionMethod {
     private Object object;
     private Method method;
 
-    @SneakyThrows
     public <T> T invoke(Object... args) {
-        return (T) this.method.invoke(object, args);
+        try {
+            return (T) this.method.invoke(object, args);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
     @SneakyThrows
     public ReflectionObject invokeToRObject(Object... args) {

@@ -1,7 +1,7 @@
 package com.xg7plugins.xg7plugins.boot;
 
 import com.xg7plugins.xg7plugins.commands.CommandManager;
-import com.xg7plugins.xg7plugins.commands.interfaces.ICommand;
+import com.xg7plugins.xg7plugins.commands.setup.ICommand;
 import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.data.config.Configs;
 import com.xg7plugins.xg7plugins.data.lang.LangManager;
@@ -9,7 +9,6 @@ import com.xg7plugins.xg7plugins.events.Event;
 import com.xg7plugins.xg7plugins.utils.Log;
 import lombok.*;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;

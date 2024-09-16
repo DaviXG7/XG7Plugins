@@ -69,9 +69,9 @@ public class Text {
     public static Text format(String text, Plugin plugin) {
         return new Text(text,plugin);
     }
-    public static com.xg7plugins.xg7plugins.utils.Text.TextComponent fromConfig(Config config, String path) {
-        Text text1 = new Text(config.get(path), config.getPlugin());
-        return new com.xg7plugins.xg7plugins.utils.Text.TextComponent(text1.getText(),config.getPlugin());
+    public static com.xg7plugins.xg7plugins.utils.Text.TextComponent formatComponent(String text, Plugin plugin) {
+        Text text1 = new Text(text, plugin);
+        return new com.xg7plugins.xg7plugins.utils.Text.TextComponent(text1.getText(),plugin);
     }
 
     public String getWithPlaceholders(Player player) {
@@ -87,23 +87,27 @@ public class Text {
             textToTraslate = textToTraslate.replace(textToTraslate.substring(matcher.start(), matcher.end()), entity.getString(lang));
         }
 
+        textToTraslate = textToTraslate.replace("[PLAYER]", player.getName());
 
         return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, textToTraslate) : textToTraslate;
     }
 
     public static String getWithPlaceholders(Plugin plugin, String text, Player player) {
 
-        YamlConfiguration entity = plugin.getLangManager().getLangByPlayer(player.getUniqueId(),player.getLocale());
+        YamlConfiguration entity = plugin.getLangManager().getLangByPlayer(player.getUniqueId(), XG7Plugins.getMinecraftVersion() >= 12 ? player.getLocale() : PlayerNMS.cast(player).getCraftPlayerHandle().getField("locale"));
 
-        Matcher matcher = LANG_PATTERN.matcher(text);
+        String textToTraslate = text;
+
+        Matcher matcher = LANG_PATTERN.matcher(textToTraslate);
 
         while (matcher.find()) {
-            String lang = matcher.group(0);
-            text = text.replace(text.substring(matcher.start(), matcher.end()), entity.getString(lang));
+            String lang = matcher.group(1);
+            textToTraslate = textToTraslate.replace(textToTraslate.substring(matcher.start(), matcher.end()), entity.getString(lang));
         }
 
+        textToTraslate = textToTraslate.replace("[PLAYER]", player.getName());
 
-        return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, text) : text;
+        return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, textToTraslate) : textToTraslate;
     }
 
 
@@ -144,6 +148,8 @@ public class Text {
 
         if (XG7Plugins.getMinecraftVersion() < 8) return;
 
+        if (XG7Plugins.getInstance().getScoreManager().getSendActionBlackList().contains(player.getUniqueId())) return;
+
         String finalText = getWithPlaceholders(player);
 
         if (text.startsWith("[ACTION] ")) {
@@ -156,7 +162,7 @@ public class Text {
             return;
         }
 
-        ReflectionObject chatComponent = NMSUtil.getNMSClass("IChatBaseComponent").getConstructor(String.class).newInstance(finalText);
+        ReflectionObject chatComponent = NMSUtil.getNMSClass("ChatComponentText").getConstructor(String.class).newInstance(finalText);
 
         packetPlayOutChat.setField("a",chatComponent.getObject());
         packetPlayOutChat.setField("b",(byte) 2);

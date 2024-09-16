@@ -1,4 +1,4 @@
-package com.xg7plugins.xg7plugins.commands.interfaces;
+package com.xg7plugins.xg7plugins.commands.setup;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;

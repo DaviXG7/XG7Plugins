@@ -48,6 +48,14 @@ public class TaskManager {
         tasksRunning.remove(plugin);
     }
 
+    public void disable(Plugin plugin) {
+        tasksRunning.get(plugin).values().forEach(task -> task.cancel(false));
+        tasksRunning.remove(plugin);
+    }
+    public void disable() {
+        executor.shutdownNow();
+    }
+
 
 
 

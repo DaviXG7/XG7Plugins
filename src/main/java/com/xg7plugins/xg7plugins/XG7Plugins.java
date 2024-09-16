@@ -7,7 +7,7 @@ import com.xg7plugins.xg7plugins.libs.xg7menus.listeners.MenuListener;
 import com.xg7plugins.xg7plugins.libs.xg7menus.listeners.PlayerMenuListener;
 import com.xg7plugins.xg7plugins.libs.xg7scores.ScoreManager;
 import com.xg7plugins.xg7plugins.boot.Plugin;
-import com.xg7plugins.xg7plugins.commands.interfaces.ICommand;
+import com.xg7plugins.xg7plugins.commands.setup.ICommand;
 import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.data.database.DBManager;
 import com.xg7plugins.xg7plugins.events.Event;
@@ -28,13 +28,23 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Getter(AccessLevel.PUBLIC)
 public final class XG7Plugins extends Plugin {
 
     private static XG7Plugins instance;
 
     @Getter
-    private static final int minecraftVersion = Integer.parseInt(Bukkit.getServer().getVersion().split("\\.")[1].replace(")", ""));
+    private static final int minecraftVersion;
+
+    static {
+        Pattern pattern = Pattern.compile("1\\.([0-9]?[0-9])");
+        Matcher matcher = pattern.matcher(Bukkit.getServer().getVersion());
+        matcher.find();
+        minecraftVersion = Integer.parseInt(matcher.group(1));
+    }
 
     private DBManager databaseManager;
     private EventManager eventManager;
@@ -42,6 +52,9 @@ public final class XG7Plugins extends Plugin {
     private ScoreManager scoreManager;
     private Object packetEventManager;
     private MenuManager menuManager;
+
+    private final List<Event> events = Arrays.asList(new InicializePacketEvents(), new MenuListener(), new PlayerMenuListener());
+    private final List<Config> configs = Collections.singletonList(new Config(this, "config"));
 
     private final HashMap<String, Plugin> plugins = new HashMap<>();
 
@@ -68,6 +81,8 @@ public final class XG7Plugins extends Plugin {
     @Override
     public void onDisable() {
         Bukkit.getOnlinePlayers().forEach(player -> ReflectionObject.of(packetEventManager).getMethod("stopEvent", Player.class).invoke(player));
+        taskManager.disable();
+
     }
 
     @Override
@@ -82,12 +97,12 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public List<Config> getConfigs() {
-        return Arrays.asList(new Config(this, "config"));
+        return configs;
     }
 
     @Override
     public List<Event> getEvents() {
-        return Arrays.asList(new InicializePacketEvents(), new MenuListener(), new PlayerMenuListener());
+        return events;
     }
 
     @Override

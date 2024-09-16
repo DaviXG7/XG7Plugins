@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 public class TextComponent {
 
-    private static final Pattern pattern = Pattern.compile("\\[(CLICK|HOVER|CLICKHOVER)(.*?)](.*?)\\[/\\1]", Pattern.DOTALL);
+    private static final Pattern pattern = Pattern.compile("\\[(CLICK|HOVER|CLICKHOVER) (.*?)](.*?)\\[/\\1]", Pattern.DOTALL);
     private static final Pattern value = Pattern.compile("value=%(.*?)%");
     private static final Pattern textP = Pattern.compile("text=%(.*?)%");
     private static final Pattern action = Pattern.compile("action=%(.*?)%");
@@ -27,11 +27,14 @@ public class TextComponent {
     private final String text;
     private final String rawText;
 
-    private Plugin plugin;
+    private final Plugin plugin;
 
     public TextComponent(String text, Plugin plugin) {
 
         String rawText = text.replaceAll("\\[(CLICK|HOVER|CLICKHOVER)(.*?)](.*?)\\[/\\1]", "$3");
+        if (!rawText.equals(text) && XG7Plugins.getMinecraftVersion() < 8) {
+            plugin.getLog().warn("Versions lower than 1.8 don't have support to clickable or hover tags!");
+        }
 
         if (rawText.startsWith("[CENTER] ")) rawText = rawText.substring(9);
 
@@ -44,9 +47,8 @@ public class TextComponent {
 
     public void send(Player player) {
 
-        String transletedRawText = Text.getWithPlaceholders(plugin,rawText,player);
-
-        String transletedText = Text.getSpacesCentralized(Text.PixelsSize.CHAT.getPixels(), transletedRawText) + Text.getWithPlaceholders(plugin,text,player);
+        String transletedRawText = Text.getWithPlaceholders(plugin, rawText, player);
+        String transletedText = Text.getSpacesCentralized(Text.PixelsSize.CHAT.getPixels(), transletedRawText) + Text.getWithPlaceholders(plugin, text, player);
 
         if (XG7Plugins.getMinecraftVersion() < 8) {
             player.sendMessage(transletedRawText);
@@ -54,24 +56,19 @@ public class TextComponent {
         }
 
         Matcher matcher = pattern.matcher(transletedText);
-
         int lastIndex = 0;
-
-        ComponentBuilder builder = new ComponentBuilder();
+        ComponentBuilder builder = new ComponentBuilder("");
 
         while (matcher.find()) {
-
-            if (lastIndex < matcher.start()) {
-
-                String noTagText = transletedText.substring(lastIndex, matcher.start());
-                builder.append(noTagText);
+            if (matcher.start() > lastIndex) {
+                String outsideText = transletedText.substring(lastIndex, matcher.start());
+                builder.append(outsideText).reset();
             }
 
             String tagName = matcher.group(1);
             String attributes = matcher.group(2).trim();
             String content = matcher.group(3).trim();
-
-            net.md_5.bungee.api.chat.TextComponent textComponent = new net.md_5.bungee.api.chat.TextComponent(content);
+            builder.append(content);
 
             Matcher valMatch = value.matcher(attributes);
             Matcher textMatch = textP.matcher(attributes);
@@ -80,50 +77,36 @@ public class TextComponent {
             switch (tagName) {
                 case "CLICK":
                     if (!valMatch.find() || !actionMatch.find()) {
-                        XG7Plugins.getInstance().getLog().warn("Click tag with content " + content + " have a syntax error!");
+                        XG7Plugins.getInstance().getLog().warn("Click tag with content " + content + " has a syntax error!");
                         return;
                     }
-
-
-                    textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.valueOf(actionMatch.group(0)), valMatch.group(0)));
-
-                    builder.append(textComponent);
-                    continue;
+                    builder.event(new ClickEvent(ClickEvent.Action.valueOf(actionMatch.group(1)), valMatch.group(1)));
+                    break;
 
                 case "HOVER":
                     if (!textMatch.find()) {
-                        XG7Plugins.getInstance().getLog().warn("Hover tag with content " + content + " have a syntax error!");
+                        XG7Plugins.getInstance().getLog().warn("Hover tag with content " + content + " has a syntax error!");
                         return;
                     }
+                    builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(textMatch.group(1)).create()));
+                    break;
 
-
-                    textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.hover.content.Text(textMatch.group(0))));
-
-                    builder.append(textComponent);
-                    continue;
                 case "CLICKHOVER":
                     if (!valMatch.find() || !actionMatch.find() || !textMatch.find()) {
-                        XG7Plugins.getInstance().getLog().warn("Click and hover tag with content " + content + " have a syntax error!");
+                        XG7Plugins.getInstance().getLog().warn("Click and hover tag with content " + content + " has a syntax error!");
                         return;
                     }
-
-
-                    textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.hover.content.Text(textMatch.group(0))));
-
-                    textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.valueOf(actionMatch.group(0)), valMatch.group(0)));
-
-                    builder.append(textComponent);
-                    continue;
-
-
+                    builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(textMatch.group(1)).create()));
+                    builder.event(new ClickEvent(ClickEvent.Action.valueOf(actionMatch.group(1)), valMatch.group(1)));
+                    break;
             }
 
             lastIndex = matcher.end();
         }
 
-        if (lastIndex < text.length()) {
-            String noTagText = transletedText.substring(lastIndex, matcher.start());
-            builder.append(noTagText);
+        if (lastIndex < transletedText.length()) {
+            String remainingText = transletedText.substring(lastIndex);
+            builder.append(remainingText).reset();
         }
 
         player.spigot().sendMessage(builder.create());

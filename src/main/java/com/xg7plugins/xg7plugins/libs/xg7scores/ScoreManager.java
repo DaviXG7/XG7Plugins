@@ -50,7 +50,9 @@ public class ScoreManager {
             scoreboards.values().forEach(score -> {
 
                         Bukkit.getOnlinePlayers().forEach(p -> {
-                            if (score.getCondition().condition(p)) score.addPlayer(p);
+                            if (score.getCondition().condition(p)) {
+                                score.addPlayer(p);
+                            }
                             else if (score.getPlayers().contains(p)) score.removePlayer(p);
                         });
 

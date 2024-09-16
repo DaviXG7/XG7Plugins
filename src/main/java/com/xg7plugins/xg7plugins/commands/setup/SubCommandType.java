@@ -1,4 +1,4 @@
-package com.xg7plugins.xg7plugins.commands.interfaces;
+package com.xg7plugins.xg7plugins.commands.setup;
 
 public enum SubCommandType {
 

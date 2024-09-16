@@ -27,7 +27,6 @@ public class LegacyBossBar extends Score {
 
     private static final ReflectionObject packetPlayOutEntityTeleport = NMSUtil.getNMSClass("PacketPlayOutEntityTeleport").newInstance();
     private static final ReflectionObject packetPlayOutEntityMetadata = NMSUtil.getNMSClass("PacketPlayOutEntityMetadata").newInstance();
-    private static final ReflectionObject dataWatcher = NMSUtil.getNMSClass("DataWatcher").getConstructor(NMSUtil.getNMSClass("Entity").getAClass()).newInstance(NMSUtil.getNMSClass("Entity").cast(null));
 
     @SneakyThrows
     public LegacyBossBar(long delay, String[] text, String id, ScoreCondition condition, float healthPercent, Plugin plugin) {
@@ -36,10 +35,10 @@ public class LegacyBossBar extends Score {
         XG7Plugins.getInstance().getScoreManager().registerScore(this);
     }
 
-    @SneakyThrows
     @Override
     public void addPlayer(Player player) {
         if (!super.getPlayers().contains(player)) {
+
             super.addPlayer(player);
 
             ReflectionObject wither = NMSUtil.getNMSClass("EntityWither")
@@ -48,11 +47,12 @@ public class LegacyBossBar extends Score {
 
             ReflectionObject packet = NMSUtil.getNMSClass("PacketPlayOutSpawnEntityLiving")
                     .getConstructor(NMSUtil.getNMSClass("EntityLiving").getAClass())
-                    .newInstance(wither);
+                    .newInstance(wither.getObject());
+
+            ReflectionObject dataWatcher =  NMSUtil.getNMSClass("DataWatcher").getConstructor(NMSUtil.getNMSClass("Entity").getAClass()).newInstance(NMSUtil.getNMSClass("Entity").cast(null));
 
             ReflectionMethod aMethod = dataWatcher.getMethod("a", int.class, Object.class);
-
-            aMethod.invoke( 6, (healthPercent * 200) / 100);
+            aMethod.invoke(6, (healthPercent * 200) / 100);
 
             aMethod.invoke( 10, getToUpdate()[0]);
             aMethod.invoke( 2, getToUpdate()[0]);
@@ -75,9 +75,9 @@ public class LegacyBossBar extends Score {
             PlayerNMS playerNMS = PlayerNMS.cast(player);
 
             playerNMS.sendPacket(packet.getObject());
+
             playerNMS.sendPacket(packetPlayOutEntityMetadata.getObject());
         }
-
 
     }
 
@@ -85,7 +85,6 @@ public class LegacyBossBar extends Score {
     @Override
     public void removePlayer(Player player) {
         super.removePlayer(player);
-
 
         ReflectionObject packet = NMSUtil.getNMSClass("PacketPlayOutEntityDestroy").
                 getConstructor(int[].class).newInstance(new int[]{entities.get(player.getUniqueId())});
@@ -116,12 +115,14 @@ public class LegacyBossBar extends Score {
 
             PlayerNMS playerNMS = PlayerNMS.cast(player);
 
-            playerNMS.sendPacket(packetPlayOutEntityTeleport);
+            playerNMS.sendPacket(packetPlayOutEntityTeleport.getObject());
+
+            ReflectionObject dataWatcher =  NMSUtil.getNMSClass("DataWatcher").getConstructor(NMSUtil.getNMSClass("Entity").getAClass()).newInstance(NMSUtil.getNMSClass("Entity").cast(null));
 
             ReflectionMethod aMethod = dataWatcher.getMethod("a", int.class, Object.class);
 
-            aMethod.invoke( 10, Text.format(getToUpdate()[getIndexUpdating()],plugin).getWithPlaceholders(player));
-            aMethod.invoke( 2, Text.format(getToUpdate()[getIndexUpdating()],plugin).getWithPlaceholders(player));
+            aMethod.invoke(10, Text.format(getToUpdate()[getIndexUpdating()],plugin).getWithPlaceholders(player));
+            aMethod.invoke(2, Text.format(getToUpdate()[getIndexUpdating()],plugin).getWithPlaceholders(player));
 
             packetPlayOutEntityMetadata.setField("a", entities.get(player.getUniqueId()));
             packetPlayOutEntityMetadata.setField("b", dataWatcher.getMethod("c").invoke());

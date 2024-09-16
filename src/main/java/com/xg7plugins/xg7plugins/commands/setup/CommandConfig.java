@@ -1,4 +1,4 @@
-package com.xg7plugins.xg7plugins.commands.interfaces;
+package com.xg7plugins.xg7plugins.commands.setup;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

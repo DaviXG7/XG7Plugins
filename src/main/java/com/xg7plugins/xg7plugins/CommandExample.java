@@ -1,6 +1,6 @@
 package com.xg7plugins.xg7plugins;
 
-import com.xg7plugins.xg7plugins.commands.interfaces.*;
+import com.xg7plugins.xg7plugins.commands.setup.*;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;

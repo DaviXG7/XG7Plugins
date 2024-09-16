@@ -2,7 +2,7 @@ package com.xg7plugins.xg7plugins.commands;
 
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.XG7Plugins;
-import com.xg7plugins.xg7plugins.commands.interfaces.*;
+import com.xg7plugins.xg7plugins.commands.setup.*;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionClass;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionMethod;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
@@ -42,6 +42,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             }
 
             CommandSetup commandSetup = command.getClass().getAnnotation(CommandSetup.class);
+
 
             PluginCommand pluginCommand = (PluginCommand) ReflectionClass.of(PluginCommand.class)
                     .getConstructor(String.class, org.bukkit.plugin.Plugin.class)
