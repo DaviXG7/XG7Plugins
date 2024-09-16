@@ -55,5 +55,6 @@ public abstract class Plugin extends JavaPlugin {
     public abstract List<Config> getConfigs();
     public abstract List<Event> getEvents();
     public abstract List<Event> getPacketEvents();
+    public abstract String[] dependencies();
 
 }

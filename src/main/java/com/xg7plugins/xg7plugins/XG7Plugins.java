@@ -110,6 +110,11 @@ public final class XG7Plugins extends Plugin {
         return Collections.emptyList();
     }
 
+    @Override
+    public String[] dependencies() {
+        return new String[0];
+    }
+
     public static void register(Plugin plugin) {
         XG7Plugins xg7Plugins = XG7Plugins.getInstance();
 
