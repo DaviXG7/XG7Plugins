@@ -6,12 +6,14 @@ import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.data.config.Configs;
 import com.xg7plugins.xg7plugins.data.lang.LangManager;
 import com.xg7plugins.xg7plugins.events.Event;
+import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseMenu;
 import com.xg7plugins.xg7plugins.utils.Log;
 import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 @Getter
@@ -38,9 +40,9 @@ public abstract class Plugin extends JavaPlugin {
 
         this.prefix = prefix;
         this.customPrefix = prefix;
-        this.commandManager = new CommandManager(this);
         this.configsManager = new Configs(this);
         this.langManager = new LangManager(this);
+        this.commandManager = new CommandManager(this);
         this.log = new Log(this, false);
     }
 

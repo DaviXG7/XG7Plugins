@@ -1,5 +1,6 @@
 package com.xg7plugins.xg7plugins;
 
+import com.xg7plugins.xg7plugins.commands.defaultCommands.LangCommand;
 import com.xg7plugins.xg7plugins.data.database.EntityProcessor;
 import com.xg7plugins.xg7plugins.data.lang.LangEntity;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuManager;
@@ -23,10 +24,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,8 +51,9 @@ public final class XG7Plugins extends Plugin {
     private Object packetEventManager;
     private MenuManager menuManager;
 
-    private final List<Event> events = Arrays.asList(new InicializePacketEvents(), new MenuListener(), new PlayerMenuListener());
-    private final List<Config> configs = Collections.singletonList(new Config(this, "config"));
+    private List<Event> events;
+    private List<ICommand> commands;
+    private List<Config> configs;
 
     private final HashMap<String, Plugin> plugins = new HashMap<>();
 
@@ -92,16 +91,19 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public List<ICommand> getCommands() {
-        return Collections.emptyList();
+        if (commands == null) commands = Arrays.asList(new LangCommand());
+        return commands;
     }
 
     @Override
     public List<Config> getConfigs() {
+        if (configs == null) configs = Arrays.asList(new Config(this, "config"),new Config(this, "commands"));
         return configs;
     }
 
     @Override
     public List<Event> getEvents() {
+        if (events == null) events = Arrays.asList(new InicializePacketEvents(), new MenuListener(), new PlayerMenuListener());
         return events;
     }
 

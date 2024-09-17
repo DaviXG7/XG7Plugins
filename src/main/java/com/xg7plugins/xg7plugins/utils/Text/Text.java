@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 @Getter
 public class Text {
 
-    private static final Pattern GRADIENT_PATTERN = Pattern.compile("\\[g#([0-9a-fA-F]{6})\\](.*)\\[/g#([0-9a-fA-F]{6})\\]");
+    private static final Pattern GRADIENT_PATTERN = Pattern.compile("\\[g#([0-9a-fA-F]{6})\\](.*?)\\[/g#([0-9a-fA-F]{6})\\]");
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
     private static final Pattern LANG_PATTERN = Pattern.compile("lang:\\[([A-Za-z0-9\\.]*)\\]");
 
@@ -51,8 +51,9 @@ public class Text {
     private final Plugin plugin;
 
     public Text(String text, Plugin plugin) {
+        this.text = text;
         if (XG7Plugins.getMinecraftVersion() >= 16) {
-            text = applyGradients();
+            applyGradients();
             Matcher matcher = HEX_PATTERN.matcher(text);
             while (matcher.find()) {
                 String color = text.substring(matcher.start(), matcher.end());
@@ -84,6 +85,10 @@ public class Text {
 
         while (matcher.find()) {
             String lang = matcher.group(1);
+            if (entity.getString(lang) == null) {
+                textToTraslate = textToTraslate.replace(textToTraslate.substring(matcher.start(), matcher.end()), plugin.getLangManager().getLang(plugin.getLangManager().getMainLang()).getString(lang));
+                break;
+            }
             textToTraslate = textToTraslate.replace(textToTraslate.substring(matcher.start(), matcher.end()), entity.getString(lang));
         }
 
@@ -172,7 +177,7 @@ public class Text {
     }
 
     public static String getCentralizedText(int pixels, String text) {
-        return getCentralizedSpaces(pixels,text) + text;
+        return getSpacesCentralized(pixels,text) + text;
 
     }
 
@@ -244,9 +249,6 @@ public class Text {
 
         return builder.toString();
 
-    }
-    public static String getCentralizedSpaces(int pixels, String text) {
-        return getCentralizedText(pixels,text).replace(text, "");
     }
 
     private double[] linear(double from, double to, int max) {

@@ -3,6 +3,7 @@ package com.xg7plugins.xg7plugins.commands;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.commands.setup.*;
+import com.xg7plugins.xg7plugins.utils.Text.Text;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionClass;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionMethod;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
@@ -43,15 +44,19 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
             CommandSetup commandSetup = command.getClass().getAnnotation(CommandSetup.class);
 
+            String aliases = plugin.getConfigsManager().getConfig("commands").get(commandSetup.aliasesPath());
+            if (aliases == null) break;
 
             PluginCommand pluginCommand = (PluginCommand) ReflectionClass.of(PluginCommand.class)
                     .getConstructor(String.class, org.bukkit.plugin.Plugin.class)
                     .newInstance(commandSetup.name(), plugin)
                     .getObject();
 
+            if (!aliases.isEmpty()) pluginCommand.setAliases(Arrays.asList(aliases.split(", ")));
+
+
             pluginCommand.setExecutor(this);
-            pluginCommand.setAliases(Arrays.asList(commandSetup.aliases()));
-            pluginCommand.setDescription(commandSetup.description());
+            pluginCommand.setDescription(plugin.getLangManager().getLang(plugin.getLangManager().getMainLang()).getString(commandSetup.descriptionPath() + ".desc"));
             pluginCommand.setUsage(commandSetup.syntax());
             pluginCommand.setTabCompleter(this);
             commandMap.register(commandSetup.name(), pluginCommand);
@@ -74,7 +79,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             if (processSubCommands(commandSender, command.getSubCommands(), strings, s, 0)) return;
 
             if (strings.length != 0) {
-                //Syntax Error
+                Text.format("lang:[commands.syntax-error]",plugin);
                 return;
             }
 
@@ -82,17 +87,18 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 CommandConfig commandConfig = ReflectionMethod.of(command, "onCommand", cmd.getClass(), commandSender.getClass(), s.getClass()).getAnnotation(CommandConfig.class);
 
                 if (commandConfig != null) {
+
                     if (!commandSender.hasPermission(commandConfig.perm())) {
-                        //Fazer coisa de pegar na config permissão
+                        Text.format("lang:[commands.no-permission]",plugin);
                         return;
                     }
                     if (commandConfig.isOnlyPlayer() && !(commandSender instanceof Player)) {
-                        //Fazer coisa pra pegar na config player
+                        Text.format("lang:[commands.not-a-player]",plugin);
                         return;
                     }
                     if (commandSender instanceof Player) {
                         if (!commandConfig.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) commandSender).getWorld().getName()) && !plugin.getEnabledWorlds().isEmpty()) {
-                            //Mensagem de não no mundo
+                            Text.format("lang:[commands.disabled-world]",plugin);
                             return;
                         }
                     }
@@ -128,16 +134,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         }
                         if (subCommand.getSubCommands().length != 0) return processSubCommands(sender, subCommand.getSubCommands(), args, label, argsIndex + 1);
                         if (!sender.hasPermission(subCommandConfig.perm())) {
-                            //Fazer coisa de pegar na config permissão
+                            Text.format("lang:[commands.no-permission]",plugin);
                             return true;
                         }
                         if (subCommandConfig.isOnlyPlayer() && !(sender instanceof Player)) {
-                            //Fazer coisa pra pegar na config player
+                            Text.format("lang:[commands.not-a-player]",plugin);
                             return true;
                         }
                         if (sender instanceof Player) {
                             if (!subCommandConfig.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) sender).getWorld().getName()) && !plugin.getEnabledWorlds().isEmpty()) {
-                                //Mensagem de não no mundo
+                                Text.format("lang:[commands.disabled-world]",plugin);
                                 return true;
                             }
                         }
@@ -153,16 +159,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         }
 
                         if (!sender.hasPermission(subCommandConfig1.perm())) {
-                            //Fazer coisa de pegar na config permissão
+                            Text.format("lang:[commands.no-permission]",plugin);
                             return true;
                         }
                         if (subCommandConfig1.isOnlyPlayer() && !(sender instanceof Player)) {
-                            //Fazer coisa pra pegar na config player
+                            Text.format("lang:[commands.not-a-player]",plugin);
                             return true;
                         }
                         if (sender instanceof Player) {
                             if (!subCommandConfig1.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) sender).getWorld().getName()) && !plugin.getEnabledWorlds().isEmpty()) {
-                                //Mensagem de não no mundo
+                                Text.format("lang:[commands.disabled-world]",plugin);
                                 return true;
                             }
                         }
@@ -170,7 +176,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
 
                         if (!player.hasPlayedBefore()) {
-                            //Player nunca jogou antes
+                            Text.format("lang:[commands.never-played]",plugin);
                             return true;
                         }
 
