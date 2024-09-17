@@ -1,2 +1,39 @@
 
 locale: portugues
+
+formated-name: "Português"
+
+commands:
+  syntax-error: "Você digitou o comando de maneira errada!"
+  never-played: "Este jogador não existe ou nunca jogou antes!"
+  no-permission: "Você não tem permissão ara executar este comando!"
+  disabled-world: "Você não pode executar o comando nesse mundo!"
+  not-a-player: "Você não pode executar este comando sendo o console!"
+
+
+
+
+#Plugin defaults
+
+lang-menu:
+  title: "Idiomas"
+
+  item-click: "Clique para trocar o idioma para português"
+
+  go-back-item: "Voltar"
+  go-next-item: "Avanar"
+  close-item: "Fechar"
+
+  toggle-success: "Você trocou o idioma para português!"
+
+
+
+
+commands-menu:
+
+  lang:
+
+    desc: "Descrição: Altera a linguagem do jogador"
+    syntax: "Syntaxe: /lang"
+    perm: "Permissão: xg7plugins.command.lang"
+    if-subcommand: "Clique para ver os subcomandos!"

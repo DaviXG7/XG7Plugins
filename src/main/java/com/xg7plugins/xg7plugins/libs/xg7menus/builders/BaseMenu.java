@@ -1,5 +1,6 @@
 package com.xg7plugins.xg7plugins.libs.xg7menus.builders;
 
+import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuPermissions;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.ClickEvent;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.MenuEvent;
@@ -39,6 +40,8 @@ public abstract class BaseMenu {
         this.closeEvent = closeEvent;
         this.permissions = permissions;
         this.player = player;
+
+        XG7Plugins.getInstance().getMenuManager().getCachedMenus().put(player.getUniqueId(), this);
     }
 
 }

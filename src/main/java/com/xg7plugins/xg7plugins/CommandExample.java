@@ -9,9 +9,9 @@ import org.bukkit.inventory.ItemStack;
 
 @CommandSetup(
         name = "nomezintestezin",
-        description = "Descrição",
+        descriptionPath = "lang.path",
         syntax = "/nomezintestezin [Player]",
-        aliases = {"nmztz"}
+        aliasesPath = "nmztz"
 )
 public class CommandExample extends ICommand {
 

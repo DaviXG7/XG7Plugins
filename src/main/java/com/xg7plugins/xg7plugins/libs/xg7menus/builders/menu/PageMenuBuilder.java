@@ -98,6 +98,6 @@ public class PageMenuBuilder extends BaseMenuBuilder<PageMenuBuilder> {
                         )
                 );
 
-        return type == null ? new ItemsPageMenu(Text.format(title,plugin).getWithPlaceholders(player), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,pageItems,keepSavingPageIndex) : new ItemsPageMenu(Text.format(title,plugin).getWithPlaceholders(player), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,pageItems,keepSavingPageIndex);
+        return type == null ? new ItemsPageMenu(Text.getCentralizedText(Text.PixelsSize.INV.getPixels(),Text.format(title,plugin).getWithPlaceholders(player)), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,pageItems,keepSavingPageIndex) : new ItemsPageMenu(Text.getCentralizedText(Text.PixelsSize.INV.getPixels(),Text.format(title,plugin).getWithPlaceholders(player)), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,pageItems,keepSavingPageIndex);
     }
 }

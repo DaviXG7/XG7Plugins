@@ -6,6 +6,7 @@ lang-cache-expires: 30m
 auto-chose-lang: true
 
 task-threads: 2
+menu-cache-expires: 10m
 
 sql:
 
