@@ -24,8 +24,8 @@ public class StorageMenu extends Menu {
     private final Slot initStorageSlot;
     private final Slot finalStorageSlot;
 
-    public StorageMenu(String title, int size, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Slot initStorageSlot, Slot finalStorageSlot, Map<Integer, ItemStack> storageItems) {
-        super(title, size, items, clicks, defaultClick, openEvent, closeEvent,permissions, player);
+    public StorageMenu(String id,String title, int size, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Slot initStorageSlot, Slot finalStorageSlot, Map<Integer, ItemStack> storageItems) {
+        super(id,title, size, items, clicks, defaultClick, openEvent, closeEvent,permissions, player);
         this.initStorageSlot = initStorageSlot;
         this.finalStorageSlot = finalStorageSlot;
         this.storageItems = storageItems;
@@ -34,8 +34,8 @@ public class StorageMenu extends Menu {
 
     }
 
-    public StorageMenu(String title, InventoryType type, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Slot initStorageSlot, Slot finalStorageSlot, Map<Integer, ItemStack> storageItems) {
-        super(title, type, items, clicks, defaultClick, openEvent, closeEvent,permissions, player);
+    public StorageMenu(String id,String title, InventoryType type, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Slot initStorageSlot, Slot finalStorageSlot, Map<Integer, ItemStack> storageItems) {
+        super(id,title, type, items, clicks, defaultClick, openEvent, closeEvent,permissions, player);
         this.initStorageSlot = initStorageSlot;
         this.finalStorageSlot = finalStorageSlot;
         this.storageItems = storageItems;

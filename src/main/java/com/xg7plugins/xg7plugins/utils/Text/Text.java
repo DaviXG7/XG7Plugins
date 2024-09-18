@@ -33,7 +33,7 @@ public class Text {
 
     private static final Pattern GRADIENT_PATTERN = Pattern.compile("\\[g#([0-9a-fA-F]{6})\\](.*?)\\[/g#([0-9a-fA-F]{6})\\]");
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
-    private static final Pattern LANG_PATTERN = Pattern.compile("lang:\\[([A-Za-z0-9\\.]*)\\]");
+    private static final Pattern LANG_PATTERN = Pattern.compile("lang:\\[([A-Za-z0-9\\.-]*)\\]");
 
     private static ReflectionObject packetPlayOutChat;
 
@@ -94,7 +94,7 @@ public class Text {
 
         textToTraslate = textToTraslate.replace("[PLAYER]", player.getName());
 
-        return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, textToTraslate) : textToTraslate;
+        return Text.format(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, textToTraslate) : textToTraslate, plugin).getText();
     }
 
     public static String getWithPlaceholders(Plugin plugin, String text, Player player) {
@@ -112,7 +112,7 @@ public class Text {
 
         textToTraslate = textToTraslate.replace("[PLAYER]", player.getName());
 
-        return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, textToTraslate) : textToTraslate;
+        return Text.format(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, textToTraslate) : textToTraslate, plugin).getText();
     }
 
 
@@ -123,16 +123,28 @@ public class Text {
 
             String transleted = getWithPlaceholders((Player) sender);
 
-            text = text.replace("[PLAYER]", sender.getName());
-            if (text.startsWith("[ACTION] ")) {
+            transleted = transleted.replace("[PLAYER]", sender.getName());
+            if (transleted.startsWith("[ACTION] ")) {
                 sendActionBar(((Player) sender));
                 return;
             }
 
-            sender.sendMessage(getCentralizedText(PixelsSize.CHAT.pixels, text));
+            sender.sendMessage(getCentralizedText(PixelsSize.CHAT.pixels, transleted));
             return;
         }
-        sender.sendMessage(getCentralizedText(PixelsSize.CHAT.pixels, text));
+
+
+        String textToTraslate = text;
+
+        Matcher matcher = LANG_PATTERN.matcher(textToTraslate);
+
+        YamlConfiguration mainLang = plugin.getLangManager().getLang(plugin.getLangManager().getMainLang());
+
+        while (matcher.find()) {
+            textToTraslate = textToTraslate.replace(textToTraslate.substring(matcher.start(), matcher.end()), mainLang.getString(matcher.group(1)));
+        }
+
+        sender.sendMessage(getCentralizedText(PixelsSize.CHAT.pixels, textToTraslate));
     }
 
     @SneakyThrows

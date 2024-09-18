@@ -20,8 +20,8 @@ public class PlayerMenu extends BaseMenu {
 
     private final Map<Integer, ItemStack> oldItems = new HashMap<>();
 
-    public PlayerMenu(Consumer<ClickEvent> defaultClickEvent, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clickEvents, EnumSet<MenuPermissions> permissions, Player player) {
-        super(defaultClickEvent, openEvent, closeEvent, items, clickEvents,permissions,player);
+    public PlayerMenu(String id,Consumer<ClickEvent> defaultClickEvent, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clickEvents, EnumSet<MenuPermissions> permissions, Player player) {
+        super(id,defaultClickEvent, openEvent, closeEvent, items, clickEvents,permissions,player);
     }
     public void give() {
         IntStream.range(0, player.getInventory().getSize()).filter(i -> player.getInventory().getItem(i) != null).forEach(i -> oldItems.put(i, player.getInventory().getItem(i)));

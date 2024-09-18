@@ -13,9 +13,13 @@ import java.util.stream.Collectors;
 
 public class PlayerMenuBuilder extends BaseMenuBuilder<PlayerMenuBuilder> {
 
+    public PlayerMenuBuilder(String id) {
+        super(id);
+    }
+
     @Override
     public PlayerMenu build(Player player, Plugin plugin) {
-        return new PlayerMenu(defaultClickEvent,openMenuEvent,closeMenuEvent,items.entrySet().stream()
+        return new PlayerMenu(id,defaultClickEvent,openMenuEvent,closeMenuEvent,items.entrySet().stream()
                 .collect(
                         Collectors.toMap(
                                 Map.Entry::getKey,

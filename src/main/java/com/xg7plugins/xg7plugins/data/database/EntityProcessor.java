@@ -9,6 +9,7 @@ import java.lang.reflect.Type;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class EntityProcessor {
 
@@ -32,7 +33,7 @@ public class EntityProcessor {
 
         DBManager manager = XG7Plugins.getInstance().getDatabaseManager();
 
-        manager.executor.submit(() -> {
+        CompletableFuture.runAsync(() -> {
             StringBuilder builder = new StringBuilder();
             builder.append("CREATE TABLE IF NOT EXISTS " + clazz.getSimpleName() + "(");
             Class<?> oneToManyClass = null;
@@ -83,14 +84,14 @@ public class EntityProcessor {
             manager.executeUpdate(plugin,builder.toString());
             if (oneToManyClass != null) createTableOf(plugin, oneToManyClass);
 
-        });
+        },XG7Plugins.getInstance().getExecutor());
     }
 
     public static void insetEntity(Plugin plugin, Entity entity) {
 
         DBManager manager = XG7Plugins.getInstance().getDatabaseManager();
 
-        manager.executor.submit(() -> {
+        CompletableFuture.runAsync(() -> {
             StringBuilder builder = new StringBuilder();
             builder.append("INSERT INTO " + entity.getClass().getSimpleName() + " VALUES (");
 
@@ -124,7 +125,7 @@ public class EntityProcessor {
             manager.executeUpdate(plugin, builder.toString(), args.toArray());
             if (!childs.isEmpty()) childs.forEach(item -> insetEntity(plugin, ((Entity) item)));
 
-        });
+        },XG7Plugins.getInstance().getExecutor());
     }
 
 }

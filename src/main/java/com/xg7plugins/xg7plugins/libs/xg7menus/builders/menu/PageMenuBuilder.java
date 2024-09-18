@@ -33,6 +33,10 @@ public class PageMenuBuilder extends BaseMenuBuilder<PageMenuBuilder> {
     private Slot finalSlot;
     private boolean keepSavingPageIndex = false;
 
+    public PageMenuBuilder(String id) {
+        super(id);
+    }
+
     public PageMenuBuilder title(String title) {
         this.title = title;
         return this;
@@ -98,6 +102,6 @@ public class PageMenuBuilder extends BaseMenuBuilder<PageMenuBuilder> {
                         )
                 );
 
-        return type == null ? new ItemsPageMenu(Text.getCentralizedText(Text.PixelsSize.INV.getPixels(),Text.format(title,plugin).getWithPlaceholders(player)), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,pageItems,keepSavingPageIndex) : new ItemsPageMenu(Text.getCentralizedText(Text.PixelsSize.INV.getPixels(),Text.format(title,plugin).getWithPlaceholders(player)), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,pageItems,keepSavingPageIndex);
+        return type == null ? new ItemsPageMenu(id,Text.getCentralizedText(Text.PixelsSize.INV.getPixels(),Text.format(title,plugin).getWithPlaceholders(player)), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,pageItems,keepSavingPageIndex) : new ItemsPageMenu(id,Text.getCentralizedText(Text.PixelsSize.INV.getPixels(),Text.format(title,plugin).getWithPlaceholders(player)), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,pageItems,keepSavingPageIndex);
     }
 }

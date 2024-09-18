@@ -1,5 +1,6 @@
 package com.xg7plugins.xg7plugins.libs.xg7menus.menus.gui;
 
+import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuPermissions;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseMenu;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.ClickEvent;
@@ -22,13 +23,13 @@ public class Menu extends BaseMenu implements InventoryHolder {
 
     protected Inventory inventory;
 
-    public Menu(String title, int size, Map<Integer, ItemStack> items, Map<Integer,Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player) {
-        super(defaultClick,openEvent,closeEvent,items,clicks,permissions,player);
+    public Menu(String id, String title, int size, Map<Integer, ItemStack> items, Map<Integer,Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player) {
+        super(id,defaultClick,openEvent,closeEvent,items,clicks,permissions,player);
         this.inventory = Bukkit.createInventory(this, size, title);
         update();
     }
-    public Menu(String title, InventoryType type, Map<Integer, ItemStack> items, Map<Integer,Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player) {
-        super(defaultClick, openEvent, closeEvent, items, clicks, permissions, player);
+    public Menu(String id,String title, InventoryType type, Map<Integer, ItemStack> items, Map<Integer,Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player) {
+        super(id,defaultClick, openEvent, closeEvent, items, clicks, permissions, player);
         this.inventory = Bukkit.createInventory(this, type, title);
         update();
     }
@@ -49,10 +50,10 @@ public class Menu extends BaseMenu implements InventoryHolder {
     }
 
     public void open() {
-        player.openInventory(inventory);
+        Bukkit.getScheduler().runTask(XG7Plugins.getInstance(), () -> player.openInventory(inventory));
     }
     public void close() {
-        player.closeInventory();
+        Bukkit.getScheduler().runTask(XG7Plugins.getInstance(), () -> player.closeInventory());
     }
 
     public void updateItem(int slot, ItemBuilder builder) {

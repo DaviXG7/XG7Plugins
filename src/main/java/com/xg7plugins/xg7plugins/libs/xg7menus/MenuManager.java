@@ -20,7 +20,7 @@ public class MenuManager {
     private final XG7Plugins plugin;
 
     private final Map<UUID, PlayerMenu> playerMenuMap = new HashMap<>();
-    private final Cache<UUID, BaseMenu> cachedMenus;
+    private final Cache<String, BaseMenu> cachedMenus;
 
     public MenuManager(XG7Plugins plugin) {
         this.plugin = plugin;

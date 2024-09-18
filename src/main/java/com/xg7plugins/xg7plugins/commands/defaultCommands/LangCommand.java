@@ -5,7 +5,9 @@ import com.xg7plugins.xg7plugins.commands.setup.CommandConfig;
 import com.xg7plugins.xg7plugins.commands.setup.CommandSetup;
 import com.xg7plugins.xg7plugins.commands.setup.ICommand;
 import com.xg7plugins.xg7plugins.libs.xg7menus.XSeries.XMaterial;
+import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseMenu;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
+import com.xg7plugins.xg7plugins.libs.xg7menus.menus.gui.Menu;
 import com.xg7plugins.xg7plugins.menus.LangMenu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -26,10 +28,17 @@ public class LangCommand extends ICommand {
 
 
     @CommandConfig(
-            perm = "xg7plugin.lang",
+            perm = "",
             isOnlyPlayer = true
     )
     public void onCommand(Command command, CommandSender sender, String label) {
-        new LangMenu((Player) sender);
+
+        Player player = (Player) sender;
+
+        if (XG7Plugins.getInstance().getMenuManager().getCachedMenus().asMap().containsKey("lang:" + player.getUniqueId())) {
+            ((Menu) XG7Plugins.getInstance().getMenuManager().getCachedMenus().asMap().get("lang:" + player.getUniqueId())).open();
+            return;
+        }
+        LangMenu.create(player);
     }
 }

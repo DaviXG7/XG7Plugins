@@ -26,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,6 +45,8 @@ public final class XG7Plugins extends Plugin {
         matcher.find();
         minecraftVersion = Integer.parseInt(matcher.group(1));
     }
+
+    private ScheduledExecutorService executor;
 
     private DBManager databaseManager;
     private EventManager eventManager;
@@ -64,23 +68,26 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public void onEnable() {
+        Config config = getConfigsManager().getConfig("config");
+
+        executor = Executors.newScheduledThreadPool(config.get("task-threads"));
         this.databaseManager = new DBManager(this);
         this.menuManager = new MenuManager(this);
         this.eventManager = new EventManager();
-        this.taskManager = new TaskManager(this);
+        this.taskManager = new TaskManager();
         this.scoreManager = new ScoreManager(this);
         this.eventManager.registerPlugin(this);
         this.databaseManager.connectPlugin(this);
         EntityProcessor.createTableOf(this, LangEntity.class);
         this.packetEventManager = minecraftVersion < 8 ? new PacketEventManager1_7() : new PacketEventManager();
-        if (getConfigsManager().getConfig("config").get("prefix") != null) this.setCustomPrefix(getConfigsManager().getConfig("config").get("prefix"));
+        if (config.get("prefix") != null) this.setCustomPrefix(config.get("prefix"));
     }
 
 
     @Override
     public void onDisable() {
         Bukkit.getOnlinePlayers().forEach(player -> ReflectionObject.of(packetEventManager).getMethod("stopEvent", Player.class).invoke(player));
-        taskManager.disable();
+        executor.shutdown();
 
     }
 
@@ -103,7 +110,7 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public List<Event> getEvents() {
-        if (events == null) events = Arrays.asList(new InicializePacketEvents(), new MenuListener(), new PlayerMenuListener());
+        if (events == null) events = Arrays.asList(new InicializePacketEvents(), new MenuListener(), new PlayerMenuListener(), new EventExample());
         return events;
     }
 

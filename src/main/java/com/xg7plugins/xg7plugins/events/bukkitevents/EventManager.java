@@ -3,11 +3,14 @@ package com.xg7plugins.xg7plugins.events.bukkitevents;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.events.Event;
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventException;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.world.WorldEvent;
+import org.bukkit.plugin.EventExecutor;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,43 +37,41 @@ public class EventManager {
                         (Class<? extends org.bukkit.event.Event>) method.getParameterTypes()[0],
                         listeners.get(plugin),
                         eventHandler.priority(),
-                        (listener, event2) ->
-                                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                                    if (eventHandler.isOnlyInWorld()) {
-                                        if (event2 instanceof PlayerEvent) {
-                                            PlayerEvent playerEvent = (PlayerEvent) event2;
-                                            if (!plugin.getEnabledWorlds().contains(playerEvent.getPlayer().getWorld().getName()))
-                                                return;
-                                        }
-                                        if (event2 instanceof WorldEvent) {
-                                            WorldEvent worldEvent = (WorldEvent) event2;
-                                            if (!plugin.getEnabledWorlds().contains(worldEvent.getWorld().getName()))
-                                                return;
-                                        }
-                                        if (event2 instanceof BlockEvent) {
-                                            BlockEvent blockEvent = (BlockEvent) event2;
-                                            if (!plugin.getEnabledWorlds().contains(blockEvent.getBlock().getWorld().getName()))
-                                                return;
-                                        }
-                                    }
-
-                                    if (method.getParameterTypes().length == 2) {
-                                        try {
-                                            method.invoke(event, event2, plugin);
-                                        } catch (IllegalAccessException | InvocationTargetException ex) {
-                                            throw new RuntimeException(ex);
-                                        }
+                        (listener, event2) -> {
+                            if (eventHandler.isOnlyInWorld()) {
+                                if (event2 instanceof PlayerEvent) {
+                                    PlayerEvent playerEvent = (PlayerEvent) event2;
+                                    if (!plugin.getEnabledWorlds().contains(playerEvent.getPlayer().getWorld().getName()))
                                         return;
-                                    }
+                                }
+                                if (event2 instanceof WorldEvent) {
+                                    WorldEvent worldEvent = (WorldEvent) event2;
+                                    if (!plugin.getEnabledWorlds().contains(worldEvent.getWorld().getName()))
+                                        return;
+                                }
+                                if (event2 instanceof BlockEvent) {
+                                    BlockEvent blockEvent = (BlockEvent) event2;
+                                    if (!plugin.getEnabledWorlds().contains(blockEvent.getBlock().getWorld().getName()))
+                                        return;
+                                }
+                            }
 
-                                    try {
-                                        method.invoke(event, event2);
-                                    } catch (IllegalAccessException | InvocationTargetException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }),
+                            if (method.getParameterTypes().length == 2) {
+                                try {
+                                    method.invoke(event, event2, plugin);
+                                } catch (IllegalAccessException | InvocationTargetException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                                return;
+                            }
+
+                            try {
+                                method.invoke(event, event2);
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                throw new RuntimeException(e);
+                            }
+                        },
                         plugin
-
                 );
             }
 

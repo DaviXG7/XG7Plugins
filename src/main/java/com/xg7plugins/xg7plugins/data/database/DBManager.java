@@ -24,9 +24,6 @@ import java.util.concurrent.TimeUnit;
 public class DBManager {
 
     private final HashMap<String, Connection> connections = new HashMap<>();
-    @Getter(AccessLevel.PROTECTED)
-    protected ExecutorService executor;
-
     @Getter
     private final Cache<Object, Entity> entitiesCached;
 
@@ -37,7 +34,6 @@ public class DBManager {
         Config config = plugin.getConfigsManager().getConfig("config");
 
         entitiesCached = Caffeine.newBuilder().expireAfterAccess(Text.convertToMilliseconds(plugin, config.get("sql.cache-expires")), TimeUnit.MILLISECONDS).build();
-        executor = Executors.newFixedThreadPool(config.get("sql.db-executor-threads"));
     }
 
     @SneakyThrows
@@ -118,11 +114,11 @@ public class DBManager {
                 e.printStackTrace();
             }
             return null;
-        },executor);
+        },XG7Plugins.getInstance().getExecutor());
     }
 
-    public synchronized void executeUpdate(Plugin plugin, String sql, Object... args) {
-        executor.submit(() -> {
+    public synchronized CompletableFuture<Void> executeUpdate(Plugin plugin, String sql, Object... args) {
+        return CompletableFuture.runAsync(() -> {
             try {
                 Connection connection = connections.get(plugin.getName());
                 PreparedStatement ps = connection.prepareStatement(sql);
@@ -131,7 +127,7 @@ public class DBManager {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        });
+        },XG7Plugins.getInstance().getExecutor());
     }
 
 

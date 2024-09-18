@@ -26,6 +26,12 @@ public abstract class BaseMenuBuilder<B extends BaseMenuBuilder<B>> {
     protected Consumer<MenuEvent> closeMenuEvent;
     protected EnumSet<MenuPermissions> allowedPermissions = EnumSet.noneOf(MenuPermissions.class);
 
+    protected String id;
+
+    public BaseMenuBuilder(String id) {
+        this.id = id;
+    }
+
     public B setItems(Map<Integer, BaseItemBuilder<?>> items) {
         this.items = items;
         return (B) this;
@@ -61,17 +67,17 @@ public abstract class BaseMenuBuilder<B extends BaseMenuBuilder<B>> {
     }
     public abstract <T extends BaseMenu> T build(Player player, Plugin plugin);
 
-    public static @NotNull MenuBuilder gui() {
-        return new MenuBuilder();
+    public static @NotNull MenuBuilder gui(String id) {
+        return new MenuBuilder(id);
     }
-    public static @NotNull StorageMenuBuilder storage() {
-        return new StorageMenuBuilder();
+    public static @NotNull StorageMenuBuilder storage(String id) {
+        return new StorageMenuBuilder(id);
     }
-    public static @NotNull PageMenuBuilder page() {
-        return new PageMenuBuilder();
+    public static @NotNull PageMenuBuilder page(String id) {
+        return new PageMenuBuilder(id);
     }
-    public static @NotNull PlayerMenuBuilder player() {
-        return new PlayerMenuBuilder();
+    public static @NotNull PlayerMenuBuilder player(String id) {
+        return new PlayerMenuBuilder(id);
     }
 
 

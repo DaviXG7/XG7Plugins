@@ -24,6 +24,7 @@ public abstract class BaseMenu {
     protected HumanEntity player;
 
     public BaseMenu(
+            String id,
             Consumer<ClickEvent> defaultClickEvent,
             Consumer<MenuEvent> openEvent,
             Consumer<MenuEvent> closeEvent,
@@ -41,7 +42,7 @@ public abstract class BaseMenu {
         this.permissions = permissions;
         this.player = player;
 
-        XG7Plugins.getInstance().getMenuManager().getCachedMenus().put(player.getUniqueId(), this);
+        XG7Plugins.getInstance().getMenuManager().getCachedMenus().put(id + ":" + player.getUniqueId(), this);
     }
 
 }

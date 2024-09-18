@@ -5,13 +5,13 @@ main-lang: pt-br
 lang-cache-expires: 30m
 auto-chose-lang: true
 
-task-threads: 2
+task-threads: 4
+
 menu-cache-expires: 10m
 
 sql:
 
   cache-expires: 30m
-  db-executor-threads: 2
 
   type: "sqlite"
 

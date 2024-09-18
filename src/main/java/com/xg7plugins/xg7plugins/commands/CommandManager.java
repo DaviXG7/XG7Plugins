@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
 
@@ -69,36 +70,36 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    @SneakyThrows
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command cmd, @NotNull String s, @NotNull String[] strings) {
 
-        Bukkit.getScheduler().runTaskAsynchronously(XG7Plugins.getInstance(), () -> {
+        CompletableFuture.runAsync(() -> {
 
             ICommand command = commands.get(cmd.getName());
 
             if (processSubCommands(commandSender, command.getSubCommands(), strings, s, 0)) return;
 
             if (strings.length != 0) {
-                Text.format("lang:[commands.syntax-error]",plugin);
+                Text.format("lang:[commands.syntax-error]",plugin).send(commandSender);
                 return;
             }
 
             try {
-                CommandConfig commandConfig = ReflectionMethod.of(command, "onCommand", cmd.getClass(), commandSender.getClass(), s.getClass()).getAnnotation(CommandConfig.class);
+                CommandConfig commandConfig = ReflectionMethod.of(command, "onCommand", Command.class, CommandSender.class, s.getClass()).getAnnotation(CommandConfig.class);
 
                 if (commandConfig != null) {
 
                     if (!commandSender.hasPermission(commandConfig.perm())) {
-                        Text.format("lang:[commands.no-permission]",plugin);
+                        Text.format("lang:[commands.no-permission]",plugin).send(commandSender);
                         return;
                     }
+
                     if (commandConfig.isOnlyPlayer() && !(commandSender instanceof Player)) {
-                        Text.format("lang:[commands.not-a-player]",plugin);
+                        Text.format("lang:[commands.not-a-player]",plugin).send(commandSender);
                         return;
                     }
                     if (commandSender instanceof Player) {
                         if (!commandConfig.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) commandSender).getWorld().getName()) && !plugin.getEnabledWorlds().isEmpty()) {
-                            Text.format("lang:[commands.disabled-world]",plugin);
+                            Text.format("lang:[commands.disabled-world]",plugin).send(commandSender);
                             return;
                         }
                     }
@@ -107,7 +108,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
             command.onCommand(cmd,commandSender,s);
 
-        });
+        },XG7Plugins.getInstance().getExecutor());
 
         return true;
     }
@@ -134,16 +135,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         }
                         if (subCommand.getSubCommands().length != 0) return processSubCommands(sender, subCommand.getSubCommands(), args, label, argsIndex + 1);
                         if (!sender.hasPermission(subCommandConfig.perm())) {
-                            Text.format("lang:[commands.no-permission]",plugin);
+                            Text.format("lang:[commands.no-permission]",plugin).send(sender);
                             return true;
                         }
                         if (subCommandConfig.isOnlyPlayer() && !(sender instanceof Player)) {
-                            Text.format("lang:[commands.not-a-player]",plugin);
+                            Text.format("lang:[commands.not-a-player]",plugin).send(sender);
                             return true;
                         }
                         if (sender instanceof Player) {
                             if (!subCommandConfig.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) sender).getWorld().getName()) && !plugin.getEnabledWorlds().isEmpty()) {
-                                Text.format("lang:[commands.disabled-world]",plugin);
+                                Text.format("lang:[commands.disabled-world]",plugin).send(sender);
                                 return true;
                             }
                         }
@@ -159,16 +160,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         }
 
                         if (!sender.hasPermission(subCommandConfig1.perm())) {
-                            Text.format("lang:[commands.no-permission]",plugin);
+                            Text.format("lang:[commands.no-permission]",plugin).send(sender);
                             return true;
                         }
                         if (subCommandConfig1.isOnlyPlayer() && !(sender instanceof Player)) {
-                            Text.format("lang:[commands.not-a-player]",plugin);
+                            Text.format("lang:[commands.not-a-player]",plugin).send(sender);
                             return true;
                         }
                         if (sender instanceof Player) {
                             if (!subCommandConfig1.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) sender).getWorld().getName()) && !plugin.getEnabledWorlds().isEmpty()) {
-                                Text.format("lang:[commands.disabled-world]",plugin);
+                                Text.format("lang:[commands.disabled-world]",plugin).send(sender);
                                 return true;
                             }
                         }
@@ -176,7 +177,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
 
                         if (!player.hasPlayedBefore()) {
-                            Text.format("lang:[commands.never-played]",plugin);
+                            Text.format("lang:[commands.never-played]",plugin).send(sender);
                             return true;
                         }
 

@@ -8,6 +8,7 @@ import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.data.database.EntityProcessor;
 import com.xg7plugins.xg7plugins.data.database.Query;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
+import com.xg7plugins.xg7plugins.utils.reflection.PlayerNMS;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -61,7 +62,7 @@ public class LangManager {
     }
 
     public String getPath(Player player, String path) {
-        return getLangByPlayer(player.getUniqueId(), player.getLocale()).getString(path);
+        return getLangByPlayer(player.getUniqueId(), XG7Plugins.getMinecraftVersion() >= 12 ? player.getLocale() : PlayerNMS.cast(player).getCraftPlayerHandle().getField("locale")).getString(path);
     }
 
     @SneakyThrows
