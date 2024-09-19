@@ -43,7 +43,7 @@ public class LangMenu {
                 builder.click(event -> {
 
                     if (cooldownToToggle >= System.currentTimeMillis()) {
-                        Text.format("Você precisa esperar " + cooldownToToggle + " milisegundos para trocar de linguagem!",plugin).send(player);
+                        Text.format("Você precisa esperar " + (cooldownToToggle - System.currentTimeMillis()) + " milisegundos para trocar de linguagem!",plugin).send(player);
                         return;
                     }
 
