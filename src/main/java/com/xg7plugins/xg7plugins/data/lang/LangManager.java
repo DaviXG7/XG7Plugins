@@ -15,10 +15,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+
 
 @Getter
 public class LangManager {
@@ -27,25 +26,30 @@ public class LangManager {
     private final Cache<String, YamlConfiguration> langs;
     private final Cache<UUID, LangEntity> players;
     private final String mainLang;
+    private final String[] defLangs;
 
-    public LangManager(Plugin plugin) {
+    public LangManager(Plugin plugin, String[] defaultLangs) {
          this.plugin = plugin;
+         this.defLangs = defaultLangs;
 
         Config config = plugin.getConfigsManager().getConfig("config");
 
+        this.mainLang = config.get("main-lang");
         this.langs = Caffeine.newBuilder().expireAfterAccess(Text.convertToMilliseconds(plugin, config.get("lang-cache-expires")), TimeUnit.MILLISECONDS).build();
         this.players = Caffeine.newBuilder().expireAfterAccess(Text.convertToMilliseconds(plugin, config.get("lang-cache-expires")), TimeUnit.MILLISECONDS).build();
 
+        loadAllLangs();
+    }
+
+    @SneakyThrows
+    public void loadAllLangs() {
         File dir = new File(plugin.getDataFolder(), "langs");
         if (!dir.exists()) dir.mkdirs();
-
-        mainLang = config.get("main-lang");
-
-        File file = new File(dir, mainLang + ".yml");
-        if (!file.exists()) plugin.saveResource("langs/" + mainLang + ".yml", false);
-
-        langs.put(mainLang, YamlConfiguration.loadConfiguration(file));
-
+        for (String lang : defLangs) {
+            File file = new File(dir, lang + ".yml");
+            if (!file.exists()) plugin.saveResource("langs/" + lang + ".yml", false);
+            langs.put(lang, YamlConfiguration.loadConfiguration(file));
+        }
     }
 
     public YamlConfiguration getLang(String lang) {
@@ -60,6 +64,9 @@ public class LangManager {
 
         return configuration;
     }
+    public void updatePlayer(Player player, String lang) {
+        this.players.put(player.getUniqueId(),new LangEntity(player.getUniqueId(),lang));
+    }
 
     public String getPath(Player player, String path) {
         return getLangByPlayer(player.getUniqueId(), XG7Plugins.getMinecraftVersion() >= 12 ? player.getLocale() : PlayerNMS.cast(player).getCraftPlayerHandle().getField("locale")).getString(path);
@@ -69,11 +76,9 @@ public class LangManager {
     public YamlConfiguration getLangByPlayer(UUID id, String playerLocale) {
 
         if (id == null) return getLang(mainLang);
-
         if (players.asMap().containsKey(id)) return getLang(players.asMap().get(id).getLangId());
 
-
-        return Query.create(XG7Plugins.getInstance(),"SELECT * FROM LangEntity WHERE playeruuid = ?", id)
+        return Query.create(XG7Plugins.getInstance(),"SELECT * FROM LangEntity WHERE playerUUID = ?", id)
                 .thenApplyAsync(q -> {
 
                             if (!q.hasNextLine()) {
@@ -81,14 +86,11 @@ public class LangManager {
                                 Config config = plugin.getConfigsManager().getConfig("config");
 
                                 if (config.get("auto-chose-lang")) {
-
-                                    for (YamlConfiguration cfg : langs.asMap().values()) {
-                                        String locale = cfg.getString("lang-locale");
+                                    for (String locale : langs.asMap().keySet()) {
                                         if (playerLocale.equals(locale)) {
-                                            LangEntity newLang = new LangEntity(id,cfg.getName());
+                                            LangEntity newLang = new LangEntity(id,locale);
 
                                             players.put(id, newLang);
-
                                             EntityProcessor.insetEntity(XG7Plugins.getInstance(), newLang);
 
                                             return getLang(newLang.getLangId());
@@ -98,7 +100,6 @@ public class LangManager {
                                 }
 
                                 LangEntity newLang = new LangEntity(id,mainLang);
-
                                 EntityProcessor.insetEntity(XG7Plugins.getInstance(), newLang);
 
                                 players.put(id, newLang);

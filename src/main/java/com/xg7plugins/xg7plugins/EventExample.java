@@ -15,7 +15,7 @@ public class EventExample implements Event {
 
     @EventHandler
     public void event(PlayerMoveEvent e) {
-        e.setCancelled(true);
+
     }
 
     @PacketEventHandler(packetsName = {

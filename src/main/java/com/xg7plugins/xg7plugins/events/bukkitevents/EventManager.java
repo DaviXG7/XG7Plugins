@@ -1,6 +1,7 @@
 package com.xg7plugins.xg7plugins.events.bukkitevents;
 
 import com.xg7plugins.xg7plugins.boot.Plugin;
+import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.events.Event;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventException;
@@ -32,6 +33,12 @@ public class EventManager {
             for (Method method : event.getClass().getMethods()) {
                 if (!method.isAnnotationPresent(EventHandler.class)) continue;
                 EventHandler eventHandler = method.getAnnotation(EventHandler.class);
+
+                Config config = plugin.getConfigsManager().getConfig(eventHandler.enabledPath()[0]);
+
+                boolean invert = Boolean.parseBoolean(eventHandler.enabledPath()[2]);
+                if (config != null) if ((boolean) config.get(eventHandler.enabledPath()[1]) == invert) continue;
+                else if (invert) continue;
 
                 plugin.getServer().getPluginManager().registerEvent(
                         (Class<? extends org.bukkit.event.Event>) method.getParameterTypes()[0],

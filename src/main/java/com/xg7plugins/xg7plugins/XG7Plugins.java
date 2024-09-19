@@ -13,7 +13,7 @@ import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.data.database.DBManager;
 import com.xg7plugins.xg7plugins.events.Event;
 import com.xg7plugins.xg7plugins.events.bukkitevents.EventManager;
-import com.xg7plugins.xg7plugins.events.defaultevents.InicializePacketEvents;
+import com.xg7plugins.xg7plugins.events.defaultevents.JoinAndQuit;
 import com.xg7plugins.xg7plugins.events.packetevents.PacketEventManager;
 import com.xg7plugins.xg7plugins.events.packetevents.PacketEventManager1_7;
 import com.xg7plugins.xg7plugins.tasks.TaskManager;
@@ -62,7 +62,7 @@ public final class XG7Plugins extends Plugin {
     private final HashMap<String, Plugin> plugins = new HashMap<>();
 
     public XG7Plugins() {
-        super("[XG7Plugins]");
+        super("[XG7Plugins]", new String[] {"pt-br", "en-us"});
         instance = this;
     }
 
@@ -110,7 +110,7 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public List<Event> getEvents() {
-        if (events == null) events = Arrays.asList(new InicializePacketEvents(), new MenuListener(), new PlayerMenuListener(), new EventExample());
+        if (events == null) events = Arrays.asList(new JoinAndQuit(), new MenuListener(), new PlayerMenuListener(), new EventExample());
         return events;
     }
 

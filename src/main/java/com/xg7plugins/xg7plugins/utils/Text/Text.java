@@ -2,10 +2,6 @@ package com.xg7plugins.xg7plugins.utils.Text;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.boot.Plugin;
-import com.xg7plugins.xg7plugins.data.config.Config;
-import com.xg7plugins.xg7plugins.data.config.Configs;
-import com.xg7plugins.xg7plugins.data.lang.LangEntity;
-import com.xg7plugins.xg7plugins.utils.Log;
 import com.xg7plugins.xg7plugins.utils.reflection.NMSUtil;
 import com.xg7plugins.xg7plugins.utils.reflection.PlayerNMS;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionClass;
@@ -77,12 +73,12 @@ public class Text {
 
     public String getWithPlaceholders(Player player) {
 
+
         YamlConfiguration entity = this.plugin.getLangManager().getLangByPlayer(player.getUniqueId(), XG7Plugins.getMinecraftVersion() >= 12 ? player.getLocale() : PlayerNMS.cast(player).getCraftPlayerHandle().getField("locale"));
 
         String textToTraslate = text;
 
         Matcher matcher = LANG_PATTERN.matcher(textToTraslate);
-
         while (matcher.find()) {
             String lang = matcher.group(1);
             if (entity.getString(lang) == null) {
@@ -113,6 +109,11 @@ public class Text {
         textToTraslate = textToTraslate.replace("[PLAYER]", player.getName());
 
         return Text.format(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, textToTraslate) : textToTraslate, plugin).getText();
+    }
+
+    public Text replace(String placeholder, String replacement) {
+        text = text.replace(placeholder, replacement);
+        return this;
     }
 
 

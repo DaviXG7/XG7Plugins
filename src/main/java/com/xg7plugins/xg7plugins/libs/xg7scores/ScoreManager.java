@@ -39,6 +39,9 @@ public class ScoreManager {
     public void removePlayers() {
         scoreboards.values().forEach(sc -> sc.getPlayers().forEach(sc::removePlayer));
     }
+    public void removePlayer(Player player) {
+        scoreboards.values().forEach(sc -> sc.removePlayer(player));
+    }
 
     public void cancelTask() {
         plugin.getTaskManager().cancelTask(plugin, this.taskId);

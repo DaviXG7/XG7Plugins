@@ -104,7 +104,9 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         }
                     }
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 
             command.onCommand(cmd,commandSender,s);
 

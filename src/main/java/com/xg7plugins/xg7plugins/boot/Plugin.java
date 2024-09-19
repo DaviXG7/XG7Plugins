@@ -30,7 +30,7 @@ public abstract class Plugin extends JavaPlugin {
     private String customPrefix;
     private List<String> enabledWorlds = Collections.emptyList();
 
-    public Plugin(String prefix) {
+    public Plugin(String prefix, String[] defLangs) {
 
         if (Bukkit.getPluginManager().getPlugin("XG7Plugins") == null) {
 
@@ -41,7 +41,7 @@ public abstract class Plugin extends JavaPlugin {
         this.prefix = prefix;
         this.customPrefix = prefix;
         this.configsManager = new Configs(this);
-        this.langManager = new LangManager(this);
+        this.langManager = new LangManager(this, defLangs);
         this.commandManager = new CommandManager(this);
         this.log = new Log(this, false);
     }

@@ -1,0 +1,41 @@
+
+locale: english
+
+formated-name: "English or Spanish"
+
+commands:
+  syntax-error: "You are using the command incorrectly!"
+  never-played: "This player has never played before!"
+  no-permission: "You don't have permission to use this command!"
+  disabled-world: "You cannot execute this command in a disabled world!"
+  not-a-player: "You cannot execute this command in console!"
+
+
+
+
+#Plugin defaults
+
+lang-menu:
+  title: "Languages"
+
+  item-click: "Click here to change the language for English"
+
+  go-back-item: "Back"
+  go-next-item: "Next"
+  close-item: "Close"
+
+  toggle-success: "You toggle the language to english!"
+
+  cooldown-to-toggle: "You need to wait "
+
+
+
+
+commands-menu:
+
+  lang:
+
+    desc: "Description: Change the language of the player"
+    syntax: "Syntax: /lang"
+    perm: "permission: xg7plugins.command.lang"
+    if-subcommand: "Click to see the subcommands!"

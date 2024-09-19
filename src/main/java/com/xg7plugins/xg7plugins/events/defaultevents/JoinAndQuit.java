@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class InicializePacketEvents implements Event {
+public class JoinAndQuit implements Event {
     @Override
     public boolean isEnabled() {
         return true;
@@ -21,5 +21,6 @@ public class InicializePacketEvents implements Event {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
         ReflectionObject.of(XG7Plugins.getInstance().getPacketEventManager()).getMethod("stopEvent", Player.class).invoke(event.getPlayer());
+        XG7Plugins.getInstance().getScoreManager().removePlayer(event.getPlayer());
     }
 }

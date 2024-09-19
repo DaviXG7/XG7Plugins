@@ -34,56 +34,62 @@ public class Query {
         return (T) results.next().get(key);
     }
 
-    @SneakyThrows
     @SuppressWarnings("unchecked")
     public <T> T get(Class<?> clazz) {
-        Map<String, Object> values = results.next();
+        try {
+            Map<String, Object> values = results.next();
 
-        T instance = (T) clazz.getDeclaredConstructor().newInstance();
+            T instance = (T) clazz.getDeclaredConstructor().newInstance();
 
-        Object id = null;
+            Object id = null;
 
-        for (Field f : clazz.getDeclaredFields()) {
-            f.setAccessible(true);
-            Object value = values.get(f.getName());
+            for (Field f : clazz.getDeclaredFields()) {
+                f.setAccessible(true);
+                Object value = values.get(f.getName());
 
-            if (value == null) continue;
+                if (value == null) continue;
 
-            Entity.PKey pKey = f.getAnnotation(Entity.PKey.class);
-            if (pKey != null) {
-                if (dbManager.getEntitiesCached().asMap().containsKey(value)) return (T) dbManager.getEntitiesCached().asMap().get(f.get(instance));
-                id = value;
-            }
+                Entity.PKey pKey = f.getAnnotation(Entity.PKey.class);
+                if (pKey != null) {
+                    if (dbManager.getEntitiesCached().asMap().containsKey(value)) return (T) dbManager.getEntitiesCached().asMap().get(value);
+                    id = value;
+                }
 
-            if (f.getType() == List.class) {
-                ParameterizedType parameterizedType = (ParameterizedType) f.getGenericType();
-                Type tipoGenerico = parameterizedType.getActualTypeArguments()[0];
+                if (f.getType() == List.class) {
+                    ParameterizedType parameterizedType = (ParameterizedType) f.getGenericType();
+                    Type tipoGenerico = parameterizedType.getActualTypeArguments()[0];
 
-                List<Object> tList = new ArrayList<>();
-                Object listInstance = ((Class<?>) tipoGenerico).getDeclaredConstructor().newInstance();
+                    List<Object> tList = new ArrayList<>();
+                    Object listInstance = ((Class<?>) tipoGenerico).getDeclaredConstructor().newInstance();
 
-                for (Field fListf : ((Class<?>) tipoGenerico).getDeclaredFields()) {
+                    for (Field fListf : ((Class<?>) tipoGenerico).getDeclaredFields()) {
                         fListf.setAccessible(true);
                         if (values.get(fListf.getName()) == null) continue;
                         fListf.set(listInstance, values.get(fListf.getName()));
+                    }
+                    tList.add(listInstance);
+                    tList.addAll(getResultList((Class<?>) tipoGenerico));
+
+                    f.set(instance, tList);
+
+                    continue;
                 }
-                tList.add(listInstance);
-                tList.addAll(getResultList((Class<?>) tipoGenerico));
-
-                f.set(instance, tList);
-
-                continue;
+                if (f.getType() == UUID.class) {
+                    f.set(instance, UUID.fromString((String) values.get(f.getName())));
+                    continue;
+                }
+                f.set(instance, value);
             }
-            if (f.getType() == UUID.class) {
-                f.set(instance, UUID.fromString((String) values.get(f.getName())));
-                continue;
-            }
-            f.set(instance, value);
+
+            dbManager.cacheEntity(id, (Entity) instance);
+
+            return instance;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        dbManager.cacheEntity(id, (Entity) instance);
+        return null;
 
-        return instance;
     }
 
     public <T> List<T> getResultList(Class<?> clazz) {

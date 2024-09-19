@@ -13,6 +13,6 @@ public @interface EventHandler {
 
     boolean isOnlyInWorld() default false;
     EventPriority priority() default EventPriority.NORMAL;
-    String enabledAAAAAAAAAAAA
+    String[] enabledPath() default {"", "", "false"};
 
 }

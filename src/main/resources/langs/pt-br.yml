@@ -6,7 +6,7 @@ formated-name: "Português"
 commands:
   syntax-error: "Você digitou o comando de maneira errada!"
   never-played: "Este jogador não existe ou nunca jogou antes!"
-  no-permission: "Você não tem permissão ara executar este comando!"
+  no-permission: "Você não tem permissão para executar este comando!"
   disabled-world: "Você não pode executar o comando nesse mundo!"
   not-a-player: "Você não pode executar este comando sendo o console!"
 
