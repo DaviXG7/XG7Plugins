@@ -1,6 +1,7 @@
 package com.xg7plugins.xg7plugins;
 
 import com.xg7plugins.xg7plugins.commands.defaultCommands.LangCommand;
+import com.xg7plugins.xg7plugins.commands.defaultCommands.ReloadCommand;
 import com.xg7plugins.xg7plugins.data.database.EntityProcessor;
 import com.xg7plugins.xg7plugins.data.lang.LangEntity;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuManager;
@@ -98,7 +99,7 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public List<ICommand> getCommands() {
-        if (commands == null) commands = Collections.singletonList(new LangCommand());
+        if (commands == null) commands = Arrays.asList(new LangCommand(), new ReloadCommand());
         return commands;
     }
 

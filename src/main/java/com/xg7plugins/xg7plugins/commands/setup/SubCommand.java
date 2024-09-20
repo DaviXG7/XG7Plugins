@@ -6,10 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target({ElementType.TYPE})
 public @interface SubCommand {
     String name() default "";
     String perm() default "";
     boolean isOnlyInWorld() default false;
     boolean isOnlyPlayer() default false;
+    SubCommandType type();
 }

@@ -1,13 +1,12 @@
 package com.xg7plugins.xg7plugins.libs.xg7menus.builders.item;
 
 import com.xg7plugins.xg7plugins.boot.Plugin;
-import com.xg7plugins.xg7plugins.commands.setup.CommandSetup;
+import com.xg7plugins.xg7plugins.commands.setup.Command;
 import com.xg7plugins.xg7plugins.commands.setup.ICommand;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.XSeries.XMaterial;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionClass;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.jetbrains.annotations.Contract;
@@ -38,7 +37,7 @@ public class ItemBuilder extends BaseItemBuilder<ItemBuilder> {
     @Contract("_ -> new")
     public static @NotNull ItemBuilder commandIcon(XMaterial material, ICommand command, Plugin plugin) {
 
-        CommandSetup setup = ReflectionClass.of(command.getClass()).getAnnotation(CommandSetup.class);
+        Command setup = ReflectionClass.of(command.getClass()).getAnnotation(Command.class);
 
         ItemBuilder builder = new ItemBuilder(material.parseItem(),plugin);
 

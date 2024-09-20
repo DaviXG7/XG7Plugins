@@ -9,6 +9,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -39,9 +40,6 @@ public class TextComponent {
         if (!rawText.equals(text) && XG7Plugins.getMinecraftVersion() < 8) {
             plugin.getLog().warn("Versions lower than 1.8 don't have support to clickable or hover tags!");
         }
-
-        if (rawText.startsWith("[CENTER] ")) rawText = rawText.substring(9);
-
         this.text = text;
         this.rawText = rawText;
 
@@ -54,10 +52,17 @@ public class TextComponent {
         return this;
     }
 
-    public void send(Player player) {
+    public void send(Player sender) {
+
+        if (sender == null) {
+            sender.sendMessage(rawText.startsWith("[CENTER] ") ? Text.getSpacesCentralized(Text.PixelsSize.CHAT.getPixels(), rawText) + Text.format(rawText.substring(9), plugin).getText() : Text.format(rawText, plugin).getText());
+            return;
+        }
+
+        Player player = (Player) sender;
 
         String transletedRawText = Text.getWithPlaceholders(plugin, rawText, player);
-        String transletedText = Text.getSpacesCentralized(Text.PixelsSize.CHAT.getPixels(), transletedRawText) + Text.getWithPlaceholders(plugin, text, player);
+        String transletedText = transletedRawText.startsWith("[CENTER] ") ? Text.getSpacesCentralized(Text.PixelsSize.CHAT.getPixels(), transletedRawText) + Text.getWithPlaceholders(plugin, text.substring(9), player) : Text.getWithPlaceholders(plugin, text, player);
 
         for (Map.Entry<String, String> entry : replacements.entrySet()) transletedText = transletedText.replace(entry.getKey(),entry.getValue());
         for (Map.Entry<String, String> entry : replacements.entrySet()) transletedRawText = transletedRawText.replace(entry.getKey(),entry.getValue());

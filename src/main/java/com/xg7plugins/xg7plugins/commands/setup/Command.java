@@ -6,10 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
-public @interface CommandConfig {
-    String perm() default "default";
+@Target({ElementType.TYPE})
+public @interface Command {
+    String name();
+    String descriptionPath();
+    String syntax();
+    String aliasesPath();
+    String perm() default "";
     boolean isOnlyInWorld() default false;
     boolean isOnlyPlayer() default false;
-
 }

@@ -6,15 +6,13 @@ import org.bukkit.command.CommandSender;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class ISubCommand extends ICommand {
+public interface ISubCommand extends ICommand {
 
-    public void onSubCommand(CommandSender sender, OfflinePlayer target, String label) {}
-    public void onSubCommand(CommandSender sender, String[] args, String label) {}
-    public void onSubCommand(CommandSender sender, String[] args, String label, String optionChosed) {}
+    default void onSubCommand(CommandSender sender, OfflinePlayer target, String label) {}
+    default void onSubCommand(CommandSender sender, String[] args, String label) {}
+    default void onSubCommand(CommandSender sender, String[] args, String label, String optionChosed) {}
 
-    public Set<String> getOptions() {
+    default Set<String> getOptions() {
         return new HashSet<>();
     }
-    public abstract SubCommandType getType();
-
 }

@@ -1,7 +1,5 @@
 package com.xg7plugins.xg7plugins.commands.setup;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
@@ -9,23 +7,19 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collections;
 import java.util.List;
 
-@AllArgsConstructor
-@Getter
-public abstract class ICommand {
+public interface ICommand {
 
-    public boolean isEnabled() {
-        return true;
-    }
+    default boolean isEnabled() {return true;}
 
-    public ISubCommand[] getSubCommands() {
+    default ISubCommand[] getSubCommands() {
         return new ISubCommand[0];
     }
 
-    public void onCommand(Command command, CommandSender sender, String label) {}
+    default void onCommand(Command command, CommandSender sender, String label) {}
 
-    public List<String> onTabComplete(Command command, CommandSender sender, String label, String[] args) {
+    default List<String> onTabComplete(Command command, CommandSender sender, String label, String[] args) {
         return Collections.emptyList();
     }
 
-    public abstract ItemStack getIcon();
+    ItemStack getIcon();
 }

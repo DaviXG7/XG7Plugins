@@ -197,15 +197,19 @@ public class Text {
     }
 
     public static String getCentralizedText(int pixels, String text) {
-        return getSpacesCentralized(pixels,text) + text;
+        if (!text.startsWith("[CENTER] ")) return text;
+        return getSpacesCentralized(pixels,text) + text.substring(9);
 
     }
 
 
     public static String getSpacesCentralized(int pixels, String text) {
 
+
         if (!text.startsWith("[CENTER] ")) return "";
+
         text = text.substring(9);
+
 
         int textWidht = 0;
         boolean cCode = false;
