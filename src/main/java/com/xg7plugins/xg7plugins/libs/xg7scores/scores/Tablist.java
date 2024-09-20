@@ -23,11 +23,11 @@ public class Tablist extends Score {
         }
     }
 
-    private String[] header;
-    private String[] footer;
+    private final String[] header;
+    private final String[] footer;
 
-    private String playerPrefix;
-    private String playerSuffix;
+    private final String playerPrefix;
+    private final String playerSuffix;
 
     public Tablist(long delay, String[] header, String[] footer, String playerPrefix, String playerSuffix, String id, ScoreCondition condition, Plugin plugin) {
         super(delay, header.length > footer.length ? header : footer, id, condition, plugin);

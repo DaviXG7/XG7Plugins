@@ -12,7 +12,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +30,8 @@ public class TextComponent {
     private final String rawText;
 
     private final Plugin plugin;
+
+    private final HashMap<String, String> replacements = new HashMap<>();
 
     public TextComponent(String text, Plugin plugin) {
 
@@ -45,10 +49,18 @@ public class TextComponent {
 
     }
 
+    public TextComponent replace(String placeholder, String replacement) {
+        replacements.put(placeholder,replacement);
+        return this;
+    }
+
     public void send(Player player) {
 
         String transletedRawText = Text.getWithPlaceholders(plugin, rawText, player);
         String transletedText = Text.getSpacesCentralized(Text.PixelsSize.CHAT.getPixels(), transletedRawText) + Text.getWithPlaceholders(plugin, text, player);
+
+        for (Map.Entry<String, String> entry : replacements.entrySet()) transletedText = transletedText.replace(entry.getKey(),entry.getValue());
+        for (Map.Entry<String, String> entry : replacements.entrySet()) transletedRawText = transletedRawText.replace(entry.getKey(),entry.getValue());
 
         if (XG7Plugins.getMinecraftVersion() < 8) {
             player.sendMessage(transletedRawText);

@@ -13,7 +13,7 @@ public class Config {
 
     private final Plugin plugin;
     private final String name;
-    private final YamlConfiguration config;
+    private YamlConfiguration config;
 
     @SneakyThrows
     public Config(Plugin plugin, String name) {
@@ -41,6 +41,13 @@ public class Config {
     @SneakyThrows
     public void save() {
         config.save(new File(plugin.getDataFolder(), name + ".yml"));
+    }
+
+    public void reload() {
+        File configFile = new File(plugin.getDataFolder(), name + ".yml");
+        if (!configFile.exists()) plugin.saveResource(name + ".yml", false);
+        this.config = YamlConfiguration.loadConfiguration(configFile);
+        plugin.getConfigsManager().getConfigs().put(name,this);
     }
 
 }

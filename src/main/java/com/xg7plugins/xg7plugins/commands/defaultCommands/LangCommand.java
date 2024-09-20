@@ -28,7 +28,7 @@ public class LangCommand extends ICommand {
 
 
     @CommandConfig(
-            perm = "",
+            perm = "xg7plugins.command.lang",
             isOnlyPlayer = true
     )
     public void onCommand(Command command, CommandSender sender, String label) {

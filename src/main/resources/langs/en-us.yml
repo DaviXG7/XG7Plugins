@@ -4,7 +4,7 @@ locale: english
 formated-name: "English or Spanish"
 
 commands:
-  syntax-error: "You are using the command incorrectly!"
+  syntax-error: "You are using the command incorrectly! The right way is [SYNTAX]"
   never-played: "This player has never played before!"
   no-permission: "You don't have permission to use this command!"
   disabled-world: "You cannot execute this command in a disabled world!"
@@ -26,16 +26,23 @@ lang-menu:
 
   toggle-success: "You toggle the language to english!"
 
-  cooldown-to-toggle: "You need to wait "
+  cooldown-to-toggle: "You need to wait [SECONDS] seconds to toggle the language again"
 
 
 
 
 commands-menu:
 
+  if-subcommand: "Click to see the subcommands!"
+
   lang:
 
     desc: "Description: Change the language of the player"
     syntax: "Syntax: /lang"
-    perm: "permission: xg7plugins.command.lang"
-    if-subcommand: "Click to see the subcommands!"
+    perm: "Permission: xg7plugins.command.lang"
+
+  reload:
+
+    desc: "Description: Reloads a plugin"
+    syntax: "Syntax: /xg7pluginreload <plugin> <[config, scores, langs, tasks, events]>"
+    perm: "Permission: xg7plugins.command.reload"

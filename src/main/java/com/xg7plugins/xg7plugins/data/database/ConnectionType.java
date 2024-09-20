@@ -4,6 +4,6 @@ public enum ConnectionType {
 
     SQLITE,
     MYSQL,
-    MARIADB;
+    MARIADB
 
 }

@@ -1,5 +1,6 @@
 package com.xg7plugins.xg7plugins.menus;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.libs.xg7menus.Slot;
@@ -13,23 +14,20 @@ import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class LangMenu {
 
     private ItemsPageMenu menu;
     private final Player player;
     @Getter
-    private static long cooldownToToggle = 0;
+    private static HashMap<UUID,Long> cooldownToToggle = new HashMap<>();
 
 
     public LangMenu(Player player) {
         this.player = player;
         XG7Plugins.getInstance().getLangManager().loadAllLangs();
-            XG7Plugins plugin = XG7Plugins.getInstance();
-
+        XG7Plugins plugin = XG7Plugins.getInstance();
         Config config = plugin.getConfigsManager().getConfig("config");
 
             List<ItemBuilder> items = new ArrayList<>();
@@ -42,8 +40,15 @@ public class LangMenu {
 
                 builder.click(event -> {
 
-                    if (cooldownToToggle >= System.currentTimeMillis()) {
-                        Text.format("Você precisa esperar " + (cooldownToToggle - System.currentTimeMillis()) + " milisegundos para trocar de linguagem!",plugin).send(player);
+                    cooldownToToggle.putIfAbsent(player.getUniqueId(), 0L);
+
+                    if (cooldownToToggle.get(player.getUniqueId()) >= System.currentTimeMillis()) {
+                        Text.formatComponent("lang:[lang-menu.cooldown-to-toggle]",plugin)
+                                .replace("[MILLISECONDS]", String.valueOf((cooldownToToggle.get(player.getUniqueId()) - System.currentTimeMillis())))
+                                .replace("[SECONDS]", String.valueOf((int)((cooldownToToggle.get(player.getUniqueId()) - System.currentTimeMillis()) / 1000)))
+                                .replace("[MINUTES]", String.valueOf((int)((cooldownToToggle.get(player.getUniqueId()) - System.currentTimeMillis()) / 60000)))
+                                .replace("[HOURS]", String.valueOf((int)((cooldownToToggle.get(player.getUniqueId()) - System.currentTimeMillis()) / 3600000)))
+                                .send(player);
                         return;
                     }
 
@@ -52,25 +57,21 @@ public class LangMenu {
                         plugin.getPlugins().forEach((n, pl) -> pl.getLangManager().updatePlayer(player,s));
 
                         reload();
-                        Text.format("lang:[lang-menu.toggle-success]", plugin).send(player);
+                        Text.formatComponent("lang:[lang-menu.toggle-success]", plugin).send(player);
                     });
 
-                    cooldownToToggle = System.currentTimeMillis() + Text.convertToMilliseconds(plugin, config.get("cooldown-to-toggle-lang"));
-
-                    System.out.println(cooldownToToggle);
+                    cooldownToToggle.put(player.getUniqueId(), System.currentTimeMillis() + Text.convertToMilliseconds(plugin, config.get("cooldown-to-toggle-lang")));
 
                 });
 
                 items.add(builder);
             });
-
         PageMenuBuilder builder = MenuBuilder.page("lang")
                 .title("lang:[lang-menu.title]")
                 .rows(6)
                 .setArea(Slot.of(2,2), Slot.of(5,8))
                 .setItems(items)
                 .setItem(49, ItemBuilder.from(Material.BARRIER, plugin).name("lang:[lang-menu.close-item]").click(event -> menu.close()));
-
         int langSize = XG7Plugins.getInstance().getLangManager().getLangs().asMap().size();
 
         if (langSize > 27) {
@@ -81,7 +82,6 @@ public class LangMenu {
         this.menu = builder.build(player, plugin);
 
         menu.open();
-
     }
 
 
@@ -89,6 +89,8 @@ public class LangMenu {
         XG7Plugins.getInstance().getMenuManager().getCachedMenus().asMap().remove("lang:" + player.getUniqueId());
         new LangMenu(player);
     }
+
+
 
     public static void create(Player player) {
         new LangMenu(player);

@@ -88,6 +88,7 @@ public class EventManager {
 
     public void unregisterEvents(Plugin plugin) {
         HandlerList.unregisterAll(listeners.get(plugin));
+        listeners.remove(plugin);
     }
 
 }

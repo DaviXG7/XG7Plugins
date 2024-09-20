@@ -4,11 +4,11 @@ locale: portugues
 formated-name: "Português"
 
 commands:
-  syntax-error: "Você digitou o comando de maneira errada!"
+  syntax-error: "Você digitou o comando de maneira errada! A maneira certa é [SYNTAX]"
   never-played: "Este jogador não existe ou nunca jogou antes!"
   no-permission: "Você não tem permissão para executar este comando!"
   disabled-world: "Você não pode executar o comando nesse mundo!"
-  not-a-player: "Você não pode executar este comando sendo o console!"
+  not-a-player: "Você não pode executar este comando no console!"
 
 
 
@@ -26,14 +26,21 @@ lang-menu:
 
   toggle-success: "Você trocou o idioma para português!"
 
-
+  cooldown-to-toggle: "Você precisa esperar [SECONDS] segundos para trocar o idioma novamente!"
 
 
 commands-menu:
+
+  if-subcommand: "Clique para ver os subcomandos!"
 
   lang:
 
     desc: "Descrição: Altera a linguagem do jogador"
     syntax: "Syntaxe: /lang"
     perm: "Permissão: xg7plugins.command.lang"
-    if-subcommand: "Clique para ver os subcomandos!"
+
+  reload:
+
+    desc: "Descrição: Recarrega um plugin"
+    syntax: "Syntaxe: /xg7pluginreload <plugin> <[config, scores, langs, tasks, events]>"
+    perm: "Permissão: xg7plugins.command.reload"

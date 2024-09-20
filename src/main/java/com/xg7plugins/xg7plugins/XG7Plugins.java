@@ -98,7 +98,7 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public List<ICommand> getCommands() {
-        if (commands == null) commands = Arrays.asList(new LangCommand());
+        if (commands == null) commands = Collections.singletonList(new LangCommand());
         return commands;
     }
 

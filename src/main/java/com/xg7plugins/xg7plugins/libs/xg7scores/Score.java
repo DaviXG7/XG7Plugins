@@ -11,12 +11,12 @@ import java.util.Set;
 public abstract class Score {
 
     private boolean updating = false;
-    private long delay;
-    private String id;
-    private String[] toUpdate;
+    private final long delay;
+    private final String id;
+    private final String[] toUpdate;
     private int indexUpdating = 0;
-    private Set<Player> players;
-    private ScoreCondition condition;
+    private final Set<Player> players;
+    private final ScoreCondition condition;
 
     protected Plugin plugin;
 

@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
@@ -79,7 +80,9 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             if (processSubCommands(commandSender, command.getSubCommands(), strings, s, 0)) return;
 
             if (strings.length != 0) {
-                Text.format("lang:[commands.syntax-error]",plugin).send(commandSender);
+                Text.format("lang:[commands.syntax-error]",plugin)
+                        .replace("[SYNTAX]", cmd.getUsage())
+                        .send(commandSender);
                 return;
             }
 
@@ -118,6 +121,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     @SuppressWarnings("deprecated")
     private boolean processSubCommands(CommandSender sender, ISubCommand[] subCommands, String[] args, String label, int argsIndex) {
 
+        System.out.println(argsIndex);
+
         if (subCommands == null) return false;
 
         if (args.length != argsIndex) {
@@ -126,7 +131,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 switch (subCommand.getType()) {
                     case NORMAL:
                         SubCommand subCommandConfig = ReflectionMethod.of(subCommand, "onSubCommand", CommandSender.class, String[].class, String.class).getAnnotation(SubCommand.class);
-
                         if (subCommandConfig == null) {
                             plugin.getLog().severe("Normal subcommands must be annotated with @SubCommandConfig to setup the subcommand!!");
                             continue;
@@ -151,9 +155,12 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                             }
                         }
 
+                        System.out.println("????");
+
                         subCommand.onSubCommand(sender,args,label);
                         return true;
                     case PLAYER:
+
                         SubCommand subCommandConfig1 = ReflectionMethod.of(subCommand, "onSubCommand", CommandSender.class, OfflinePlayer.class, String.class).getAnnotation(SubCommand.class);
 
                         if (subCommandConfig1 == null) {
@@ -176,7 +183,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                             }
                         }
 
-                        OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
+                        OfflinePlayer player = Bukkit.getOfflinePlayer(args[argsIndex]);
 
                         if (!player.hasPlayedBefore()) {
                             Text.format("lang:[commands.never-played]",plugin).send(sender);
@@ -184,6 +191,38 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                         }
 
                         subCommand.onSubCommand(sender,player,label);
+                        return true;
+                    case OPTIONS:
+
+                        SubCommand subCommandConfig2 = ReflectionMethod.of(subCommand, "onSubCommand", CommandSender.class, OfflinePlayer.class, String.class, String.class).getAnnotation(SubCommand.class);
+
+                        if (subCommandConfig2 == null) {
+                            plugin.getLog().severe("Subcommands must be annotated with @SubCommandConfig to setup the subcommand!!");
+                            continue;
+                        }
+
+                        if (!sender.hasPermission(subCommandConfig2.perm())) {
+                            Text.format("lang:[commands.no-permission]",plugin).send(sender);
+                            return true;
+                        }
+                        if (subCommandConfig2.isOnlyPlayer() && !(sender instanceof Player)) {
+                            Text.format("lang:[commands.not-a-player]",plugin).send(sender);
+                            return true;
+                        }
+                        if (sender instanceof Player) {
+                            if (!subCommandConfig2.isOnlyInWorld() && plugin.getEnabledWorlds().contains(((Player) sender).getWorld().getName()) && !plugin.getEnabledWorlds().isEmpty()) {
+                                Text.format("lang:[commands.disabled-world]",plugin).send(sender);
+                                return true;
+                            }
+                        }
+
+                        Set<String> ops = ReflectionMethod.of(subCommand,"getOptions").invoke();
+
+                        if (!ops.contains(args[argsIndex].toLowerCase())) {
+                            continue;
+                        }
+
+                        subCommand.onSubCommand(sender,args,label,args[argsIndex]);
                         return true;
                 }
             }

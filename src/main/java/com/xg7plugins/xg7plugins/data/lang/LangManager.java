@@ -45,6 +45,9 @@ public class LangManager {
     public void loadAllLangs() {
         File dir = new File(plugin.getDataFolder(), "langs");
         if (!dir.exists()) dir.mkdirs();
+        if (dir.listFiles() != null && Objects.requireNonNull(dir.listFiles()).length != 0) {
+            Arrays.stream(dir.listFiles()).forEach(file -> langs.put(file.getName().substring(0, file.getName().length() - 4), YamlConfiguration.loadConfiguration(file)));
+        }
         for (String lang : defLangs) {
             File file = new File(dir, lang + ".yml");
             if (!file.exists()) plugin.saveResource("langs/" + lang + ".yml", false);

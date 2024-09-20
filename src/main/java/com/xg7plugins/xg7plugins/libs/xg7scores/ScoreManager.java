@@ -48,6 +48,7 @@ public class ScoreManager {
     }
 
     public void initTask() {
+        if (taskId != null) return;
         AtomicLong counter = new AtomicLong();
         this.taskId = plugin.getTaskManager().addRepeatingTask(plugin, () -> {
             scoreboards.values().forEach(score -> {

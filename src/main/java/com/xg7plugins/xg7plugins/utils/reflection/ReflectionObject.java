@@ -8,8 +8,8 @@ import java.lang.reflect.Field;
 @Getter
 public class ReflectionObject {
 
-    private Object object;
-    private Class<?> objectClass;
+    private final Object object;
+    private final Class<?> objectClass;
 
     public ReflectionObject(Object object) {
         this.object = object;

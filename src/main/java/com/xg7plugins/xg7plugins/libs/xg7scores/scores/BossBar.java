@@ -17,11 +17,11 @@ import java.util.UUID;
 
 public class BossBar extends Score {
 
-    private Map<UUID, org.bukkit.boss.BossBar> bossBars = new HashMap<>();
+    private final Map<UUID, org.bukkit.boss.BossBar> bossBars = new HashMap<>();
 
-    private BarColor color;
-    private BarStyle style;
-    private double progress;
+    private final BarColor color;
+    private final BarStyle style;
+    private final double progress;
 
     public BossBar(long delay, String id, ScoreCondition condition, String[] title, BarColor color, BarStyle style, double progress, Plugin plugin) {
         super(delay, title, id, condition, plugin);

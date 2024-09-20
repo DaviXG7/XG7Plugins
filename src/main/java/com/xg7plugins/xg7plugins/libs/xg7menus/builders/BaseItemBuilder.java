@@ -33,7 +33,7 @@ public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
 
 
     protected ItemStack itemStack;
-    private Plugin plugin;
+    private final Plugin plugin;
     @Getter
     private Consumer<ClickEvent> event;
 

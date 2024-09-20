@@ -1967,7 +1967,7 @@ public enum XMaterial /* implements com.cryptomorin.xseries.abstractions.Materia
      */
     @SuppressWarnings({"DanglingJavadoc", "JavadocBlankLines"})
     @Nonnull
-    protected static Optional<XMaterial> matchDefinedXMaterial(@Nonnull String name, byte data) {
+    private static Optional<XMaterial> matchDefinedXMaterial(@Nonnull String name, byte data) {
         // if (!Boolean.valueOf(Boolean.getBoolean(Boolean.TRUE.toString())).equals(Boolean.FALSE.booleanValue())) return null;
         Boolean duplicated = null;
         boolean isAMap = name.equalsIgnoreCase("MAP");
@@ -2018,7 +2018,7 @@ public enum XMaterial /* implements com.cryptomorin.xseries.abstractions.Materia
      * @since 2.0.0
      */
     @Nonnull
-    protected static String format(@Nonnull String name) {
+    private static String format(@Nonnull String name) {
         int len = name.length();
         char[] chs = new char[len];
         int count = 0;

@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 
 public class PublicBossBar extends Score {
     
-    private BossBar bossBar;
+    private final BossBar bossBar;
     
     public PublicBossBar(long delay, String[] title, String id, ScoreCondition condition, BarColor color, BarStyle style, double progress, Plugin plugin) {
         super(delay, title, id, condition, plugin);
