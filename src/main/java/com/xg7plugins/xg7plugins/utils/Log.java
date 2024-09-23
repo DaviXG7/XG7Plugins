@@ -1,6 +1,7 @@
 package com.xg7plugins.xg7plugins.utils;
 
 import com.xg7plugins.xg7plugins.boot.Plugin;
+import com.xg7plugins.xg7plugins.data.config.Config;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -16,6 +17,14 @@ public class Log {
     private Plugin plugin;
     @Setter
     private boolean isLogEnabled;
+
+    public Log(Plugin plugin) {
+        this.plugin = plugin;
+        Config config = plugin.getConfigsManager().getConfig("config");
+        if (config == null) return;
+        if (config.get("log-enabled") == null) return;
+        isLogEnabled = config.get("log-enabled");
+    }
 
     public void severe(String message) {
         Bukkit.getConsoleSender().sendMessage("[" + plugin.getName()  + " ERROR] " + message);

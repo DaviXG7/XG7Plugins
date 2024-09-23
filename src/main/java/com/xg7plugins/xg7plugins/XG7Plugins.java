@@ -3,7 +3,8 @@ package com.xg7plugins.xg7plugins;
 import com.xg7plugins.xg7plugins.commands.defaultCommands.LangCommand;
 import com.xg7plugins.xg7plugins.commands.defaultCommands.ReloadCommand;
 import com.xg7plugins.xg7plugins.data.database.EntityProcessor;
-import com.xg7plugins.xg7plugins.data.lang.LangEntity;
+import com.xg7plugins.xg7plugins.data.lang.PlayerLanguage;
+import com.xg7plugins.xg7plugins.events.packetevents.PacketManagerBase;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuManager;
 import com.xg7plugins.xg7plugins.libs.xg7menus.listeners.MenuListener;
 import com.xg7plugins.xg7plugins.libs.xg7menus.listeners.PlayerMenuListener;
@@ -22,13 +23,10 @@ import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,14 +44,11 @@ public final class XG7Plugins extends Plugin {
         matcher.find();
         minecraftVersion = Integer.parseInt(matcher.group(1));
     }
-
-    private ScheduledExecutorService executor;
-
     private DBManager databaseManager;
     private EventManager eventManager;
     private TaskManager taskManager;
     private ScoreManager scoreManager;
-    private Object packetEventManager;
+    private PacketManagerBase packetEventManager;
     private MenuManager menuManager;
 
     private List<Event> events;
@@ -71,15 +66,14 @@ public final class XG7Plugins extends Plugin {
     public void onEnable() {
         Config config = getConfigsManager().getConfig("config");
 
-        executor = Executors.newScheduledThreadPool(config.get("task-threads"));
         this.databaseManager = new DBManager(this);
         this.menuManager = new MenuManager(this);
         this.eventManager = new EventManager();
-        this.taskManager = new TaskManager();
+        this.taskManager = new TaskManager(this);
         this.scoreManager = new ScoreManager(this);
         this.eventManager.registerPlugin(this);
         this.databaseManager.connectPlugin(this);
-        EntityProcessor.createTableOf(this, LangEntity.class);
+        EntityProcessor.createTableOf(this, PlayerLanguage.class);
         this.packetEventManager = minecraftVersion < 8 ? new PacketEventManager1_7() : new PacketEventManager();
         if (config.get("prefix") != null) this.setCustomPrefix(config.get("prefix"));
     }
@@ -87,8 +81,9 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public void onDisable() {
-        Bukkit.getOnlinePlayers().forEach(player -> ReflectionObject.of(packetEventManager).getMethod("stopEvent", Player.class).invoke(player));
-        executor.shutdown();
+        Bukkit.getOnlinePlayers().forEach(player -> packetEventManager.stopEvent(player));
+        scoreManager.removePlayers();
+        taskManager.getExecutor().shutdown();
 
     }
 

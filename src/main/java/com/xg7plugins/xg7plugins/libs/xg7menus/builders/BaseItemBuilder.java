@@ -108,7 +108,7 @@ public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
     }
     public B setPlaceHolders(Player player) {
         if (itemStack.getItemMeta() == null) return (B) this;
-        if (itemStack.getItemMeta().getDisplayName() != null) name(Text.format(itemStack.getItemMeta().getDisplayName(),plugin).getWithPlaceholders(player));
+        name(Text.format(itemStack.getItemMeta().getDisplayName(),plugin).getWithPlaceholders(player));
         if (itemStack.getItemMeta().getLore() != null) lore(itemStack.getItemMeta().getLore().stream().map(l -> Text.format(l,plugin).getWithPlaceholders(player)).collect(Collectors.toList()));
         return (B) this;
     }

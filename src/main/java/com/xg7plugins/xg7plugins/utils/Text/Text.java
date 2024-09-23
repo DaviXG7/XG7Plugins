@@ -79,22 +79,17 @@ public class Text {
     }
 
     public String getWithPlaceholders(Player player) {
-
-
         YamlConfiguration entity = this.plugin.getLangManager().getLangByPlayer(player.getUniqueId(), XG7Plugins.getMinecraftVersion() >= 12 ? player.getLocale() : PlayerNMS.cast(player).getCraftPlayerHandle().getField("locale"));
-
         String textToTraslate = getText();
-
         Matcher matcher = LANG_PATTERN.matcher(textToTraslate);
         while (matcher.find()) {
             String lang = matcher.group(1);
             if (entity.getString(lang) == null) {
                 textToTraslate = textToTraslate.replace(textToTraslate.substring(matcher.start(), matcher.end()), plugin.getLangManager().getLang(plugin.getLangManager().getMainLang()).getString(lang));
-                break;
+                continue;
             }
             textToTraslate = textToTraslate.replace(textToTraslate.substring(matcher.start(), matcher.end()), entity.getString(lang));
         }
-
         textToTraslate = textToTraslate.replace("[PLAYER]", player.getName());
 
         return Text.format(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, textToTraslate) : textToTraslate, plugin).getText();
@@ -141,7 +136,6 @@ public class Text {
             return;
         }
 
-
         String textToTraslate = getText();
 
         Matcher matcher = LANG_PATTERN.matcher(textToTraslate);
@@ -161,7 +155,6 @@ public class Text {
         if (XG7Plugins.getMinecraftVersion() < 8) return;
 
         XG7Plugins.getInstance().getScoreManager().getSendActionBlackList().add(player.getUniqueId());
-
         sendScoreActionBar(player);
 
         Bukkit.getScheduler().runTaskLater(XG7Plugins.getInstance(), () -> XG7Plugins.getInstance().getScoreManager().getSendActionBlackList().remove(player.getUniqueId()),60L);
@@ -173,14 +166,9 @@ public class Text {
 
         if (XG7Plugins.getMinecraftVersion() < 8) return;
 
-        if (XG7Plugins.getInstance().getScoreManager().getSendActionBlackList().contains(player.getUniqueId())) return;
-
         String finalText = getWithPlaceholders(player);
 
-        if (text.startsWith("[ACTION] ")) {
-            finalText = finalText.substring(9);
-            return;
-        }
+        if (text.startsWith("[ACTION] ")) finalText = finalText.substring(9);
 
         if (XG7Plugins.getMinecraftVersion() > 8) {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(finalText));

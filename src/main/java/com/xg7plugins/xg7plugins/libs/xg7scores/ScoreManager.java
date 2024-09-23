@@ -2,10 +2,8 @@ package com.xg7plugins.xg7plugins.libs.xg7scores;
 
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
+import com.xg7plugins.xg7plugins.libs.xg7scores.scores.ScoreBoard;
 import lombok.Getter;
-import net.kyori.adventure.chat.ChatType;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -37,20 +35,20 @@ public class ScoreManager {
     }
 
     public void removePlayers() {
-        scoreboards.values().forEach(sc -> sc.getPlayers().forEach(sc::removePlayer));
+        scoreboards.values().forEach(Score::removeAllPlayers);
     }
     public void removePlayer(Player player) {
         scoreboards.values().forEach(sc -> sc.removePlayer(player));
     }
 
     public void cancelTask() {
-        plugin.getTaskManager().cancelTask(plugin, this.taskId);
+        plugin.getTaskManager().cancelTask(this.taskId);
     }
 
     public void initTask() {
         if (taskId != null) return;
         AtomicLong counter = new AtomicLong();
-        this.taskId = plugin.getTaskManager().addRepeatingTask(plugin, () -> {
+        this.taskId = plugin.getTaskManager().addRepeatingTask(() -> {
             scoreboards.values().forEach(score -> {
 
                         Bukkit.getOnlinePlayers().forEach(p -> {

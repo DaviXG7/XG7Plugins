@@ -8,7 +8,6 @@ import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.data.database.EntityProcessor;
 import com.xg7plugins.xg7plugins.data.database.Query;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
-import com.xg7plugins.xg7plugins.utils.reflection.PlayerNMS;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,6 +15,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 
@@ -24,9 +24,9 @@ public class LangManager {
 
     private final Plugin plugin;
     private final Cache<String, YamlConfiguration> langs;
-    private final Cache<UUID, LangEntity> players;
     private final String mainLang;
     private final String[] defLangs;
+    private final PlayerLanguageDAO playerLanguageDAO;
 
     public LangManager(Plugin plugin, String[] defaultLangs) {
          this.plugin = plugin;
@@ -61,11 +61,11 @@ public class LangManager {
         File file = new File(plugin.getDataFolder(), "langs/" + lang + ".yml");
         if (!file.exists()) plugin.saveResource("langs/" + lang + ".yml", false);
 
-        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
+        YamlConfiguration newConfig = YamlConfiguration.loadConfiguration(file);
 
-        langs.put(lang, configuration);
+        langs.put(lang, newConfig);
 
-        return configuration;
+        return newConfig;
     }
     public void updatePlayer(Player player, String lang) {
         this.players.put(player.getUniqueId(),new LangEntity(player.getUniqueId(),lang));
@@ -77,16 +77,20 @@ public class LangManager {
 
     @SneakyThrows
     public YamlConfiguration getLangByPlayer(UUID id, String playerLocale) {
-
         if (id == null) return getLang(mainLang);
-        if (players.asMap().containsKey(id)) return getLang(players.asMap().get(id).getLangId());
 
-        return Query.create(XG7Plugins.getInstance(),"SELECT * FROM LangEntity WHERE playerUUID = ?", id)
-                .thenApplyAsync(q -> {
+        PlayerLanguage language = playerLanguageDAO.getLanguage(id);
 
-                            if (!q.hasNextLine()) {
+        if (language != null) return getLang(language.getLangId());
 
-                                Config config = plugin.getConfigsManager().getConfig("config");
+        Config config = plugin.getConfigsManager().getConfig("config");
+
+        String langId = mainLang;
+        if (config.get("auto-chose-lang")) if (langs.asMap().containsKey(playerLocale)) langId = playerLocale;
+
+        PlayerLanguage newLang = new PlayerLanguage(id, langId);
+        playerLanguageDAO.addPlayerLanguage(newLang);
+        return getLang(langId);
 
                                 if (config.get("auto-chose-lang")) {
                                     for (String locale : langs.asMap().keySet()) {

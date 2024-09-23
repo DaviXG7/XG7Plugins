@@ -16,11 +16,15 @@ public class JoinAndQuit implements Event {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        ReflectionObject.of(XG7Plugins.getInstance().getPacketEventManager()).getMethod("create", Player.class).invoke(event.getPlayer());
+        XG7Plugins.getInstance().getPacketEventManager().stopEvent(event.getPlayer());
     }
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
-        ReflectionObject.of(XG7Plugins.getInstance().getPacketEventManager()).getMethod("stopEvent", Player.class).invoke(event.getPlayer());
-        XG7Plugins.getInstance().getScoreManager().removePlayer(event.getPlayer());
+
+        XG7Plugins plugin = XG7Plugins.getInstance();
+        plugin.getPacketEventManager().stopEvent(event.getPlayer());
+        plugin.getScoreManager().removePlayer(event.getPlayer());
+        plugin.getMenuManager().removePlayerFromAll(event.getPlayer());
+
     }
 }

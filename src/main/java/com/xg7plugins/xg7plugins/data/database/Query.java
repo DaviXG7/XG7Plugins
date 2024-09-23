@@ -10,6 +10,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ScheduledExecutorService;
 
 @AllArgsConstructor
 public class Query {
@@ -20,6 +21,20 @@ public class Query {
 
     public static CompletableFuture<Query> create(Plugin plugin, String sql, Object... params) {
         return XG7Plugins.getInstance().getDatabaseManager().executeQuery(plugin, sql,params);
+    }
+    public static <T extends Entity> CompletableFuture<T> getEntity(Plugin plugin, String sql, Object id, Class<T> clazz) {
+
+        DBManager manager = XG7Plugins.getInstance().getDatabaseManager();
+
+        ScheduledExecutorService executorService = XG7Plugins.getInstance().getTaskManager().getExecutor();
+
+        if (manager.getEntitiesCached().asMap().containsKey(id)) return CompletableFuture.supplyAsync(() -> (T) manager.getEntitiesCached().asMap().get(id), executorService);
+
+        return XG7Plugins.getInstance().getDatabaseManager().executeQuery(plugin, sql, id).thenApply(q -> q.get(clazz));
+    }
+
+    public static CompletableFuture<Void> update(Plugin plugin, String sql, Object... params) {
+        return XG7Plugins.getInstance().getDatabaseManager().executeUpdate(plugin, sql,params);
     }
 
     public boolean hasNextLine() {
@@ -54,6 +69,7 @@ public class Query {
                     if (dbManager.getEntitiesCached().asMap().containsKey(value)) return (T) dbManager.getEntitiesCached().asMap().get(value);
                     id = value;
                 }
+
 
                 if (f.getType() == List.class) {
                     ParameterizedType parameterizedType = (ParameterizedType) f.getGenericType();

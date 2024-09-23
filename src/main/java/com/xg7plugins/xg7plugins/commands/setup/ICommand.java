@@ -2,6 +2,7 @@ package com.xg7plugins.xg7plugins.commands.setup;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
@@ -16,6 +17,7 @@ public interface ICommand {
     }
 
     default void onCommand(Command command, CommandSender sender, String label) {}
+    default void onCommand(Command command, Player player, String label) {}
 
     default List<String> onTabComplete(Command command, CommandSender sender, String label, String[] args) {
         return Collections.emptyList();

@@ -39,6 +39,11 @@ public abstract class Score {
         if (players.isEmpty()) updating = false;
     }
 
+    public void removeAllPlayers() {
+        players.clear();
+        updating = false;
+    }
+
     public void incrementIndex() {
         this.indexUpdating++;
         if (indexUpdating == toUpdate.length) indexUpdating = 0;

@@ -19,13 +19,15 @@ import java.util.HashMap;
 
 public class EventManager {
 
-    private final HashMap<Plugin, Listener> listeners = new HashMap<>();
+    private final HashMap<String, Listener> listeners = new HashMap<>();
 
     public void registerPlugin(Plugin plugin) {
 
+        plugin.getLog().info("Loading Events...");
+
         if (plugin.getEvents().isEmpty()) return;
 
-        listeners.put(plugin, new Listener() {});
+        listeners.put(plugin.getName(), new Listener() {});
 
         for (Event event : plugin.getEvents()) {
 
@@ -42,7 +44,7 @@ public class EventManager {
 
                 plugin.getServer().getPluginManager().registerEvent(
                         (Class<? extends org.bukkit.event.Event>) method.getParameterTypes()[0],
-                        listeners.get(plugin),
+                        listeners.get(plugin.getName()),
                         eventHandler.priority(),
                         (listener, event2) -> {
                             if (eventHandler.isOnlyInWorld()) {
@@ -84,11 +86,13 @@ public class EventManager {
 
 
         }
+
+        plugin.getLog().fine("Events loaded.");
     }
 
     public void unregisterEvents(Plugin plugin) {
-        HandlerList.unregisterAll(listeners.get(plugin));
-        listeners.remove(plugin);
+        HandlerList.unregisterAll(listeners.get(plugin.getName()));
+        listeners.remove(plugin.getName());
     }
 
 }

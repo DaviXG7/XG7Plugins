@@ -1,33 +1,15 @@
 package com.xg7plugins.xg7plugins.events.packetevents;
 
-import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.events.Event;
 import com.xg7plugins.xg7plugins.utils.reflection.PlayerNMS;
 import lombok.SneakyThrows;
 import net.minecraft.util.io.netty.channel.*;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class PacketEventManager1_7 {
-
-    private final List<Event> packetEvents = new ArrayList<>();
-
-    public void registerPlugin(Plugin plugin) {
-
-        if (plugin.getPacketEvents().isEmpty()) return;
-
-        for (Event event : plugin.getPacketEvents()) {
-            if (!event.isEnabled()) continue;
-            this.packetEvents.add(event);
-        }
-
-        Bukkit.getOnlinePlayers().forEach(this::create);
-    }
+public class PacketEventManager1_7 extends PacketManagerBase {
 
     @SneakyThrows
     public void create(Player player) {
@@ -77,7 +59,8 @@ public class PacketEventManager1_7 {
         channelPipeline.addBefore("packet_handler", player.getName(), channelDuplexHandler);
     }
 
-    public static void stopEvent(Player player) {
+    @Override
+    public void stopEvent(Player player) {
         try {
             PlayerNMS playerNMS = PlayerNMS.cast(player);
             Channel channel = (Channel) Arrays.stream(playerNMS.getNetworkManager().getObjectClass().getDeclaredFields()).filter(field -> {
@@ -94,8 +77,6 @@ public class PacketEventManager1_7 {
         }
     }
 
-    public void unregisterPlugin(Plugin plugin) {
-        plugin.getPacketEvents().forEach(this.packetEvents::remove);
-    }
+
 
 }

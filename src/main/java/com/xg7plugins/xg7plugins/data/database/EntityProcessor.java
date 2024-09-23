@@ -84,7 +84,7 @@ public class EntityProcessor {
             manager.executeUpdate(plugin,builder.toString());
             if (oneToManyClass != null) createTableOf(plugin, oneToManyClass);
 
-        },XG7Plugins.getInstance().getExecutor());
+        },XG7Plugins.getInstance().getTaskManager().getExecutor());
     }
 
     public static void insetEntity(Plugin plugin, Entity entity) {
@@ -125,7 +125,7 @@ public class EntityProcessor {
             manager.executeUpdate(plugin, builder.toString(), args.toArray());
             if (!childs.isEmpty()) childs.forEach(item -> insetEntity(plugin, ((Entity) item)));
 
-        },XG7Plugins.getInstance().getExecutor());
+        },XG7Plugins.getInstance().getTaskManager().getExecutor());
     }
 
 }

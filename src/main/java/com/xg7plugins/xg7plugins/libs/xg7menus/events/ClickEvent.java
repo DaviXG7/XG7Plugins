@@ -22,6 +22,11 @@ public class ClickEvent implements Cancellable {
     private final Location locationClicked;
 
 
+    public <T extends BaseMenu> T getClickedMenu() {
+        return (T) clickedMenu;
+    }
+
+
     @Override
     public boolean isCancelled() {
         return cancelled;

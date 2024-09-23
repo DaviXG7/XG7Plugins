@@ -6,11 +6,11 @@ import lombok.Getter;
 import java.util.HashMap;
 
 @Getter
-public class Configs {
+public class ConfigManager {
 
     private final HashMap<String, Config> configs = new HashMap<>();
 
-    public Configs(Plugin plugin) {
+    public ConfigManager(Plugin plugin) {
         plugin.getConfigs().forEach(config -> configs.put(config.getName(), config));
     }
 

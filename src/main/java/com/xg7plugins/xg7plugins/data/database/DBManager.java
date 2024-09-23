@@ -39,9 +39,14 @@ public class DBManager {
     @SneakyThrows
     public void connectPlugin(Plugin plugin) {
 
+        plugin.getLog().loading("Connecting database...");
+
         Config pluginConfig = plugin.getConfigsManager().getConfig("config");
 
-        if (pluginConfig == null || pluginConfig.getConfigutationSection("sql") == null) return;
+        if (pluginConfig == null || pluginConfig.getConfigutationSection("sql") == null) {
+            plugin.getLog().warn("Connection aborted!");
+            return;
+        }
 
         ConnectionType connectionType = ConnectionType.valueOf(((String) pluginConfig.get("sql.type")).toUpperCase());
 
@@ -50,6 +55,8 @@ public class DBManager {
         String database = pluginConfig.get("sql.database");
         String username = pluginConfig.get("sql.username");
         String password = pluginConfig.get("sql.password");
+
+        plugin.getLog().info("Connection type: " + connectionType);
 
         switch (connectionType) {
             case SQLITE:
@@ -75,6 +82,8 @@ public class DBManager {
                 break;
         }
 
+        plugin.getLog().fine("Sucessfully connected to database!");
+
     }
 
     protected void cacheEntity(Object id, Entity entity) {
@@ -83,7 +92,8 @@ public class DBManager {
 
     @SneakyThrows
     public void disconnectPlugin(Plugin plugin) {
-        if (connections.get(plugin.getName()) != null)connections.get(plugin.getName()).close();
+        plugin.getLog().info("Disconnecting database...");
+        if (connections.get(plugin.getName()) != null) connections.get(plugin.getName()).close();
         connections.remove(plugin.getName());
     }
 
@@ -114,7 +124,7 @@ public class DBManager {
                 e.printStackTrace();
             }
             return null;
-        },XG7Plugins.getInstance().getExecutor());
+        },XG7Plugins.getInstance().getTaskManager().getExecutor());
     }
 
     public synchronized CompletableFuture<Void> executeUpdate(Plugin plugin, String sql, Object... args) {
@@ -127,7 +137,7 @@ public class DBManager {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        },XG7Plugins.getInstance().getExecutor());
+        },XG7Plugins.getInstance().getTaskManager().getExecutor());
     }
 
 

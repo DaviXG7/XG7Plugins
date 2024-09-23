@@ -72,7 +72,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull org.bukkit.command.Command cmd, @NotNull String s, @NotNull String[] strings) {
 
-        CompletableFuture.runAsync(() -> {
+        XG7Plugins.getInstance().getTaskManager().runTask(() -> {
 
             ICommand command = commands.get(cmd.getName());
 
@@ -103,9 +103,14 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 }
             }
 
+            if (commandConfig.isOnlyPlayer()) {
+                command.onCommand(cmd,(Player) commandSender,s);
+                return;
+            }
+
             command.onCommand(cmd,commandSender,s);
 
-        },XG7Plugins.getInstance().getExecutor());
+        });
 
         return true;
     }

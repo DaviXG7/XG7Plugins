@@ -10,19 +10,24 @@ commands:
   disabled-world: "Você não pode executar o comando nesse mundo!"
   not-a-player: "Você não pode executar este comando no console!"
 
-
+reload-message:
+  config: "Configs de [PLUGIN] recarregados!"
+  database: "Banco de dados de [PLUGIN] recarregado!"
+  all: "[PLUGIN] recarregado!"
+  lang: "Idiomas de [PLUGIN] recarregados!"
+  events: "Eventos de [PLUGIN] recarregados!"
 
 
 #Plugin defaults
+
+go-back-item: "Voltar"
+go-next-item: "Avançar"
+close-item: "Fechar"
 
 lang-menu:
   title: "Idiomas"
 
   item-click: "Clique para trocar o idioma para português"
-
-  go-back-item: "Voltar"
-  go-next-item: "Avanar"
-  close-item: "Fechar"
 
   toggle-success: "Você trocou o idioma para português!"
 

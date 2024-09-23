@@ -6,13 +6,13 @@ import com.xg7plugins.xg7plugins.commands.setup.*;
 import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.libs.xg7menus.XSeries.XMaterial;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
+import com.xg7plugins.xg7plugins.utils.Text.Text;
 import lombok.Data;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -89,6 +89,8 @@ public class ReloadCommand implements ICommand {
             public void onSubCommand(CommandSender sender, String[] args, String label) {
                 Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
                 plugin.getConfigs().forEach(Config::reload);
+
+                Text.format("lang:[reload-message.config]", XG7Plugins.getInstance()).send(sender);
             }
         }
 
@@ -109,6 +111,8 @@ public class ReloadCommand implements ICommand {
                 Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
                 XG7Plugins.getInstance().getDatabaseManager().disconnectPlugin(plugin);
                 XG7Plugins.getInstance().getDatabaseManager().connectPlugin(plugin);
+
+                Text.format("lang:[reload-message.database]", XG7Plugins.getInstance()).send(sender);
             }
         }
 
@@ -128,6 +132,7 @@ public class ReloadCommand implements ICommand {
             public void onSubCommand(CommandSender sender, String[] args, String label) {
                 Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
                 plugin.getLangManager().loadAllLangs();
+                Text.format("lang:[reload-message.lang]", XG7Plugins.getInstance()).send(sender);
             }
         }
 
@@ -147,6 +152,7 @@ public class ReloadCommand implements ICommand {
                 Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
                 XG7Plugins.getInstance().getEventManager().unregisterEvents(plugin);
                 XG7Plugins.getInstance().getEventManager().registerPlugin(plugin);
+                Text.format("lang:[reload-message.events]", XG7Plugins.getInstance()).send(sender);
             }
         }
 
@@ -163,11 +169,11 @@ public class ReloadCommand implements ICommand {
             }
 
             @Override
-            @SneakyThrows
             public void onSubCommand(CommandSender sender, String[] args, String label) {
                 Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
                 Bukkit.getPluginManager().disablePlugin(plugin);
                 Bukkit.getPluginManager().enablePlugin(plugin);
+                Text.format("lang:[reload-message.all]", XG7Plugins.getInstance()).send(sender);
             }
         }
 

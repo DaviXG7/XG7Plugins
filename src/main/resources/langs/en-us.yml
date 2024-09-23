@@ -1,7 +1,7 @@
 
 locale: english
 
-formated-name: "English or Spanish"
+formated-name: "English"
 
 commands:
   syntax-error: "You are using the command incorrectly! The right way is [SYNTAX]"
@@ -10,24 +10,35 @@ commands:
   disabled-world: "You cannot execute this command in a disabled world!"
   not-a-player: "You cannot execute this command in console!"
 
-
+reload-message:
+  config: "Configs of [PLUGIN] reloaded!"
+  database: "Database of [PLUGIN] reloaded!"
+  all: "[PLUGIN] reloaded!"
+  lang: "Languages of [PLUGIN] reloaded!"
+  events: "Events of [PLUGIN] reloaded!"
 
 
 #Plugin defaults
+
+go-back-item: "Back"
+go-next-item: "Next"
+close-item: "Close"
 
 lang-menu:
   title: "Languages"
 
   item-click: "Click here to change the language for English"
 
-  go-back-item: "Back"
-  go-next-item: "Next"
-  close-item: "Close"
-
   toggle-success: "You toggle the language to english!"
 
   cooldown-to-toggle: "You need to wait [SECONDS] seconds to toggle the language again"
 
+tasks-menu:
+  title: "Tasks"
+
+  item-click:
+    - "Left click -> Copy id"
+    - "Right click -> Delete Task"
 
 
 

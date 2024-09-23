@@ -3,17 +3,15 @@ package com.xg7plugins.xg7plugins.boot;
 import com.xg7plugins.xg7plugins.commands.CommandManager;
 import com.xg7plugins.xg7plugins.commands.setup.ICommand;
 import com.xg7plugins.xg7plugins.data.config.Config;
-import com.xg7plugins.xg7plugins.data.config.Configs;
+import com.xg7plugins.xg7plugins.data.config.ConfigManager;
 import com.xg7plugins.xg7plugins.data.lang.LangManager;
 import com.xg7plugins.xg7plugins.events.Event;
-import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseMenu;
 import com.xg7plugins.xg7plugins.utils.Log;
 import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 @Getter
@@ -22,7 +20,7 @@ public abstract class Plugin extends JavaPlugin {
 
     private String prefix;
 
-    private final Configs configsManager;
+    private final ConfigManager configsManager;
     private final CommandManager commandManager;
     private final LangManager langManager;
     private final Log log;
@@ -33,14 +31,12 @@ public abstract class Plugin extends JavaPlugin {
     public Plugin(String prefix, String[] defLangs) {
 
         if (Bukkit.getPluginManager().getPlugin("XG7Plugins") == null) {
-
             //Baixar
-
         }
 
         this.prefix = prefix;
         this.customPrefix = prefix;
-        this.configsManager = new Configs(this);
+        this.configsManager = new ConfigManager(this);
         this.langManager = new LangManager(this, defLangs);
         this.commandManager = new CommandManager(this);
         this.log = new Log(this, false);
@@ -58,5 +54,4 @@ public abstract class Plugin extends JavaPlugin {
     public abstract List<Event> getEvents();
     public abstract List<Event> getPacketEvents();
     public abstract String[] dependencies();
-
 }

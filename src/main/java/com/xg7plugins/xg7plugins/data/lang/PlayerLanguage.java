@@ -8,11 +8,11 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
-public class LangEntity implements Entity {
+public class PlayerLanguage implements Entity {
 
     @Entity.PKey
     private UUID playerUUID;
     private String langId;
 
-    public LangEntity() {}
+    public PlayerLanguage() {}
 }
