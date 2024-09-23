@@ -7,6 +7,8 @@ import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseMenu;
 import com.xg7plugins.xg7plugins.libs.xg7menus.menus.player.PlayerMenu;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
 import lombok.Getter;
+import org.bukkit.entity.Player;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,4 +30,16 @@ public class MenuManager {
         this.cachedMenus = Caffeine.newBuilder().expireAfterAccess(Text.convertToMilliseconds(plugin, plugin.getConfigsManager().getConfig("config").get("menu-cache-expires")), TimeUnit.MILLISECONDS).build();
     }
 
+    public boolean cacheExistsPlayer(String id, Player player) {
+       return cachedMenus.asMap().containsKey(id + ":" + player.getUniqueId());
+    }
+    public BaseMenu getMenuByPlayer(String id, Player player) {
+        return cachedMenus.asMap().get(id + ":" + player.getUniqueId());
+    }
+    public BaseMenu removePlayer(String id, Player player) {
+        return cachedMenus.asMap().remove(id + ":" + player.getUniqueId());
+    }
+    public void removePlayerFromAll(Player player) {
+        cachedMenus.asMap().entrySet().removeIf(entry -> entry.getKey().endsWith(player.getUniqueId().toString()));
+    }
 }

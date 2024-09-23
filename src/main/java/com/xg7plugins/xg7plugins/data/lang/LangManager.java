@@ -29,14 +29,16 @@ public class LangManager {
     private final PlayerLanguageDAO playerLanguageDAO;
 
     public LangManager(Plugin plugin, String[] defaultLangs) {
-         this.plugin = plugin;
-         this.defLangs = defaultLangs;
+        this.plugin = plugin;
+        this.defLangs = defaultLangs;
+        this.playerLanguageDAO = new PlayerLanguageDAO(plugin);
 
         Config config = plugin.getConfigsManager().getConfig("config");
 
         this.mainLang = config.get("main-lang");
-        this.langs = Caffeine.newBuilder().expireAfterAccess(Text.convertToMilliseconds(plugin, config.get("lang-cache-expires")), TimeUnit.MILLISECONDS).build();
-        this.players = Caffeine.newBuilder().expireAfterAccess(Text.convertToMilliseconds(plugin, config.get("lang-cache-expires")), TimeUnit.MILLISECONDS).build();
+        this.langs = Caffeine.newBuilder()
+                .expireAfterAccess(Text.convertToMilliseconds(plugin, config.get("lang-cache-expires")), TimeUnit.MILLISECONDS)
+                .build();
 
         loadAllLangs();
     }
@@ -46,7 +48,8 @@ public class LangManager {
         File dir = new File(plugin.getDataFolder(), "langs");
         if (!dir.exists()) dir.mkdirs();
         if (dir.listFiles() != null && Objects.requireNonNull(dir.listFiles()).length != 0) {
-            Arrays.stream(dir.listFiles()).forEach(file -> langs.put(file.getName().substring(0, file.getName().length() - 4), YamlConfiguration.loadConfiguration(file)));
+            Arrays.stream(dir.listFiles()).forEach(file ->
+                    langs.put(file.getName().substring(0, file.getName().length() - 4), YamlConfiguration.loadConfiguration(file)));
         }
         for (String lang : defLangs) {
             File file = new File(dir, lang + ".yml");
@@ -56,7 +59,9 @@ public class LangManager {
     }
 
     public YamlConfiguration getLang(String lang) {
-        if (langs.asMap().containsKey(lang)) return langs.getIfPresent(lang);
+        YamlConfiguration config = langs.getIfPresent(lang);
+        if (config != null) return config;
+
 
         File file = new File(plugin.getDataFolder(), "langs/" + lang + ".yml");
         if (!file.exists()) plugin.saveResource("langs/" + lang + ".yml", false);
@@ -67,15 +72,12 @@ public class LangManager {
 
         return newConfig;
     }
-    public void updatePlayer(Player player, String lang) {
-        this.players.put(player.getUniqueId(),new LangEntity(player.getUniqueId(),lang));
-    }
 
     public String getPath(Player player, String path) {
-        return getLangByPlayer(player.getUniqueId(), XG7Plugins.getMinecraftVersion() >= 12 ? player.getLocale() : PlayerNMS.cast(player).getCraftPlayerHandle().getField("locale")).getString(path);
+        YamlConfiguration langConfig = getLangByPlayer(player.getUniqueId(), player.getLocale());
+        return langConfig.getString(path);
     }
 
-    @SneakyThrows
     public YamlConfiguration getLangByPlayer(UUID id, String playerLocale) {
         if (id == null) return getLang(mainLang);
 
@@ -92,33 +94,7 @@ public class LangManager {
         playerLanguageDAO.addPlayerLanguage(newLang);
         return getLang(langId);
 
-                                if (config.get("auto-chose-lang")) {
-                                    for (String locale : langs.asMap().keySet()) {
-                                        if (playerLocale.equals(locale)) {
-                                            LangEntity newLang = new LangEntity(id,locale);
-
-                                            players.put(id, newLang);
-                                            EntityProcessor.insetEntity(XG7Plugins.getInstance(), newLang);
-
-                                            return getLang(newLang.getLangId());
-                                        }
-                                    }
-
-                                }
-
-                                LangEntity newLang = new LangEntity(id,mainLang);
-                                EntityProcessor.insetEntity(XG7Plugins.getInstance(), newLang);
-
-                                players.put(id, newLang);
-                                return getLang(newLang.getLangId());
-                            }
-
-                            LangEntity entity = q.get(LangEntity.class);
-                            players.put(id, entity);
-
-                            return getLang(entity.getLangId());
-
-                        }
-                ).get();
     }
+
+
 }
