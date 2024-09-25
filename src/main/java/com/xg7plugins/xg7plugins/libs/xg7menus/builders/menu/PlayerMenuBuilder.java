@@ -19,7 +19,8 @@ public class PlayerMenuBuilder extends BaseMenuBuilder<PlayerMenuBuilder> {
 
     @Override
     public PlayerMenu build(Player player, Plugin plugin) {
-        return new PlayerMenu(id,defaultClickEvent,openMenuEvent,closeMenuEvent,items.entrySet().stream()
+        return new PlayerMenu(id,defaultClickEvent,openMenuEvent,closeMenuEvent,
+                items.entrySet().stream()
                 .collect(
                         Collectors.toMap(
                                 Map.Entry::getKey,

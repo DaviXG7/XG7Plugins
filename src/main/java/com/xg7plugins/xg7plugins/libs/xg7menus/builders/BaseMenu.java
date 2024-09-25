@@ -4,6 +4,7 @@ import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuPermissions;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.ClickEvent;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.MenuEvent;
+import com.xg7plugins.xg7plugins.libs.xg7menus.menus.player.PlayerMenu;
 import lombok.Getter;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
@@ -41,6 +42,8 @@ public abstract class BaseMenu {
         this.closeEvent = closeEvent;
         this.permissions = permissions;
         this.player = player;
+
+        if (this instanceof PlayerMenu) return;
 
         XG7Plugins.getInstance().getMenuManager().getCachedMenus().put(id + ":" + player.getUniqueId(), this);
     }

@@ -2,6 +2,8 @@ package com.xg7plugins.xg7plugins.menus;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.data.config.Config;
+import com.xg7plugins.xg7plugins.data.lang.PlayerLanguage;
+import com.xg7plugins.xg7plugins.data.lang.PlayerLanguageDAO;
 import com.xg7plugins.xg7plugins.libs.xg7menus.Slot;
 import com.xg7plugins.xg7plugins.libs.xg7menus.XSeries.XMaterial;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
@@ -40,10 +42,19 @@ public class LangMenu {
         List<ItemBuilder> items = new ArrayList<>();
         plugin.getLangManager().getLangs().asMap().forEach((s, c)-> {
             ItemBuilder builder = ItemBuilder.from(XMaterial.WRITABLE_BOOK.parseItem(), plugin);
+            PlayerLanguage language = plugin.getLangManager().getPlayerLanguageDAO().getLanguage(player.getUniqueId());
 
-            builder.name(c.getString("formated-name") != null ? c.getString("formated-name") : s);
+            boolean selected = language != null && language.getLangId().equals(s);
+
+            builder.name(c.getString("formated-name") != null ? selected ? "§a" + c.getString("formated-name") : "§7" + c.getString("formated-name") : selected ? "§a" + s : "§7" + s);
             builder.lore(Collections.singletonList(c.getString("lang-menu.item-click")));
             builder.click(event -> {
+
+
+                if (language != null && language.getLangId().equals(s)) {
+                    Text.formatComponent("lang:[lang-menu.already-selected]", plugin).send(player);
+                    return;
+                }
 
                 cooldownToToggle.putIfAbsent(player.getUniqueId(), 0L);
 

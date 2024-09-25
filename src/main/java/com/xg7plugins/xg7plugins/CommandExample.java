@@ -34,7 +34,8 @@ public class CommandExample implements ICommand {
     @SubCommand(
             perm = "perm2",
             isOnlyPlayer = true,
-            type = SubCommandType.PLAYER
+            type = SubCommandType.PLAYER,
+            syntax = "/exemple, perm2"
     )
     static class SubCommandExample implements ISubCommand {
 

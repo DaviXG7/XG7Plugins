@@ -29,7 +29,14 @@ public class MenuManager {
         this.plugin = plugin;
         this.cachedMenus = Caffeine.newBuilder().expireAfterAccess(Text.convertToMilliseconds(plugin, plugin.getConfigsManager().getConfig("config").get("menu-cache-expires")), TimeUnit.MILLISECONDS).build();
     }
-
+    public void addPlayerMenu(UUID id, PlayerMenu menu) {
+        playerMenuMap.put(id, menu);
+    }
+    public void removePlayerMenu(UUID id) {
+        if (!playerMenuMap.containsKey(id)) return;
+        playerMenuMap.get(id).clear();
+        playerMenuMap.remove(id);
+    }
     public boolean cacheExistsPlayer(String id, Player player) {
        return cachedMenus.asMap().containsKey(id + ":" + player.getUniqueId());
     }

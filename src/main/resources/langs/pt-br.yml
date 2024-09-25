@@ -29,6 +29,8 @@ lang-menu:
 
   item-click: "Clique para trocar o idioma para português"
 
+  already-selected: "Você já está com este idioma selecionado!"
+
   toggle-success: "Você trocou o idioma para português!"
 
   cooldown-to-toggle: "Você precisa esperar [SECONDS] segundos para trocar o idioma novamente!"

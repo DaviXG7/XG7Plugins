@@ -8,7 +8,6 @@ import com.xg7plugins.xg7plugins.libs.xg7menus.XSeries.XMaterial;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
 import lombok.Data;
-import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
@@ -48,7 +47,8 @@ public class ReloadCommand implements ICommand {
     @SubCommand(
             name = "config",
             perm = "xg7plugins.command.reload",
-            type = SubCommandType.OPTIONS
+            type = SubCommandType.OPTIONS,
+            syntax = "/xg7pluginreload <plugin> <[config, lang, database, events, all]>"
     )
     @Data
     static class PluginSubCommand implements ISubCommand {
@@ -76,7 +76,8 @@ public class ReloadCommand implements ICommand {
         @SubCommand(
                 name = "config",
                 perm = "xg7plugins.command.reload.config",
-                type = SubCommandType.NORMAL
+                type = SubCommandType.NORMAL,
+                syntax = "/xg7pluginreload <plugin> config"
         )
         static class ConfigSubCommand implements ISubCommand {
 
@@ -90,14 +91,17 @@ public class ReloadCommand implements ICommand {
                 Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
                 plugin.getConfigs().forEach(Config::reload);
 
-                Text.format("lang:[reload-message.config]", XG7Plugins.getInstance()).send(sender);
+                Text.format("lang:[reload-message.config]", XG7Plugins.getInstance())
+                        .replace("[PLUGIN]", plugin.getName())
+                        .send(sender);
             }
         }
 
         @SubCommand(
                 name = "database",
                 perm = "xg7plugins.command.reload.database",
-                type = SubCommandType.NORMAL
+                type = SubCommandType.NORMAL,
+                syntax = "/xg7pluginreload <plugin> database"
         )
         static class DatabaseSubCommand implements ISubCommand {
 
@@ -112,14 +116,17 @@ public class ReloadCommand implements ICommand {
                 XG7Plugins.getInstance().getDatabaseManager().disconnectPlugin(plugin);
                 XG7Plugins.getInstance().getDatabaseManager().connectPlugin(plugin);
 
-                Text.format("lang:[reload-message.database]", XG7Plugins.getInstance()).send(sender);
+                Text.format("lang:[reload-message.database]", XG7Plugins.getInstance())
+                        .replace("[PLUGIN]", plugin.getName())
+                        .send(sender);
             }
         }
 
         @SubCommand(
                 name = "lang",
                 perm = "xg7plugins.command.reload.lang",
-                type = SubCommandType.NORMAL
+                type = SubCommandType.NORMAL,
+                syntax = "/xg7pluginreload <plugin> lang"
         )
         static class LangSubCommand implements ISubCommand {
 
@@ -132,14 +139,17 @@ public class ReloadCommand implements ICommand {
             public void onSubCommand(CommandSender sender, String[] args, String label) {
                 Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
                 plugin.getLangManager().loadAllLangs();
-                Text.format("lang:[reload-message.lang]", XG7Plugins.getInstance()).send(sender);
+                Text.format("lang:[reload-message.lang]", XG7Plugins.getInstance())
+                        .replace("[PLUGIN]", plugin.getName())
+                        .send(sender);
             }
         }
 
         @SubCommand(
                 name = "events",
                 perm = "xg7plugins.command.reload.events",
-                type = SubCommandType.NORMAL
+                type = SubCommandType.NORMAL,
+                syntax = "/xg7pluginreload <plugin> events"
         )
         static class EventSubCommand implements ISubCommand {
             @Override
@@ -152,14 +162,17 @@ public class ReloadCommand implements ICommand {
                 Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
                 XG7Plugins.getInstance().getEventManager().unregisterEvents(plugin);
                 XG7Plugins.getInstance().getEventManager().registerPlugin(plugin);
-                Text.format("lang:[reload-message.events]", XG7Plugins.getInstance()).send(sender);
+                Text.format("lang:[reload-message.events]", XG7Plugins.getInstance())
+                        .replace("[PLUGIN]", plugin.getName())
+                        .send(sender);;
             }
         }
 
         @SubCommand(
                 name = "all",
                 perm = "xg7plugins.command.reload.all",
-                type = SubCommandType.NORMAL
+                type = SubCommandType.NORMAL,
+                syntax = "/xg7pluginreload <plugin> all"
         )
         static class AllSubCommand implements ISubCommand {
 
@@ -173,7 +186,9 @@ public class ReloadCommand implements ICommand {
                 Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
                 Bukkit.getPluginManager().disablePlugin(plugin);
                 Bukkit.getPluginManager().enablePlugin(plugin);
-                Text.format("lang:[reload-message.all]", XG7Plugins.getInstance()).send(sender);
+                Text.format("lang:[reload-message.all]", XG7Plugins.getInstance())
+                        .replace("[PLUGIN]", plugin.getName())
+                        .send(sender);;
             }
         }
 

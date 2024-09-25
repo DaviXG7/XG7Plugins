@@ -29,6 +29,8 @@ lang-menu:
 
   item-click: "Click here to change the language for English"
 
+  already-selected: "You're already using this language!"
+
   toggle-success: "You toggle the language to english!"
 
   cooldown-to-toggle: "You need to wait [SECONDS] seconds to toggle the language again"

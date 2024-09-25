@@ -5,7 +5,6 @@ import com.xg7plugins.xg7plugins.commands.setup.Command;
 import com.xg7plugins.xg7plugins.commands.setup.ICommand;
 import com.xg7plugins.xg7plugins.libs.xg7menus.XSeries.XMaterial;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
-import com.xg7plugins.xg7plugins.libs.xg7menus.menus.gui.Menu;
 import com.xg7plugins.xg7plugins.menus.LangMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -13,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 @Command(
         name = "xg7pluginlang",
         descriptionPath = "commands-menu.lang",
-        syntax = "/lang",
+        syntax = "/xg7pluginlang",
         aliasesPath = "lang",
         perm = "xg7plugins.command.lang",
         isOnlyPlayer = true

@@ -1,5 +1,7 @@
 package com.xg7plugins.xg7plugins.commands.setup;
 
+import com.xg7plugins.xg7plugins.XG7Plugins;
+import com.xg7plugins.xg7plugins.utils.Text.Text;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,12 +18,22 @@ public interface ICommand {
         return new ISubCommand[0];
     }
 
-    default void onCommand(Command command, CommandSender sender, String label) {}
-    default void onCommand(Command command, Player player, String label) {}
+    default void onCommand(Command command, CommandSender sender, String label) {
+        syntaxError(sender,this.getClass().getAnnotation(com.xg7plugins.xg7plugins.commands.setup.Command.class).syntax());
+    }
+    default void onCommand(Command command, Player player, String label) {
+        syntaxError(player,this.getClass().getAnnotation(com.xg7plugins.xg7plugins.commands.setup.Command.class).syntax());
+    }
 
     default List<String> onTabComplete(Command command, CommandSender sender, String label, String[] args) {
         return Collections.emptyList();
     }
 
     ItemStack getIcon();
+
+    default void syntaxError(CommandSender sender, String syntax) {
+        Text.format("lang:[commands.syntax-error]", XG7Plugins.getInstance())
+                .replace("[SYNTAX]", syntax)
+                .send(sender);
+    }
 }

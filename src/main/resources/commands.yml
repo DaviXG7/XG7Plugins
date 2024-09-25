@@ -1,5 +1,6 @@
 
 
 
-lang: "xg7pllang, lang, 7pllang"
+lang: "xg7pllang, lang, 7pllang, langs, 7pllangs"
 reload: "xg7plreload, reloadpl, 7plrlpl, rlpl"
+tasks: "xg7plreload, reloadpl, 7plrlpl, rlpl"

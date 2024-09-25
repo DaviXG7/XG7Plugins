@@ -3,7 +3,7 @@ prefix: "§8[§bXG§37P§9lu§1gins§8]"
 
 log-enabled: true
 
-main-lang: pt-br
+main-lang: en-us
 lang-cache-expires: 30m
 auto-chose-lang: true
 cooldown-to-toggle-lang: 1m

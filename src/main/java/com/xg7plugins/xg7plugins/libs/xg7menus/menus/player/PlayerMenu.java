@@ -22,6 +22,7 @@ public class PlayerMenu extends BaseMenu {
 
     public PlayerMenu(String id,Consumer<ClickEvent> defaultClickEvent, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clickEvents, EnumSet<MenuPermissions> permissions, Player player) {
         super(id,defaultClickEvent, openEvent, closeEvent, items, clickEvents,permissions,player);
+        XG7Plugins.getInstance().getMenuManager().addPlayerMenu(player.getUniqueId(), this);
     }
     public void give() {
         IntStream.range(0, player.getInventory().getSize()).filter(i -> player.getInventory().getItem(i) != null).forEach(i -> oldItems.put(i, player.getInventory().getItem(i)));

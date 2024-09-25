@@ -30,7 +30,7 @@ public class Query {
 
         if (manager.getEntitiesCached().asMap().containsKey(id)) return CompletableFuture.supplyAsync(() -> (T) manager.getEntitiesCached().asMap().get(id), executorService);
 
-        return XG7Plugins.getInstance().getDatabaseManager().executeQuery(plugin, sql, id).thenApply(q -> q.get(clazz));
+        return XG7Plugins.getInstance().getDatabaseManager().executeQuery(plugin, sql, id).thenApply(q -> !q.hasNextLine() ? null : q.get(clazz));
     }
 
     public static CompletableFuture<Void> update(Plugin plugin, String sql, Object... params) {

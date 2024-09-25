@@ -16,6 +16,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class MenuListener implements Event {
 
+
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (!(event.getInventory().getHolder() instanceof Menu)) return;

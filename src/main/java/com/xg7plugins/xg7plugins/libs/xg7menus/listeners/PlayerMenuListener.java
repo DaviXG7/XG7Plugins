@@ -19,15 +19,16 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.PlayerInventory;
 
 @AllArgsConstructor
 public class PlayerMenuListener implements Event {
 
+    private final MenuManager manager;
+
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-
-        MenuManager manager = XG7Plugins.getInstance().getMenuManager();
 
         if (!manager.getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
 
@@ -56,35 +57,30 @@ public class PlayerMenuListener implements Event {
 
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
-        MenuManager manager = XG7Plugins.getInstance().getMenuManager();
         if (!manager.getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
         event.setCancelled(!manager.getPlayerMenuMap().get(event.getPlayer().getUniqueId()).getPermissions().contains(MenuPermissions.BREAK_BLOCKS));
     }
 
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
-        MenuManager manager = XG7Plugins.getInstance().getMenuManager();
         if (!manager.getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
         event.setCancelled(!manager.getPlayerMenuMap().get(event.getPlayer().getUniqueId()).getPermissions().contains(MenuPermissions.PLACE_BLOCKS));
     }
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
-        MenuManager manager = XG7Plugins.getInstance().getMenuManager();
         if (!manager.getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
         event.setCancelled(!manager.getPlayerMenuMap().get(event.getPlayer().getUniqueId()).getPermissions().contains(MenuPermissions.DROP));
     }
 
     @EventHandler
     public void onPickup(PlayerPickupItemEvent event) {
-        MenuManager manager = XG7Plugins.getInstance().getMenuManager();
         if (!manager.getPlayerMenuMap().containsKey(event.getPlayer().getUniqueId())) return;
         event.setCancelled(!manager.getPlayerMenuMap().get(event.getPlayer().getUniqueId()).getPermissions().contains(MenuPermissions.PICKUP));
     }
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        MenuManager manager = XG7Plugins.getInstance().getMenuManager();
         if (!manager.getPlayerMenuMap().containsKey(event.getWhoClicked().getUniqueId())) return;
         if (!(event.getClickedInventory() instanceof PlayerInventory)) return;
 
@@ -115,11 +111,10 @@ public class PlayerMenuListener implements Event {
 
     @EventHandler
     public void onDrag(final InventoryDragEvent event) {
-        MenuManager manager = XG7Plugins.getInstance().getMenuManager();
         if (!manager.getPlayerMenuMap().containsKey(event.getWhoClicked().getUniqueId())) return;
         if (!(event.getInventory() instanceof PlayerInventory)) return;
 
-        PlayerMenu playerMenu = (PlayerMenu) event.getInventory().getHolder();
+        PlayerMenu playerMenu = manager.getPlayerMenuMap().get(event.getWhoClicked().getUniqueId());
 
         DragEvent dragEvent = new DragEvent(
                 (Player) event.getWhoClicked(),
@@ -133,6 +128,11 @@ public class PlayerMenuListener implements Event {
             return;
         }
         event.setCancelled(!playerMenu.getPermissions().contains(MenuPermissions.DRAG));
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        manager.removePlayerMenu(event.getPlayer().getUniqueId());
     }
 
 

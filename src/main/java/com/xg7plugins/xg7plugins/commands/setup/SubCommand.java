@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface SubCommand {
+    String syntax();
     String name() default "";
     String perm() default "";
     boolean isOnlyInWorld() default false;

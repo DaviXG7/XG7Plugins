@@ -18,7 +18,7 @@ public class ScoreManager {
     private final HashMap<String, Score> scoreboards = new HashMap<>();
     private final List<UUID> sendActionBlackList = new ArrayList<>();
 
-    private UUID taskId;
+    private String taskId;
 
     public ScoreManager(XG7Plugins plugin) {
         this.plugin = plugin;
@@ -48,7 +48,7 @@ public class ScoreManager {
     public void initTask() {
         if (taskId != null) return;
         AtomicLong counter = new AtomicLong();
-        this.taskId = plugin.getTaskManager().addRepeatingTask(() -> {
+        this.taskId = plugin.getTaskManager().addRepeatingTask("scores", () -> {
             scoreboards.values().forEach(score -> {
 
                         Bukkit.getOnlinePlayers().forEach(p -> {

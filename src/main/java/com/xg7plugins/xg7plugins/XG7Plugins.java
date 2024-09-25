@@ -106,7 +106,7 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public List<Event> getEvents() {
-        if (events == null) events = Arrays.asList(new JoinAndQuit(), new MenuListener(), new PlayerMenuListener(), new EventExample());
+        if (events == null) events = Arrays.asList(new JoinAndQuit(), new MenuListener(), new PlayerMenuListener(menuManager), new EventExample());
         return events;
     }
 

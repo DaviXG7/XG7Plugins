@@ -21,20 +21,20 @@ public class ItemBuilder extends BaseItemBuilder<ItemBuilder> {
         super(stack,plugin);
     }
 
-    @Contract("_ -> new")
+    @Contract("_,_ -> new")
     public static @NotNull ItemBuilder from(Material material,Plugin plugin) {
         return new ItemBuilder(new ItemStack(material),plugin);
     }
-    @Contract("_ -> new")
+    @Contract("_,_ -> new")
     public static @NotNull ItemBuilder from(@NotNull MaterialData material,Plugin plugin) {
         return new ItemBuilder(material.toItemStack(),plugin);
     }
-    @Contract("_ -> new")
+    @Contract("_,_ -> new")
     public static @NotNull ItemBuilder from(ItemStack itemStack,Plugin plugin) {
         return new ItemBuilder(itemStack,plugin);
     }
 
-    @Contract("_ -> new")
+    @Contract("_,_,_ -> new")
     public static @NotNull ItemBuilder commandIcon(XMaterial material, ICommand command, Plugin plugin) {
 
         Command setup = ReflectionClass.of(command.getClass()).getAnnotation(Command.class);

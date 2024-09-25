@@ -72,12 +72,6 @@ public class Text {
         return new com.xg7plugins.xg7plugins.utils.Text.TextComponent(text1.getText(),plugin);
     }
 
-    public String getText() {
-        String finalText = text;
-        for (Map.Entry<String, String> entry : replacements.entrySet()) finalText = finalText.replace(entry.getKey(),entry.getValue());
-        return finalText;
-    }
-
     public String getWithPlaceholders(Player player) {
         YamlConfiguration entity = this.plugin.getLangManager().getLangByPlayer(player.getUniqueId(), XG7Plugins.getMinecraftVersion() >= 12 ? player.getLocale() : PlayerNMS.cast(player).getCraftPlayerHandle().getField("locale"));
         String textToTraslate = getText();
@@ -91,6 +85,10 @@ public class Text {
             textToTraslate = textToTraslate.replace(textToTraslate.substring(matcher.start(), matcher.end()), entity.getString(lang));
         }
         textToTraslate = textToTraslate.replace("[PLAYER]", player.getName());
+
+        for (Map.Entry<String, String> entry : replacements.entrySet()) {
+            textToTraslate = textToTraslate.replace(entry.getKey(),entry.getValue());
+        }
 
         return Text.format(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, textToTraslate) : textToTraslate, plugin).getText();
     }
@@ -136,7 +134,7 @@ public class Text {
             return;
         }
 
-        String textToTraslate = getText();
+        String textToTraslate = text;
 
         Matcher matcher = LANG_PATTERN.matcher(textToTraslate);
 
@@ -144,6 +142,10 @@ public class Text {
 
         while (matcher.find()) {
             textToTraslate = textToTraslate.replace(textToTraslate.substring(matcher.start(), matcher.end()), mainLang.getString(matcher.group(1)));
+        }
+
+        for (Map.Entry<String, String> entry : replacements.entrySet()) {
+            textToTraslate = textToTraslate.replace(entry.getKey(),entry.getValue());
         }
 
         sender.sendMessage(getCentralizedText(PixelsSize.CHAT.pixels, textToTraslate));
