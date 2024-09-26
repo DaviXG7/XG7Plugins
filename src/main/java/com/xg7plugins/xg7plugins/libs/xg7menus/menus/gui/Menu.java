@@ -2,7 +2,7 @@ package com.xg7plugins.xg7plugins.libs.xg7menus.menus.gui;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuPermissions;
-import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseMenu;
+import com.xg7plugins.xg7plugins.libs.xg7menus.BaseMenu;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.ClickEvent;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.MenuEvent;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;

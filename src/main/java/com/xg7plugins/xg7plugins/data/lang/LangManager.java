@@ -34,6 +34,8 @@ public class LangManager {
         this.defLangs = defaultLangs;
         this.playerLanguageDAO = new PlayerLanguageDAO(plugin);
 
+        plugin.getLog().loading("Loading langs...");
+
         Config config = plugin.getConfigsManager().getConfig("config");
 
         this.mainLang = config.get("main-lang");
@@ -42,6 +44,7 @@ public class LangManager {
                 .build();
 
         loadAllLangs();
+        plugin.getLog().loading("Loaded!");
     }
 
     @SneakyThrows

@@ -26,7 +26,7 @@ public class TaskCommands implements ICommand {
     @Override
     public void onCommand(org.bukkit.command.Command command, CommandSender sender, String label) {
         if (!(sender instanceof  Player)) {
-            syntaxError(sender,"/xg7pluginstasks <On Console:[delete, pause]> <On console: UUID>");
+            syntaxError(sender,"/xg7pluginstasks <On Console: delete> <On Console: UUID>");
             return;
         }
 

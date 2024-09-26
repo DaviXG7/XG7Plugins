@@ -11,6 +11,8 @@ import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.InvalidDescriptionException;
+import org.bukkit.plugin.InvalidPluginException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -89,12 +91,8 @@ public class ReloadCommand implements ICommand {
             @Override
             public void onSubCommand(CommandSender sender, String[] args, String label) {
 
-                if (args[0].equals("XG7Plugins")) {
-                    XG7Plugins.getInstance().getConfigs().forEach(Config::reload);
-                    return;
-                }
 
-                Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
+                Plugin plugin = args[0].equals("XG7Plugins") ? XG7Plugins.getInstance() : XG7Plugins.getInstance().getPlugins().get(args[0]);
                 plugin.getConfigs().forEach(Config::reload);
 
                 Text.format("lang:[reload-message.config]", XG7Plugins.getInstance())
@@ -118,7 +116,9 @@ public class ReloadCommand implements ICommand {
 
             @Override
             public void onSubCommand(CommandSender sender, String[] args, String label) {
-                Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
+
+
+                Plugin plugin = args[0].equals("XG7Plugins") ? XG7Plugins.getInstance() : XG7Plugins.getInstance().getPlugins().get(args[0]);
                 XG7Plugins.getInstance().getDatabaseManager().disconnectPlugin(plugin);
                 XG7Plugins.getInstance().getDatabaseManager().connectPlugin(plugin);
 
@@ -143,7 +143,7 @@ public class ReloadCommand implements ICommand {
 
             @Override
             public void onSubCommand(CommandSender sender, String[] args, String label) {
-                Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
+                Plugin plugin = args[0].equals("XG7Plugins") ? XG7Plugins.getInstance() : XG7Plugins.getInstance().getPlugins().get(args[0]);
                 plugin.getLangManager().loadAllLangs();
                 Text.format("lang:[reload-message.lang]", XG7Plugins.getInstance())
                         .replace("[PLUGIN]", plugin.getName())
@@ -165,9 +165,11 @@ public class ReloadCommand implements ICommand {
 
             @Override
             public void onSubCommand(CommandSender sender, String[] args, String label) {
-                Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
+                Plugin plugin = args[0].equals("XG7Plugins") ? XG7Plugins.getInstance() : XG7Plugins.getInstance().getPlugins().get(args[0]);
                 XG7Plugins.getInstance().getEventManager().unregisterEvents(plugin);
                 XG7Plugins.getInstance().getEventManager().registerPlugin(plugin);
+                XG7Plugins.getInstance().getPacketEventManager().unregisterPlugin(plugin);
+                XG7Plugins.getInstance().getPacketEventManager().registerPlugin(plugin);
                 Text.format("lang:[reload-message.events]", XG7Plugins.getInstance())
                         .replace("[PLUGIN]", plugin.getName())
                         .send(sender);;
@@ -189,12 +191,29 @@ public class ReloadCommand implements ICommand {
 
             @Override
             public void onSubCommand(CommandSender sender, String[] args, String label) {
-                Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
+
+                XG7Plugins xg7Plugins = XG7Plugins.getInstance();
+
+                if (args[0].equals("XG7Plugins")) {
+
+                    xg7Plugins.getConfigs().forEach(Config::reload);
+                    xg7Plugins.getDatabaseManager().disconnectPlugin(xg7Plugins);
+                    xg7Plugins.getDatabaseManager().connectPlugin(xg7Plugins);
+                    xg7Plugins.getLangManager().loadAllLangs();
+                    xg7Plugins.getEventManager().unregisterEvents(xg7Plugins);
+                    xg7Plugins.getEventManager().registerPlugin(xg7Plugins);
+                    Text.format("lang:[reload-message.all]", XG7Plugins.getInstance())
+                            .replace("[PLUGIN]", XG7Plugins.getInstance().getName())
+                            .send(sender);
+                    return;
+                }
+
+                Plugin plugin = xg7Plugins.getPlugins().get(args[0]);
                 Bukkit.getPluginManager().disablePlugin(plugin);
                 Bukkit.getPluginManager().enablePlugin(plugin);
                 Text.format("lang:[reload-message.all]", XG7Plugins.getInstance())
                         .replace("[PLUGIN]", plugin.getName())
-                        .send(sender);;
+                        .send(sender);
             }
         }
 

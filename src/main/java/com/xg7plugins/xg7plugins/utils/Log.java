@@ -27,23 +27,23 @@ public class Log {
     }
 
     public void severe(String message) {
-        Bukkit.getConsoleSender().sendMessage("[" + plugin.getName()  + " ERROR] " + message);
+        Bukkit.getConsoleSender().sendMessage("§c[" + plugin.getName()  + " ERROR] " + message);
     }
 
     public void fine(String message) {
-        if (isLogEnabled) Bukkit.getConsoleSender().sendMessage("[" + plugin.getName()  + " SUCCESS] " + message);
+        if (isLogEnabled) Bukkit.getConsoleSender().sendMessage("§a[" + plugin.getName()  + " SUCCESS] " + message);
     }
 
     public void info(String message) {
-        if (isLogEnabled) Bukkit.getConsoleSender().sendMessage("[" + plugin.getName() + " DEBUG] " + message);
+        if (isLogEnabled) Bukkit.getConsoleSender().sendMessage("§6[" + plugin.getName() + " DEBUG] " + message);
     }
 
     public void warn(String message) {
-        Bukkit.getConsoleSender().sendMessage("[" + plugin.getName() + " ALERT] " + message);
+        Bukkit.getConsoleSender().sendMessage("§e[" + plugin.getName() + " ALERT] " + message);
     }
 
     public void loading(String message) {
-        Bukkit.getConsoleSender().sendMessage(plugin.getPrefix() + " " + message);
+        Bukkit.getConsoleSender().sendMessage(plugin.getCustomPrefix() + " " + message);
     }
 
 }

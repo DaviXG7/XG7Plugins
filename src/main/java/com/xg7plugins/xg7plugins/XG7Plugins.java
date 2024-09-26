@@ -24,6 +24,7 @@ import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -67,7 +68,7 @@ public final class XG7Plugins extends Plugin {
     @Override
     public void onEnable() {
         Config config = getConfigsManager().getConfig("config");
-
+        if (config.get("prefix") != null) this.setCustomPrefix(ChatColor.translateAlternateColorCodes('&', config.get("prefix")));
         this.databaseManager = new DBManager(this);
         this.menuManager = new MenuManager(this);
         this.eventManager = new EventManager();
@@ -77,7 +78,6 @@ public final class XG7Plugins extends Plugin {
         this.databaseManager.connectPlugin(this);
         EntityProcessor.createTableOf(this, PlayerLanguage.class);
         this.packetEventManager = minecraftVersion < 8 ? new PacketEventManager1_7() : new PacketEventManager();
-        if (config.get("prefix") != null) this.setCustomPrefix(config.get("prefix"));
     }
 
 
@@ -86,7 +86,6 @@ public final class XG7Plugins extends Plugin {
         Bukkit.getOnlinePlayers().forEach(player -> packetEventManager.stopEvent(player));
         scoreManager.removePlayers();
         taskManager.getExecutor().shutdown();
-
     }
 
     @Override
@@ -129,14 +128,15 @@ public final class XG7Plugins extends Plugin {
 
         xg7Plugins.getDatabaseManager().connectPlugin(plugin);
         xg7Plugins.getEventManager().registerPlugin(plugin);
-        ReflectionObject.of(xg7Plugins.getPacketEventManager()).getMethod("registerPlugin", Plugin.class).invoke(plugin);
+        xg7Plugins.getPacketEventManager().registerPlugin(plugin);
     }
 
     public static void unregister(Plugin plugin) {
         XG7Plugins xg7Plugins = XG7Plugins.getInstance();
 
-        ReflectionObject.of(xg7Plugins.getPacketEventManager()).getMethod("unregisterPlugin", Plugin.class).invoke(plugin);
+        xg7Plugins.getPacketEventManager().unregisterPlugin(plugin);
         xg7Plugins.getDatabaseManager().disconnectPlugin(plugin);
+        xg7Plugins.getScoreManager().unregisterPlugin(plugin);
 
         xg7Plugins.getPlugins().remove(plugin.getName());
 

@@ -2,6 +2,7 @@ package com.xg7plugins.xg7plugins.libs.xg7scores;
 
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
+import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.libs.xg7scores.scores.ScoreBoard;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -30,6 +31,13 @@ public class ScoreManager {
     public Score getByPlayer(Player player) {
         return scoreboards.values().stream().filter(sc -> sc.getPlayers().contains(player)).findFirst().orElse(null);
     }
+    public void unregisterPlugin(Plugin plugin) {
+
+        cancelTask();
+
+        scoreboards.values().removeIf(score -> score.getPlugin().equals(plugin));
+
+    }
     public Score getById(String id) {
         return scoreboards.get(id);
     }
@@ -43,6 +51,7 @@ public class ScoreManager {
 
     public void cancelTask() {
         plugin.getTaskManager().cancelTask(this.taskId);
+        taskId = null;
     }
 
     public void initTask() {
@@ -52,9 +61,8 @@ public class ScoreManager {
             scoreboards.values().forEach(score -> {
 
                         Bukkit.getOnlinePlayers().forEach(p -> {
-                            if (score.getCondition().condition(p)) {
-                                score.addPlayer(p);
-                            }
+                            if (score.getCondition().condition(p)) score.addPlayer(p);
+
                             else if (score.getPlayers().contains(p)) score.removePlayer(p);
                         });
 

@@ -56,7 +56,7 @@ public class DBManager {
         String username = pluginConfig.get("sql.username");
         String password = pluginConfig.get("sql.password");
 
-        plugin.getLog().info("Connection type: " + connectionType);
+        plugin.getLog().loading("Connection type: " + connectionType);
 
         switch (connectionType) {
             case SQLITE:
@@ -82,7 +82,7 @@ public class DBManager {
                 break;
         }
 
-        plugin.getLog().fine("Sucessfully connected to database!");
+        plugin.getLog().loading("Sucessfully connected to database!");
 
     }
 
@@ -92,9 +92,10 @@ public class DBManager {
 
     @SneakyThrows
     public void disconnectPlugin(Plugin plugin) {
-        plugin.getLog().info("Disconnecting database...");
+        plugin.getLog().loading("Disconnecting database...");
         if (connections.get(plugin.getName()) != null) connections.get(plugin.getName()).close();
         connections.remove(plugin.getName());
+        plugin.getLog().loading("Disconnected database!");
     }
 
     public synchronized CompletableFuture<Query> executeQuery(Plugin plugin, String sql, Object... args) {

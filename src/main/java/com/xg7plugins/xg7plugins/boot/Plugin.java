@@ -9,6 +9,7 @@ import com.xg7plugins.xg7plugins.events.Event;
 import com.xg7plugins.xg7plugins.utils.Log;
 import lombok.*;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
@@ -34,12 +35,14 @@ public abstract class Plugin extends JavaPlugin {
             //Baixar
         }
 
-        this.prefix = prefix;
-        this.customPrefix = prefix;
+        this.prefix = ChatColor.translateAlternateColorCodes('&', prefix);
+        this.customPrefix = this.prefix;
+        this.log = new Log(this, false);
+
+        log.loading("Loading " + prefix + "...");
         this.configsManager = new ConfigManager(this);
         this.langManager = new LangManager(this, defLangs);
         this.commandManager = new CommandManager(this);
-        this.log = new Log(this, false);
     }
 
     @Override

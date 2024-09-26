@@ -2,8 +2,7 @@ package com.xg7plugins.xg7plugins.libs.xg7scores;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.events.Event;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import com.xg7plugins.xg7plugins.events.bukkitevents.EventHandler;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class ScoreListener implements Event {

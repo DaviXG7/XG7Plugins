@@ -40,18 +40,18 @@ tasks-menu:
   title: "Tasks"
 
   item-click:
-    - "Task id: [ID]"
-    - "Task plugin: [PLUGIN]"
+    - "&fTask id: &b[ID]"
+    - "&fTask plugin: &e[PLUGIN]"
     - " "
-    - "Left click -> Copy id"
-    - "Right click -> Delete Task"
+    - "&fLeft click -> &aCopy id"
+    - "&fRight click -> &cDelete Task"
 
-  copy-to-clipboard: "Click [CLICK action=%COPY_TO_CLICKBOARD% value=%[ID]%]here[/CLICK] to copy the task id!"
+  copy-to-clipboard: "Click [CLICK action=%COPY_TO_CLICKBOARD% value=%[ID]%]&bhere&r[/CLICK] to copy the task id!"
 
   notes:
-    - "To return a task to execution,"
-    - "you need to restart the plugin"
-    - "of the task."
+    - "&f&oTo return a task to execution,"
+    - "&f&oyou need to restart the plugin"
+    - "&f&oof the task."
 
 
 

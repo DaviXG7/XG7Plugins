@@ -1,6 +1,6 @@
 package com.xg7plugins.xg7plugins.libs.xg7menus.events;
 
-import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseMenu;
+import com.xg7plugins.xg7plugins.libs.xg7menus.BaseMenu;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

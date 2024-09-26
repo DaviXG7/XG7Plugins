@@ -20,11 +20,15 @@ public class Config {
         this.plugin = plugin;
         this.name = name;
 
+        plugin.getLog().loading("Loading " + name + ".yml...");
+
         File configFile = new File(plugin.getDataFolder(), name + ".yml");
 
         if (!configFile.exists()) plugin.saveResource(name + ".yml", false);
 
         this.config = YamlConfiguration.loadConfiguration(configFile);
+
+        plugin.getLog().loading("Loaded!");
     }
 
     public <T> T get(String path) {
@@ -40,14 +44,21 @@ public class Config {
 
     @SneakyThrows
     public void save() {
+        plugin.getLog().info("Saving " + name + ".yml...");
         config.save(new File(plugin.getDataFolder(), name + ".yml"));
+        plugin.getLog().info("Saved!");
     }
 
     public void reload() {
         File configFile = new File(plugin.getDataFolder(), name + ".yml");
+
+        plugin.getLog().loading("Reloading " + name + ".yml...");
+
         if (!configFile.exists()) plugin.saveResource(name + ".yml", false);
         this.config = YamlConfiguration.loadConfiguration(configFile);
         plugin.getConfigsManager().getConfigs().put(name,this);
+
+        plugin.getLog().loading("Reloaded!");
     }
 
 }
