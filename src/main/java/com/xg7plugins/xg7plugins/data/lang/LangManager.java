@@ -8,6 +8,7 @@ import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.data.database.EntityProcessor;
 import com.xg7plugins.xg7plugins.data.database.Query;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
+import com.xg7plugins.xg7plugins.utils.reflection.PlayerNMS;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -74,23 +75,24 @@ public class LangManager {
     }
 
     public String getPath(Player player, String path) {
-        YamlConfiguration langConfig = getLangByPlayer(player.getUniqueId(), player.getLocale());
+        YamlConfiguration langConfig = getLangByPlayer(player);
         return langConfig.getString(path);
     }
 
-    public YamlConfiguration getLangByPlayer(UUID id, String playerLocale) {
-        if (id == null) return getLang(mainLang);
+    public YamlConfiguration getLangByPlayer(Player player) {
+        if (player == null) return getLang(mainLang);
 
-        PlayerLanguage language = playerLanguageDAO.getLanguage(id);
+        PlayerLanguage language = playerLanguageDAO.getLanguage(player.getUniqueId());
 
         if (language != null) return getLang(language.getLangId());
 
         Config config = plugin.getConfigsManager().getConfig("config");
 
         String langId = mainLang;
-        if (config.get("auto-chose-lang")) if (langs.asMap().containsKey(playerLocale)) langId = playerLocale;
 
-        PlayerLanguage newLang = new PlayerLanguage(id, langId);
+        String playerLocale = XG7Plugins.getMinecraftVersion() >= 12 ? player.getLocale() : PlayerNMS.cast(player).getCraftPlayerHandle().getField("locale");
+        if (config.get("auto-chose-lang")) if (langs.asMap().containsKey(playerLocale)) langId = playerLocale;
+        PlayerLanguage newLang = new PlayerLanguage(player.getUniqueId(), langId);
         playerLanguageDAO.addPlayerLanguage(newLang);
         return getLang(langId);
 

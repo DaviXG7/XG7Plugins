@@ -8,6 +8,7 @@ import com.xg7plugins.xg7plugins.utils.reflection.ReflectionClass;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatMessageType;
@@ -45,7 +46,7 @@ public class Text {
 
     private String text;
     private final Plugin plugin;
-    private final HashMap<String, String> replacements = new HashMap<>();
+    private HashMap<String, String> replacements = new HashMap<>();
 
     public Text(String text, Plugin plugin) {
         this.text = text;
@@ -72,8 +73,21 @@ public class Text {
         return new com.xg7plugins.xg7plugins.utils.Text.TextComponent(text1.getText(),plugin);
     }
 
+    public Text setReplacements(HashMap<String, String> replacements) {
+        this.replacements = replacements;
+        return this;
+    }
+
+    public String getText() {
+        String finalText = text;
+        for (Map.Entry<String, String> entry : replacements.entrySet()) {
+            finalText = finalText.replace(entry.getKey(),entry.getValue());
+        }
+        return finalText;
+    }
+
     public String getWithPlaceholders(Player player) {
-        YamlConfiguration entity = this.plugin.getLangManager().getLangByPlayer(player.getUniqueId(), XG7Plugins.getMinecraftVersion() >= 12 ? player.getLocale() : PlayerNMS.cast(player).getCraftPlayerHandle().getField("locale"));
+        YamlConfiguration entity = this.plugin.getLangManager().getLangByPlayer(player);
         String textToTraslate = getText();
         Matcher matcher = LANG_PATTERN.matcher(textToTraslate);
         while (matcher.find()) {
@@ -95,7 +109,7 @@ public class Text {
 
     public static String getWithPlaceholders(Plugin plugin, String text, Player player) {
 
-        YamlConfiguration entity = plugin.getLangManager().getLangByPlayer(player.getUniqueId(), XG7Plugins.getMinecraftVersion() >= 12 ? player.getLocale() : PlayerNMS.cast(player).getCraftPlayerHandle().getField("locale"));
+        YamlConfiguration entity = plugin.getLangManager().getLangByPlayer(player);
 
         String textToTraslate = text;
 

@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 public class TextComponent {
 
-    private static final Pattern pattern = Pattern.compile("\\[(CLICK|HOVER|CLICKHOVER) (.*?)](.*?)\\[/\\1]", Pattern.DOTALL);
+    private static final Pattern pattern = Pattern.compile("\\[(CLICK|HOVER|CLICKHOVER) (.*?%)\\](.*?)\\[/\\1\\]", Pattern.DOTALL);
     private static final Pattern value = Pattern.compile("value=%(.*?)%");
     private static final Pattern textP = Pattern.compile("text=%(.*?)%");
     private static final Pattern action = Pattern.compile("action=%(.*?)%");
@@ -59,7 +59,7 @@ public class TextComponent {
             return;
         }
 
-        Player player = (Player) sender;
+        Player player = sender;
 
         String transletedRawText = Text.getWithPlaceholders(plugin, rawText, player);
         String transletedText = transletedRawText.startsWith("[CENTER] ") ? Text.getSpacesCentralized(Text.PixelsSize.CHAT.getPixels(), transletedRawText) + Text.getWithPlaceholders(plugin, text.substring(9), player) : Text.getWithPlaceholders(plugin, text, player);
@@ -91,13 +91,18 @@ public class TextComponent {
             Matcher textMatch = textP.matcher(attributes);
             Matcher actionMatch = action.matcher(attributes);
 
+
             switch (tagName) {
                 case "CLICK":
                     if (!valMatch.find() || !actionMatch.find()) {
                         XG7Plugins.getInstance().getLog().warn("Click tag with content " + content + " has a syntax error!");
                         return;
                     }
-                    builder.event(new ClickEvent(ClickEvent.Action.valueOf(actionMatch.group(1)), valMatch.group(1)));
+                    try {
+                        builder.event(new ClickEvent(ClickEvent.Action.valueOf(actionMatch.group(1)), Text.format(valMatch.group(1), plugin).setReplacements(replacements).getWithPlaceholders(player)));
+                    } catch (IllegalArgumentException e) {
+                        builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, Text.format(valMatch.group(1), plugin).setReplacements(replacements).getWithPlaceholders(player)));
+                    }
                     break;
 
                 case "HOVER":
@@ -105,7 +110,8 @@ public class TextComponent {
                         XG7Plugins.getInstance().getLog().warn("Hover tag with content " + content + " has a syntax error!");
                         return;
                     }
-                    builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(textMatch.group(1)).create()));
+
+                    builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Text.format(textMatch.group(1), plugin).setReplacements(replacements).getWithPlaceholders(player)).create()));
                     break;
 
                 case "CLICKHOVER":
@@ -114,7 +120,11 @@ public class TextComponent {
                         return;
                     }
                     builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(textMatch.group(1)).create()));
-                    builder.event(new ClickEvent(ClickEvent.Action.valueOf(actionMatch.group(1)), valMatch.group(1)));
+                    try {
+                        builder.event(new ClickEvent(ClickEvent.Action.valueOf(actionMatch.group(1)), Text.format(valMatch.group(1), plugin).setReplacements(replacements).getWithPlaceholders(player)));
+                    } catch (IllegalArgumentException e) {
+                        builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, Text.format(valMatch.group(1), plugin).setReplacements(replacements).getWithPlaceholders(player)));
+                    }
                     break;
             }
 

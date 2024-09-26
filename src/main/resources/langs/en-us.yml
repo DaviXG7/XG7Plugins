@@ -27,7 +27,8 @@ close-item: "Close"
 lang-menu:
   title: "Languages"
 
-  item-click: "Click here to change the language for English"
+  item-click:
+    - "Click here to change the language for English"
 
   already-selected: "You're already using this language!"
 
@@ -39,8 +40,18 @@ tasks-menu:
   title: "Tasks"
 
   item-click:
+    - "Task id: [ID]"
+    - "Task plugin: [PLUGIN]"
+    - " "
     - "Left click -> Copy id"
     - "Right click -> Delete Task"
+
+  copy-to-clipboard: "Click [CLICK action=%COPY_TO_CLICKBOARD% value=%[ID]%]here[/CLICK] to copy the task id!"
+
+  notes:
+    - "To return a task to execution,"
+    - "you need to restart the plugin"
+    - "of the task."
 
 
 

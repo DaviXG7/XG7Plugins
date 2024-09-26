@@ -2,6 +2,7 @@ package com.xg7plugins.xg7plugins;
 
 import com.xg7plugins.xg7plugins.commands.defaultCommands.LangCommand;
 import com.xg7plugins.xg7plugins.commands.defaultCommands.ReloadCommand;
+import com.xg7plugins.xg7plugins.commands.defaultCommands.TaskCommands;
 import com.xg7plugins.xg7plugins.data.database.EntityProcessor;
 import com.xg7plugins.xg7plugins.data.lang.PlayerLanguage;
 import com.xg7plugins.xg7plugins.events.packetevents.PacketManagerBase;
@@ -44,6 +45,7 @@ public final class XG7Plugins extends Plugin {
         matcher.find();
         minecraftVersion = Integer.parseInt(matcher.group(1));
     }
+
     private DBManager databaseManager;
     private EventManager eventManager;
     private TaskManager taskManager;
@@ -94,7 +96,7 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public List<ICommand> getCommands() {
-        if (commands == null) commands = Arrays.asList(new LangCommand(), new ReloadCommand());
+        if (commands == null) commands = Arrays.asList(new LangCommand(), new ReloadCommand(), new TaskCommands());
         return commands;
     }
 
@@ -123,7 +125,7 @@ public final class XG7Plugins extends Plugin {
     public static void register(Plugin plugin) {
         XG7Plugins xg7Plugins = XG7Plugins.getInstance();
 
-        xg7Plugins.getPlugins().put(plugin.getName(), plugin);
+        xg7Plugins.getPlugins().put(plugin.getName().split(" ")[0], plugin);
 
         xg7Plugins.getDatabaseManager().connectPlugin(plugin);
         xg7Plugins.getEventManager().registerPlugin(plugin);

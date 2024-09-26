@@ -21,13 +21,13 @@ public class TaskManager {
         executor = Executors.newScheduledThreadPool(config.get("task-threads"));
     }
 
-    public String addRepeatingTask(String name, Runnable runnable, long delay) {
-        String taskId = name + ":" + UUID.randomUUID();
+    public String addRepeatingTask(Plugin plugin, String name, Runnable runnable, long delay) {
+        String taskId = plugin + ":" + name + ":" + UUID.randomUUID();
         tasksRunning.put(taskId, executor.scheduleWithFixedDelay(runnable, 0, delay, TimeUnit.MILLISECONDS));
         return taskId;
     }
-    public String addCooldownTask(String name,Runnable runnable, int seconds) {
-        String taskId = name + ":" + UUID.randomUUID();
+    public String addCooldownTask(Plugin plugin, String name, Runnable runnable, int seconds) {
+        String taskId = plugin + ":" + name + ":" + UUID.randomUUID();
 
         tasksRunning.put(taskId, executor.scheduleWithFixedDelay(runnable, 0, seconds, TimeUnit.SECONDS));
 
@@ -37,8 +37,6 @@ public class TaskManager {
         });
         return taskId;
     }
-
-
 
     public void runTask(Runnable runnable) {
         CompletableFuture.runAsync(runnable,executor);

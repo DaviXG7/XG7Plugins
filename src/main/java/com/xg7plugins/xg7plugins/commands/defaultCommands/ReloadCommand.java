@@ -88,6 +88,12 @@ public class ReloadCommand implements ICommand {
 
             @Override
             public void onSubCommand(CommandSender sender, String[] args, String label) {
+
+                if (args[0].equals("XG7Plugins")) {
+                    XG7Plugins.getInstance().getConfigs().forEach(Config::reload);
+                    return;
+                }
+
                 Plugin plugin = XG7Plugins.getInstance().getPlugins().get(args[0]);
                 plugin.getConfigs().forEach(Config::reload);
 

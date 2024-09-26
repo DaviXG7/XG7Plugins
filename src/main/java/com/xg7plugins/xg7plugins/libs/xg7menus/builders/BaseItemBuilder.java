@@ -71,9 +71,21 @@ public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
         meta(meta);
         return (B) this;
     }
+    public B lore(@NotNull List<String> lore, HashMap<String, String> replacements) {
+        ItemMeta meta = this.itemStack.getItemMeta();
+        meta.setLore(lore.stream().map(text -> Text.format(text,plugin).setReplacements(replacements).getText()).collect(Collectors.toList()));
+        meta(meta);
+        return (B) this;
+    }
     public B name(String name) {
         ItemMeta meta = this.itemStack.getItemMeta();
         meta.setDisplayName(Text.format(name,plugin).getText());
+        meta(meta);
+        return (B) this;
+    }
+    public B name(String name, HashMap<String, String> replacements) {
+        ItemMeta meta = this.itemStack.getItemMeta();
+        meta.setDisplayName(Text.format(name,plugin).setReplacements(replacements).getText());
         meta(meta);
         return (B) this;
     }

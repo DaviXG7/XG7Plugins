@@ -35,6 +35,22 @@ lang-menu:
 
   cooldown-to-toggle: "Você precisa esperar [SECONDS] segundos para trocar o idioma novamente!"
 
+tasks-menu:
+  title: "Tasks"
+
+  item-click:
+    - "Task id: [ID]"
+    - "Task plugin: [PLUGIN]"
+    - " "
+    - "Click esquerdo -> Copiar id"
+    - "Click direito -> Deletar Task"
+
+  copy-to-clipboard: "Clique [CLICK action=%COPY_TO_CLICKBOARD% value=%[ID]%]aqui[/CLICK] para copiar o id!"
+
+  notes:
+    - "Para retornar uma tarefa para"
+    - "a execução, você precisa reiniciar"
+    - "o plugin da tarefa."
 
 commands-menu:
 
@@ -47,6 +63,12 @@ commands-menu:
     perm: "Permissão: xg7plugins.command.lang"
 
   reload:
+
+    desc: "Descrição: Recarrega um plugin"
+    syntax: "Syntaxe: /xg7pluginreload <plugin> <[config, scores, langs, tasks, events]>"
+    perm: "Permissão: xg7plugins.command.reload"
+
+  tasks:
 
     desc: "Descrição: Recarrega um plugin"
     syntax: "Syntaxe: /xg7pluginreload <plugin> <[config, scores, langs, tasks, events]>"

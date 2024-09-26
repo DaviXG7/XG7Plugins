@@ -47,7 +47,7 @@ public class LangMenu {
             boolean selected = language != null && language.getLangId().equals(s);
 
             builder.name(c.getString("formated-name") != null ? selected ? "§a" + c.getString("formated-name") : "§7" + c.getString("formated-name") : selected ? "§a" + s : "§7" + s);
-            builder.lore(Collections.singletonList(c.getString("lang-menu.item-click")));
+            builder.lore(c.getStringList("lang-menu.item-click"));
             builder.click(event -> {
 
 

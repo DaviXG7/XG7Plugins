@@ -48,7 +48,7 @@ public class ScoreManager {
     public void initTask() {
         if (taskId != null) return;
         AtomicLong counter = new AtomicLong();
-        this.taskId = plugin.getTaskManager().addRepeatingTask("scores", () -> {
+        this.taskId = plugin.getTaskManager().addRepeatingTask(plugin, "scores", () -> {
             scoreboards.values().forEach(score -> {
 
                         Bukkit.getOnlinePlayers().forEach(p -> {
