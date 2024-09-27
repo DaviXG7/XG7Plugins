@@ -12,7 +12,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
-public class PublicBossBar extends Score {
+public class PublicBossBar extends GenericBossBar {
     
     private final BossBar bossBar;
     

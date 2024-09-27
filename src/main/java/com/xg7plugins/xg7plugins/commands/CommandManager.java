@@ -57,7 +57,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
 
             pluginCommand.setExecutor(this);
-            pluginCommand.setDescription(plugin.getLangManager().getLang(plugin.getLangManager().getMainLang()).getString(commandSetup.descriptionPath() + ".desc"));
+            pluginCommand.setDescription(commandSetup.description());
             pluginCommand.setUsage(commandSetup.syntax());
             pluginCommand.setTabCompleter(this);
             commandMap.register(commandSetup.name(), pluginCommand);

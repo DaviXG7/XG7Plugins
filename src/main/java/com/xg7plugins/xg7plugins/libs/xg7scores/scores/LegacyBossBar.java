@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 @Getter
-public class LegacyBossBar extends Score {
+public class LegacyBossBar extends GenericBossBar {
 
     private final float healthPercent;
 
@@ -52,7 +52,7 @@ public class LegacyBossBar extends Score {
             ReflectionObject dataWatcher =  NMSUtil.getNMSClass("DataWatcher").getConstructor(NMSUtil.getNMSClass("Entity").getAClass()).newInstance(NMSUtil.getNMSClass("Entity").cast(null));
 
             ReflectionMethod aMethod = dataWatcher.getMethod("a", int.class, Object.class);
-            aMethod.invoke(6, (healthPercent * 200) / 100);
+            aMethod.invoke(6, (healthPercent / 100) * 300);
 
             aMethod.invoke( 10, getToUpdate()[0]);
             aMethod.invoke( 2, getToUpdate()[0]);

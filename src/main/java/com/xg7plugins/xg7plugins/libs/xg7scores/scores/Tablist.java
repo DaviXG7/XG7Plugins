@@ -62,8 +62,8 @@ public class Tablist extends Score {
             return;
         }
 
-        packetPlayOutListHeaderFooter.setField("a",NMSUtil.getNMSClass("ChatComponentText").getConstructor(String.class).newInstance(header));
-        packetPlayOutListHeaderFooter.setField("b",NMSUtil.getNMSClass("ChatComponentText").getConstructor(String.class).newInstance(footer));
+        packetPlayOutListHeaderFooter.setField("a", NMSUtil.getNMSClass("ChatComponentText").getConstructor(String.class).newInstance(header).getObject());
+        packetPlayOutListHeaderFooter.setField("b", NMSUtil.getNMSClass("ChatComponentText").getConstructor(String.class).newInstance(footer).getObject());
 
         PlayerNMS.cast(player).sendPacket(packetPlayOutListHeaderFooter.getObject());
     }
@@ -71,7 +71,7 @@ public class Tablist extends Score {
     @Override
     public void removePlayer(Player player) {
         super.removePlayer(player);
-        send(player,null,null);
+        send(player,"","");
         player.setPlayerListName(player.getName());
 
     }

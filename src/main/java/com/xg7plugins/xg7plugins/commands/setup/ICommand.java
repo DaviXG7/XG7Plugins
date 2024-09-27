@@ -1,11 +1,11 @@
 package com.xg7plugins.xg7plugins.commands.setup;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
+import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +29,7 @@ public interface ICommand {
         return Collections.emptyList();
     }
 
-    ItemStack getIcon();
+    ItemBuilder getIcon();
 
     default void syntaxError(CommandSender sender, String syntax) {
         Text.format("lang:[commands.syntax-error]", XG7Plugins.getInstance())

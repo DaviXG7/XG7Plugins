@@ -27,7 +27,8 @@ close-item: "Fechar"
 lang-menu:
   title: "Idiomas"
 
-  item-click: "Clique para trocar o idioma para português"
+  item-click:
+    - "Clique para trocar o idioma para português"
 
   already-selected: "Você já está com este idioma selecionado!"
 
@@ -54,22 +55,25 @@ tasks-menu:
 
 commands-menu:
 
+  title: "Comandos"
+
   if-subcommand: "Clique para ver os subcomandos!"
 
-  lang:
+  command-item:
+    usage: "&fUso: &a[SYNTAX]"
+    desc: "&fDescrição: &e[DESCRIPTION]"
+    perm: "&fPermissão: &c[PERMISSION]"
+    player-only: "&fSó players podem usar: &b[PLAYER_ONLY]"
 
-    desc: "Descrição: Altera a linguagem do jogador"
-    syntax: "Syntaxe: /lang"
-    perm: "Permissão: xg7plugins.command.lang"
+subcommands-menu:
 
-  reload:
+  title: "[COMMAND]"
 
-    desc: "Descrição: Recarrega um plugin"
-    syntax: "Syntaxe: /xg7pluginreload <plugin> <[config, scores, langs, tasks, events]>"
-    perm: "Permissão: xg7plugins.command.reload"
+  if-subcommand: "Clique para ver os subcomandos!"
 
-  tasks:
-
-    desc: "Descrição: Recarrega um plugin"
-    syntax: "Syntaxe: /xg7pluginreload <plugin> <[config, scores, langs, tasks, events]>"
-    perm: "Permissão: xg7plugins.command.reload"
+  command-item:
+    usage: "&fUso: &a[SYNTAX]"
+    desc: "&fDescrição: &e[DESCRIPTION]"
+    perm: "&fPermissão: &c[PERMISSION]"
+    player-only: "&fSó players podem usar: &b[PLAYER_ONLY]"
+    type: "&fTipo: &b[TYPE]"

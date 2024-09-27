@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 public @interface Command {
     String name();
-    String descriptionPath();
+    String description();
     String syntax();
     String aliasesPath();
     String perm() default "";

@@ -3,8 +3,11 @@ package com.xg7plugins.xg7plugins.libs.xg7menus.builders.item;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.commands.setup.Command;
 import com.xg7plugins.xg7plugins.commands.setup.ICommand;
+import com.xg7plugins.xg7plugins.commands.setup.ISubCommand;
+import com.xg7plugins.xg7plugins.commands.setup.SubCommand;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.XSeries.XMaterial;
+import com.xg7plugins.xg7plugins.menus.CommandMenu;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionClass;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -13,6 +16,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ItemBuilder extends BaseItemBuilder<ItemBuilder> {
@@ -43,13 +47,53 @@ public class ItemBuilder extends BaseItemBuilder<ItemBuilder> {
 
         List<String> lore = new ArrayList<>();
 
-        lore.add("lang[" + setup.descriptionPath() + ".desc]");
-        lore.add("lang[" + setup.descriptionPath() + ".syntax]");
-        lore.add("lang[" + setup.descriptionPath() + ".perm]");
-        if (command.getSubCommands().length != 0) lore.add("lang[" + setup.descriptionPath() + ".if-subcommand]");
+        lore.add("lang:[commands-menu.command-item.usage]");
+        lore.add("lang:[commands-menu.command-item.desc]");
+        lore.add("lang:[commands-menu.command-item.perm]");
+        lore.add("lang:[commands-menu.command-item.player-only]");
+        if (command.getSubCommands().length != 0) {
+            lore.add("lang:[commands-menu.if-subcommand]");
+            builder.click(clickEvent -> CommandMenu.createSubCommandMenu(plugin, clickEvent.getWhoClicked(), command));
+        }
 
         builder.name(setup.name());
-        builder.lore(lore);
+        builder.lore(lore, new HashMap<String, String>() {{
+            put("[SYNTAX]", setup.syntax());
+            put("[DESCRIPTION]", setup.description());
+            put("[PERMISSION]", setup.perm());
+            put("[PLAYER_ONLY]", setup.isOnlyPlayer() + "");
+        }});
+
+        return builder;
+    }
+    @Contract("_,_,_ -> new")
+    public static @NotNull ItemBuilder subCommandIcon(XMaterial material, ISubCommand command, Plugin plugin) {
+
+        SubCommand setup = ReflectionClass.of(command.getClass()).getAnnotation(SubCommand.class);
+
+        ItemBuilder builder = new ItemBuilder(material.parseItem(),plugin);
+
+        List<String> lore = new ArrayList<>();
+
+        lore.add("lang:[subcommands-menu.command-item.usage]");
+        lore.add("lang:[subcommands-menu.command-item.desc]");
+        lore.add("lang:[subcommands-menu.command-item.perm]");
+        lore.add("lang:[subcommands-menu.command-item.player-only]");
+        lore.add("lang:[subcommands-menu.command-item.type]");
+        if (command.getSubCommands().length != 0) {
+            lore.add("lang:[subcommands-menu.if-subcommand]");
+            builder.click(clickEvent -> CommandMenu.createSubCommandMenu(plugin, clickEvent.getWhoClicked(), command));
+
+        }
+
+        builder.name(setup.name());
+        builder.lore(lore, new HashMap<String, String>() {{
+            put("[SYNTAX]", setup.syntax());
+            put("[DESCRIPTION]", setup.description());
+            put("[PERMISSION]", setup.perm());
+            put("[PLAYER_ONLY]", setup.isOnlyPlayer() + "");
+            put("[TYPE]", setup.type() + "");
+        }});
 
         return builder;
     }

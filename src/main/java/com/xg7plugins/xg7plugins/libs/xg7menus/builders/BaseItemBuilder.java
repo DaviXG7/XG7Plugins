@@ -124,6 +124,12 @@ public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
         if (itemStack.getItemMeta().getLore() != null) lore(itemStack.getItemMeta().getLore().stream().map(l -> Text.format(l,plugin).getWithPlaceholders(player)).collect(Collectors.toList()));
         return (B) this;
     }
+    public B setPlaceHolders(Player player, HashMap<String, String> replacements) {
+        if (itemStack.getItemMeta() == null) return (B) this;
+        if (itemStack.getItemMeta().getDisplayName() != null)name(Text.format(itemStack.getItemMeta().getDisplayName(),plugin).setReplacements(replacements).getWithPlaceholders(player));
+        if (itemStack.getItemMeta().getLore() != null) lore(itemStack.getItemMeta().getLore().stream().map(l -> Text.format(l,plugin).setReplacements(replacements).getWithPlaceholders(player)).collect(Collectors.toList()));
+        return (B) this;
+    }
     @SneakyThrows
     public B addOrModifyNBTTag(String key, Object value) {
 

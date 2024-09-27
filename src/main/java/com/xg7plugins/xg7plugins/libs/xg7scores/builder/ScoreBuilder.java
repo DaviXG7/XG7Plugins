@@ -24,7 +24,23 @@ public abstract class ScoreBuilder<B extends ScoreBuilder<B>> {
         return (B) this;
     }
 
-    public abstract <T extends Score> T build(Plugin plugin);
+    public static ScoreBoardBuilder scoreBoard(String id) {
+        return new ScoreBoardBuilder(id);
+    }
+    public static TablistBuilder tablist(String id) {
+        return new TablistBuilder(id);
+    }
+    public static XPBarBuilder XPBar(String id) {
+        return new XPBarBuilder(id);
+    }
+    public static BossBarBuilder bossBar(String id) {
+        return new BossBarBuilder(id);
+    }
+    public static ActionBarBuilder actionBar(String id) {
+        return new ActionBarBuilder(id);
+    }
+
+    public abstract <S extends Score> S build(Plugin plugin);
 
 
 

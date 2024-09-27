@@ -57,16 +57,25 @@ tasks-menu:
 
 commands-menu:
 
+  title: "Commands"
+
   if-subcommand: "Click to see the subcommands!"
 
-  lang:
+  command-item:
+    usage: "&fUsage: &a[SYNTAX]"
+    desc: "&fDescription: &e[DESCRIPTION]"
+    perm: "&fPermission: &c[PERMISSION]"
+    player-only: "&fOnly players can use: &b[PLAYER_ONLY]"
 
-    desc: "Description: Change the language of the player"
-    syntax: "Syntax: /lang"
-    perm: "Permission: xg7plugins.command.lang"
+subcommands-menu:
 
-  reload:
+  title: "[COMMAND]"
 
-    desc: "Description: Reloads a plugin"
-    syntax: "Syntax: /xg7pluginreload <plugin> <[config, scores, langs, tasks, events]>"
-    perm: "Permission: xg7plugins.command.reload"
+  if-subcommand: "Click to see the subcommands!"
+
+  command-item:
+    usage: "&fUsage: &a[SYNTAX]"
+    desc: "&fDescription: &e[DESCRIPTION]"
+    perm: "&fPermission: &c[PERMISSION]"
+    player-only: "&fOnly players can use: &b[PLAYER_ONLY]"
+    type: "&Type: &b[TYPE]"

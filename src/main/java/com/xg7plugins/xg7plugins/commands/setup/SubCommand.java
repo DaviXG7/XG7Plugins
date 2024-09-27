@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 public @interface SubCommand {
     String syntax();
     String name() default "";
+    String description();
     String perm() default "";
     boolean isOnlyInWorld() default false;
     boolean isOnlyPlayer() default false;

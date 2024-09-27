@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 @Command(
         name = "xg7pluginlang",
-        descriptionPath = "commands-menu.lang",
+        description = "Sets the language of the player",
         syntax = "/xg7pluginlang",
         aliasesPath = "lang",
         perm = "xg7plugins.command.lang",
@@ -19,8 +19,8 @@ import org.bukkit.inventory.ItemStack;
 )
 public class LangCommand implements ICommand {
     @Override
-    public ItemStack getIcon() {
-        return ItemBuilder.commandIcon(XMaterial.WRITABLE_BOOK, this, XG7Plugins.getInstance()).toItemStack();
+    public ItemBuilder getIcon() {
+        return ItemBuilder.commandIcon(XMaterial.WRITABLE_BOOK, this, XG7Plugins.getInstance());
     }
 
 

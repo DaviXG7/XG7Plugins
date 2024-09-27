@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class BossBar extends Score {
+public class BossBar extends GenericBossBar {
 
     private final Map<UUID, org.bukkit.boss.BossBar> bossBars = new HashMap<>();
 
