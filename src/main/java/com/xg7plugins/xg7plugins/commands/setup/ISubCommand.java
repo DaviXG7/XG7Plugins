@@ -21,4 +21,5 @@ public interface ISubCommand extends ICommand {
     default Set<String> getOptions() {
         return new HashSet<>();
     }
+
 }

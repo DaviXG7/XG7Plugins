@@ -12,6 +12,8 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class PublicBossBar extends GenericBossBar {
     
     private final BossBar bossBar;
@@ -41,8 +43,6 @@ public class PublicBossBar extends GenericBossBar {
 
     @Override
     public void update() {
-        for (Player player : super.getPlayers()) {
-            bossBar.setTitle(Text.format(getToUpdate()[getIndexUpdating()],plugin).getText());
-        }
+        bossBar.setTitle(Text.format(getToUpdate()[getIndexUpdating()],plugin).getText());
     }
 }

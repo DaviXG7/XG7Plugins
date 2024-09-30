@@ -5,6 +5,6 @@ import org.bukkit.entity.Player;
 @FunctionalInterface
 public interface ScoreCondition {
 
-    boolean condition(Player player);
+    boolean verify(Player player);
 
 }

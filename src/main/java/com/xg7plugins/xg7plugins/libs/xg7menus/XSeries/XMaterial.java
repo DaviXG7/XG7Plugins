@@ -22,9 +22,9 @@
  */
 package com.xg7plugins.xg7plugins.libs.xg7menus.XSeries;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.base.Enums;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -142,7 +142,7 @@ public enum XMaterial /* implements com.cryptomorin.xseries.abstractions.Materia
     BAMBOO_WALL_HANGING_SIGN,
     BAMBOO_WALL_SIGN,
     BARREL,
-    BARRIER,
+    BARRIER("WOOD_DOOR"),
     BASALT,
     BAT_SPAWN_EGG(65, "MONSTER_EGG"),
     BEACON,
@@ -1682,7 +1682,7 @@ public enum XMaterial /* implements com.cryptomorin.xseries.abstractions.Materia
      *
      * @since 1.0.0
      */
-    private static final Cache<String, XMaterial> NAME_CACHE = CacheBuilder.newBuilder()
+    private static final Cache<String, XMaterial> NAME_CACHE = Caffeine.newBuilder()
             .expireAfterAccess(1, TimeUnit.HOURS)
             .build();
     /**
@@ -1764,6 +1764,14 @@ public enum XMaterial /* implements com.cryptomorin.xseries.abstractions.Materia
     XMaterial(int data, @Nonnull String... legacy) {
         this.data = (byte) data;
         this.legacy = legacy;
+
+        if (Data.VERSION < 8 && legacy.length > 0) {
+            if (legacy[0].equals("WOOD_DOOR")) {
+                this.material = Material.getMaterial("WOOD_DOOR");
+                return;
+            }
+
+        }
 
         Material mat = null;
         if ((!Data.ISFLAT && this.isDuplicated()) || (mat = Material.getMaterial(this.name())) == null) {
@@ -2048,7 +2056,7 @@ public enum XMaterial /* implements com.cryptomorin.xseries.abstractions.Materia
     }
 
     /**
-     * This is an internal API. Use {@link com.cryptomorin.xseries.reflection.XReflection#supports(int)} instead.
+     * This is an internal API. Use  instead.
      * Checks if the specified version is the same version or higher than the current server version.
      *
      * @param version the major version to be checked. "1." is ignored. E.g. 1.12 = 12 | 1.9 = 9

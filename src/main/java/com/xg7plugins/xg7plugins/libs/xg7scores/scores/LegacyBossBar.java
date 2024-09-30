@@ -11,6 +11,7 @@ import com.xg7plugins.xg7plugins.utils.reflection.ReflectionMethod;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -99,7 +100,10 @@ public class LegacyBossBar extends GenericBossBar {
     @Override
     public void update() {
 
-        for (Player player : super.getPlayers()) {
+        for (UUID id : super.getPlayers()) {
+            Player player = Bukkit.getPlayer(id);
+            if (player == null) continue;
+            if (player.isDead()) continue;
 
             Location playerLocation = player.getLocation();
             Vector direction = playerLocation.getDirection();

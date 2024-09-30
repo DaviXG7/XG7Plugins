@@ -36,10 +36,16 @@ public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
     private final Plugin plugin;
     @Getter
     private Consumer<ClickEvent> event;
+    @Getter
+    private HashMap<String, String> buildReplacements = new HashMap<>();
 
     public BaseItemBuilder(ItemStack stack, Plugin plugin) {
         this.itemStack = stack;
         this.plugin = plugin;
+    }
+    public B setBuildReplacements(HashMap<String, String> replacements) {
+        this.buildReplacements = replacements;
+        return (B) this;
     }
     public B setAmount(int amount) {
         this.itemStack.setAmount(amount);
@@ -120,13 +126,13 @@ public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
     }
     public B setPlaceHolders(Player player) {
         if (itemStack.getItemMeta() == null) return (B) this;
-        if (itemStack.getItemMeta().getDisplayName() != null)name(Text.format(itemStack.getItemMeta().getDisplayName(),plugin).getWithPlaceholders(player));
+        if (itemStack.getItemMeta().getDisplayName() != null) name(Text.format(itemStack.getItemMeta().getDisplayName(),plugin).getWithPlaceholders(player));
         if (itemStack.getItemMeta().getLore() != null) lore(itemStack.getItemMeta().getLore().stream().map(l -> Text.format(l,plugin).getWithPlaceholders(player)).collect(Collectors.toList()));
         return (B) this;
     }
     public B setPlaceHolders(Player player, HashMap<String, String> replacements) {
         if (itemStack.getItemMeta() == null) return (B) this;
-        if (itemStack.getItemMeta().getDisplayName() != null)name(Text.format(itemStack.getItemMeta().getDisplayName(),plugin).setReplacements(replacements).getWithPlaceholders(player));
+        if (itemStack.getItemMeta().getDisplayName() != null) name(Text.format(itemStack.getItemMeta().getDisplayName(),plugin).setReplacements(replacements).getWithPlaceholders(player));
         if (itemStack.getItemMeta().getLore() != null) lore(itemStack.getItemMeta().getLore().stream().map(l -> Text.format(l,plugin).setReplacements(replacements).getWithPlaceholders(player)).collect(Collectors.toList()));
         return (B) this;
     }

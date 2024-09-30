@@ -57,7 +57,7 @@ public class MenuBuilder extends BaseMenuBuilder<MenuBuilder> {
                                     SkullMeta meta = (SkullMeta) builder.toItemStack().getItemMeta();
                                     if ("THIS_PLAYER".equals(meta.getOwner())) return ((SkullItemBuilder) builder).setOwner(player.getName()).setPlaceHolders(player).toItemStack();
                                 }
-                                return builder.setPlaceHolders(player).toItemStack();
+                                return builder.setBuildReplacements(builder.getBuildReplacements()).setPlaceHolders(player).toItemStack();
                             }
 
                         )

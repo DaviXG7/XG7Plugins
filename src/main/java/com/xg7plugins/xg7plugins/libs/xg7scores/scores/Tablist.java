@@ -9,7 +9,10 @@ import com.xg7plugins.xg7plugins.utils.reflection.NMSUtil;
 import com.xg7plugins.xg7plugins.utils.reflection.PlayerNMS;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class Tablist extends Score {
 
@@ -41,7 +44,9 @@ public class Tablist extends Score {
 
     @Override
     public void update() {
-        for (Player player : super.getPlayers()) {
+        for (UUID id : super.getPlayers()) {
+            Player player = Bukkit.getPlayer(id);
+            if (player == null) continue;
             player.setPlayerListName(Text.format(playerPrefix,plugin).getWithPlaceholders(player) + player.getName() + Text.format(playerSuffix,plugin).getWithPlaceholders(player));
             String headerl = header.length <= super.getIndexUpdating() ? header[header.length - 1] : header[super.getIndexUpdating()];
             String footerl = footer.length <= super.getIndexUpdating() ? footer[footer.length - 1] : footer[super.getIndexUpdating()];

@@ -68,7 +68,7 @@ public class TaskMenu {
                 .rows(6)
                 .setArea(Slot.of(2,2), Slot.of(5,8))
                 .setItems(items)
-                .setItem(49, ItemBuilder.from(Material.BARRIER, plugin).name("lang:[close-item]").click(event -> ((ItemsPageMenu) event.getClickedMenu()).close()))
+                .setItem(49, ItemBuilder.from(XMaterial.BARRIER.parseItem(), plugin).name("lang:[close-item]").click(event -> ((ItemsPageMenu) event.getClickedMenu()).close()))
                 .setItem(50, ItemBuilder.from(Material.PAPER, plugin).name(" ").lore(lang.getStringList("tasks-menu.notes")));
         if (tasks.size() > 24) {
             builder.setItem(45, ItemBuilder.from(Material.ARROW, plugin).name("lang:[go-back-item]").click(event -> ((ItemsPageMenu) event.getClickedMenu()).previousPage()));

@@ -2,10 +2,8 @@ package com.xg7plugins.xg7plugins.libs.xg7scores.scores;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.boot.Plugin;
-import com.xg7plugins.xg7plugins.libs.xg7scores.Score;
 import com.xg7plugins.xg7plugins.libs.xg7scores.ScoreCondition;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
-import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -30,7 +28,6 @@ public class BossBar extends GenericBossBar {
         this.progress = progress;
         XG7Plugins.getInstance().getScoreManager().registerScore(this);
     }
-    @SneakyThrows
     @Override
     public void addPlayer(Player player) {
         super.addPlayer(player);
@@ -39,18 +36,25 @@ public class BossBar extends GenericBossBar {
             bossBars.get(player.getUniqueId()).setProgress(progress);
             bossBars.get(player.getUniqueId()).addPlayer(player);
         }
+
     }
 
-    @SneakyThrows
     @Override
     public void removePlayer(Player player) {
         super.removePlayer(player);
         bossBars.get(player.getUniqueId()).removePlayer(player);
         bossBars.remove(player.getUniqueId());
+
     }
     @Override
     public void update() {
 
-        for (Player player : super.getPlayers()) if (!bossBars.get(player.getUniqueId()).getTitle().equals(Text.format(getToUpdate()[getIndexUpdating()],plugin).getWithPlaceholders(player))) bossBars.get(player.getUniqueId()).setTitle(Text.format(getToUpdate()[getIndexUpdating()],plugin).getWithPlaceholders(player));
+        for (UUID id : super.getPlayers()) {
+            Player player = Bukkit.getPlayer(id);
+            if (player == null) continue;
+            if (!bossBars.get(id).getTitle().equals(Text.format(getToUpdate()[getIndexUpdating()], plugin).getWithPlaceholders(player))) {
+                bossBars.get(player.getUniqueId()).setTitle(Text.format(getToUpdate()[getIndexUpdating()], plugin).getWithPlaceholders(player));
+            }
+        }
     }
 }

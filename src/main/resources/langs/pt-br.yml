@@ -53,11 +53,15 @@ tasks-menu:
     - "&f&oa execução, você precisa reiniciar"
     - "&f&oo plugin da tarefa."
 
+task-command:
+  not-found: "Task não encontrada!"
+  deleted: "Task deletada!"
+
 commands-menu:
 
   title: "Comandos"
 
-  if-subcommand: "Clique para ver os subcomandos!"
+  if-subcommand: "&aClique para ver os subcomandos!"
 
   command-item:
     usage: "&fUso: &a[SYNTAX]"
@@ -67,9 +71,7 @@ commands-menu:
 
 subcommands-menu:
 
-  title: "[COMMAND]"
-
-  if-subcommand: "Clique para ver os subcomandos!"
+  if-subcommand: "&aClique para ver os subcomandos!"
 
   command-item:
     usage: "&fUso: &a[SYNTAX]"

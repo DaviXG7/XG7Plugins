@@ -51,6 +51,24 @@ public class TaskManager {
         tasksRunning.remove(id);
     }
 
+    public void cancelTask(UUID id) {
+
+        for (String taskId : tasksRunning.keySet()) {
+            if (taskId.endsWith(id.toString())) {
+                tasksRunning.get(taskId).cancel(false);
+                tasksRunning.remove(taskId);
+                return;
+            }
+        }
+    }
+
+    public boolean exists(String id) {
+        return tasksRunning.containsKey(id);
+    }
+    public boolean exists(UUID id) {
+        return tasksRunning.keySet().stream().anyMatch(taskId -> taskId.endsWith(id.toString()));
+    }
+
 
 
 

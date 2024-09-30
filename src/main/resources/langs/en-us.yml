@@ -53,13 +53,15 @@ tasks-menu:
     - "&f&oyou need to restart the plugin"
     - "&f&oof the task."
 
-
+task-command:
+  not-found: "Task not found!"
+  deleted: "Task deleted!"
 
 commands-menu:
 
   title: "Commands"
 
-  if-subcommand: "Click to see the subcommands!"
+  if-subcommand: "&aClick to see the subcommands!"
 
   command-item:
     usage: "&fUsage: &a[SYNTAX]"
@@ -69,13 +71,11 @@ commands-menu:
 
 subcommands-menu:
 
-  title: "[COMMAND]"
-
-  if-subcommand: "Click to see the subcommands!"
+  if-subcommand: "&aClick to see the subcommands!"
 
   command-item:
     usage: "&fUsage: &a[SYNTAX]"
     desc: "&fDescription: &e[DESCRIPTION]"
     perm: "&fPermission: &c[PERMISSION]"
     player-only: "&fOnly players can use: &b[PLAYER_ONLY]"
-    type: "&Type: &b[TYPE]"
+    type: "&fType: &b[TYPE]"

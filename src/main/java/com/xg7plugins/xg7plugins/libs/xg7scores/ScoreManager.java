@@ -3,7 +3,6 @@ package com.xg7plugins.xg7plugins.libs.xg7scores;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.boot.Plugin;
-import com.xg7plugins.xg7plugins.libs.xg7scores.scores.ScoreBoard;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -58,22 +57,21 @@ public class ScoreManager {
         if (taskId != null) return;
         AtomicLong counter = new AtomicLong();
         this.taskId = plugin.getTaskManager().addRepeatingTask(plugin, "scores", () -> {
-            scoreboards.values().forEach(score -> {
+                scoreboards.values().forEach(score -> {
+                            Bukkit.getOnlinePlayers().forEach(p -> {
+                                if (score.getCondition().verify(p)) score.addPlayer(p);
+                                else if (score.getPlayers().contains(p.getUniqueId())) score.removePlayer(p);
+                            });
 
-                        Bukkit.getOnlinePlayers().forEach(p -> {
-                            if (score.getCondition().condition(p)) score.addPlayer(p);
+                            if (counter.get() % score.getDelay() == 0) {
+                                score.update();
+                                score.incrementIndex();
+                            }
 
-                            else if (score.getPlayers().contains(p)) score.removePlayer(p);
-                        });
-
-                        if (counter.get() % score.getDelay() == 0) {
-                            score.update();
-                            score.incrementIndex();
                         }
+                );
+                counter.incrementAndGet();
 
-                    }
-            );
-            counter.incrementAndGet();
         },1);
     }
 

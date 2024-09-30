@@ -3,9 +3,11 @@ package com.xg7plugins.xg7plugins;
 import com.xg7plugins.xg7plugins.commands.defaultCommands.LangCommand;
 import com.xg7plugins.xg7plugins.commands.defaultCommands.ReloadCommand;
 import com.xg7plugins.xg7plugins.commands.defaultCommands.TaskCommands;
+import com.xg7plugins.xg7plugins.commands.defaultCommands.TesteCommand;
 import com.xg7plugins.xg7plugins.data.database.EntityProcessor;
 import com.xg7plugins.xg7plugins.data.lang.PlayerLanguage;
 import com.xg7plugins.xg7plugins.events.packetevents.PacketManagerBase;
+import com.xg7plugins.xg7plugins.libs.xg7geyserforms.FormManager;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuManager;
 import com.xg7plugins.xg7plugins.libs.xg7menus.listeners.MenuListener;
 import com.xg7plugins.xg7plugins.libs.xg7menus.listeners.PlayerMenuListener;
@@ -43,8 +45,7 @@ public final class XG7Plugins extends Plugin {
     static {
         Pattern pattern = Pattern.compile("1\\.([0-9]?[0-9])");
         Matcher matcher = pattern.matcher(Bukkit.getServer().getVersion());
-        matcher.find();
-        minecraftVersion = Integer.parseInt(matcher.group(1));
+        minecraftVersion = matcher.find() ? Integer.parseInt(matcher.group(1)) : 0;
     }
 
     private DBManager databaseManager;
@@ -53,6 +54,7 @@ public final class XG7Plugins extends Plugin {
     private ScoreManager scoreManager;
     private PacketManagerBase packetEventManager;
     private MenuManager menuManager;
+    private FormManager formManager;
 
     private List<Event> events;
     private List<ICommand> commands;
@@ -76,6 +78,7 @@ public final class XG7Plugins extends Plugin {
         this.scoreManager = new ScoreManager(this);
         this.eventManager.registerPlugin(this);
         this.databaseManager.connectPlugin(this);
+        this.formManager = new FormManager();
         EntityProcessor.createTableOf(this, PlayerLanguage.class);
         this.packetEventManager = minecraftVersion < 8 ? new PacketEventManager1_7() : new PacketEventManager();
     }
@@ -95,7 +98,7 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public List<ICommand> getCommands() {
-        if (commands == null) commands = Arrays.asList(new LangCommand(), new ReloadCommand(), new TaskCommands());
+        if (commands == null) commands = Arrays.asList(new LangCommand(), new ReloadCommand(), new TaskCommands(), new TesteCommand());
         return commands;
     }
 
@@ -107,7 +110,7 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public List<Event> getEvents() {
-        if (events == null) events = Arrays.asList(new JoinAndQuit(), new MenuListener(), new PlayerMenuListener(menuManager), new EventExample());
+        if (events == null) events = Arrays.asList(new JoinAndQuit(), new MenuListener(), new PlayerMenuListener(menuManager));
         return events;
     }
 

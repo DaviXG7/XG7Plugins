@@ -15,6 +15,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -74,42 +75,46 @@ public class ScoreBoard extends Score {
     public ScoreBoard(String[] title, String[] lines, String id, ScoreCondition condition, long taskDelay,Plugin plugin) {
         super(taskDelay, title,id,condition,plugin);
         this.lines = lines;
-        this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
-        Objective objective = scoreboard.registerNewObjective(id, "dummy");
-        objective.setDisplayName(title[0]);
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        Bukkit.getScheduler().runTask(plugin, () -> {
 
-        int index = lines.length + 1;
+            this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
-        for (String s : lines) {
-            index--;
+            Objective objective = scoreboard.registerNewObjective(id, "dummy");
+            objective.setDisplayName(title[0]);
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-            String entry = IntStream.range(0, index).mapToObj(i -> "§r").collect(Collectors.joining());
+            int index = lines.length + 1;
 
-            Team team = scoreboard.registerNewTeam(id + ":Team=" + index);
+            for (String s : lines) {
+                index--;
 
-            s = Text.format(s,plugin).getText();
+                String entry = IntStream.range(0, index).mapToObj(i -> "§r").collect(Collectors.joining());
 
-            String prefix = s.substring(0, Math.min(s.length(), 16));
-            String suffix = null;
-            if (s.length() > 16) {
-                suffix = XG7Plugins.getMinecraftVersion() > 12 ? s.substring(16) : s.substring(16, Math.min(s.length(), 32));
-                suffix = ChatColor.getLastColors(prefix) + suffix;
-                if (suffix.length() > 16) suffix = s.substring(0,16);
+                Team team = scoreboard.registerNewTeam(id + ":Team=" + index);
+
+                s = Text.format(s, plugin).getText();
+
+                String prefix = s.substring(0, Math.min(s.length(), 16));
+                String suffix = null;
+                if (s.length() > 16) {
+                    suffix = XG7Plugins.getMinecraftVersion() > 12 ? s.substring(16) : s.substring(16, Math.min(s.length(), 32));
+                    suffix = ChatColor.getLastColors(prefix) + suffix;
+                    if (suffix.length() > 16) suffix = s.substring(0, 16);
+                }
+
+                team.setPrefix(prefix);
+                if (suffix != null) team.setSuffix(suffix);
+
+                team.addEntry(entry);
+
+
+                objective.getScore(entry).setScore(index);
+
             }
 
-            team.setPrefix(prefix);
-            if (suffix != null) team.setSuffix(suffix);
-
-            team.addEntry(entry);
-
-
-            objective.getScore(entry).setScore(index);
-
-        }
-
-        XG7Plugins.getInstance().getScoreManager().registerScore(this);
+            XG7Plugins.getInstance().getScoreManager().registerScore(this);
+        });
 
     }
 
@@ -117,7 +122,9 @@ public class ScoreBoard extends Score {
     public void update() {
 
 
-        for (Player player : super.getPlayers()) {
+        for (UUID id : super.getPlayers()) {
+            Player player = Bukkit.getPlayer(id);
+            if (player == null) continue;
 
             Objective objective = scoreboard.getObjective(super.getId());
 

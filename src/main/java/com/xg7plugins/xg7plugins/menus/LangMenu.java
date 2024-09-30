@@ -69,7 +69,7 @@ public class LangMenu {
                 }
 
                 plugin.getLangManager().getPlayerLanguageDAO().updatePlayerLanguage(s,player.getUniqueId()).thenAccept(r -> {
-                    plugin.getMenuManager().removePlayer("lang", player);
+                    plugin.getMenuManager().removePlayerFromAll(player);
                     create(player);
                     Text.formatComponent("lang:[lang-menu.toggle-success]", plugin).send(player);
                 });
@@ -87,7 +87,7 @@ public class LangMenu {
                 .rows(6)
                 .setArea(Slot.of(2,2), Slot.of(5,8))
                 .setItems(items)
-                .setItem(49, ItemBuilder.from(Material.BARRIER, plugin).name("lang:[close-item]").click(event -> ((ItemsPageMenu) event.getClickedMenu()).close()));
+                .setItem(49, ItemBuilder.from(XMaterial.BARRIER.parseItem(), plugin).name("lang:[close-item]").click(event -> ((ItemsPageMenu) event.getClickedMenu()).close()));
         int langSize = plugin.getLangManager().getLangs().asMap().size();
 
         if (langSize > 24) {

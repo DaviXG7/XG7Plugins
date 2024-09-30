@@ -96,11 +96,15 @@ public class PageMenuBuilder extends BaseMenuBuilder<PageMenuBuilder> {
                                         SkullMeta meta = (SkullMeta) builder.toItemStack().getItemMeta();
                                         if ("THIS_PLAYER".equals(meta.getOwner())) return ((SkullItemBuilder) builder).setOwner(player.getName()).setPlaceHolders(player).toItemStack();
                                     }
-                                    return builder.setPlaceHolders(player).toItemStack();
+                                    return builder.setPlaceHolders(player, builder.getBuildReplacements()).toItemStack();
                                 }
 
                         )
                 );
-        return type == null ? new ItemsPageMenu(id,Text.getCentralizedText(Text.PixelsSize.INV.getPixels(),Text.format(title,plugin).getWithPlaceholders(player)), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,pageItems,keepSavingPageIndex) : new ItemsPageMenu(id,Text.getCentralizedText(Text.PixelsSize.INV.getPixels(),Text.format(title,plugin).getWithPlaceholders(player)), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,pageItems,keepSavingPageIndex);
+
+        List<ItemBuilder> buildedPlayerItens = pageItems.stream().map(item -> item.setPlaceHolders(player, item.getBuildReplacements())).collect(Collectors.toList());
+
+
+        return type == null ? new ItemsPageMenu(id,Text.getCentralizedText(Text.PixelsSize.INV.getPixels(),Text.format(title,plugin).getWithPlaceholders(player)), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,buildedPlayerItens,keepSavingPageIndex) : new ItemsPageMenu(id,Text.getCentralizedText(Text.PixelsSize.INV.getPixels(),Text.format(title,plugin).getWithPlaceholders(player)), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,buildedPlayerItens,keepSavingPageIndex);
     }
 }

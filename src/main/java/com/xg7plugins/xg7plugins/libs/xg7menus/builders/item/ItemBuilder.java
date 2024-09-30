@@ -57,7 +57,8 @@ public class ItemBuilder extends BaseItemBuilder<ItemBuilder> {
         }
 
         builder.name(setup.name());
-        builder.lore(lore, new HashMap<String, String>() {{
+        builder.lore(lore);
+        builder.setBuildReplacements(new HashMap<String, String>() {{
             put("[SYNTAX]", setup.syntax());
             put("[DESCRIPTION]", setup.description());
             put("[PERMISSION]", setup.perm());
@@ -87,7 +88,8 @@ public class ItemBuilder extends BaseItemBuilder<ItemBuilder> {
         }
 
         builder.name(setup.name());
-        builder.lore(lore, new HashMap<String, String>() {{
+        builder.lore(lore);
+        builder.setBuildReplacements(new HashMap<String, String>() {{
             put("[SYNTAX]", setup.syntax());
             put("[DESCRIPTION]", setup.description());
             put("[PERMISSION]", setup.perm());

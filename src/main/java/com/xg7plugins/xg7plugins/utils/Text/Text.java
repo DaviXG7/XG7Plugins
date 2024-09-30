@@ -51,18 +51,18 @@ public class Text {
     public Text(String text, Plugin plugin) {
         this.text = text;
         if (XG7Plugins.getMinecraftVersion() >= 16) {
-            applyGradients();
-            Matcher matcher = HEX_PATTERN.matcher(text);
+            this.text = applyGradients();
+            Matcher matcher = HEX_PATTERN.matcher(this.text);
             while (matcher.find()) {
-                String color = text.substring(matcher.start(), matcher.end());
-                text = text.replace(color, net.md_5.bungee.api.ChatColor.of(color.substring(1)) + "");
-                matcher = HEX_PATTERN.matcher(text);
+                String color = this.text.substring(matcher.start(), matcher.end());
+                this.text = this.text.replace(color, net.md_5.bungee.api.ChatColor.of(color.substring(1)) + "");
+                matcher = HEX_PATTERN.matcher(this.text);
             }
         }
 
         this.plugin = plugin;
 
-        this.text = ChatColor.translateAlternateColorCodes('&', text.replace("[PREFIX]", plugin.getCustomPrefix()));
+        this.text = ChatColor.translateAlternateColorCodes('&', this.text.replace("[PREFIX]", plugin.getCustomPrefix()));
     }
 
     public static Text format(String text, Plugin plugin) {
@@ -237,7 +237,7 @@ public class Text {
                 textWidht += rgbToAdd;
                 continue;
             }
-            if (c == '&') {
+            if (c == '&' || c == '§') {
                 cCode = true;
                 cCodeCount++;
                 continue;
@@ -288,7 +288,6 @@ public class Text {
     }
 
     private String applyGradients() {
-
         Matcher matcher = GRADIENT_PATTERN.matcher(text);
         StringBuffer result = new StringBuffer();
 
@@ -310,11 +309,11 @@ public class Text {
                                 (int) Math.round(blue[i]))))
                         .append(textHex.charAt(i));
             }
-            matcher.appendReplacement(result, builder.toString() + net.md_5.bungee.api.ChatColor.RESET);
+            matcher.appendReplacement(result, builder.toString());
         }
         matcher.appendTail(result);
 
-        return result.toString();
+        return result.toString() + net.md_5.bungee.api.ChatColor.RESET;
     }
     private static int getCharSize(char c, boolean isBold) {
         String[] chars = new String[]{"~@", "1234567890ABCDEFGHJKLMNOPQRSTUVWXYZabcedjhmnopqrsuvxwyz/\\+=-_^?&%$#", "{}fk*\"<>()", "It[] ", "'l`", "!|:;,.i", "¨´"};

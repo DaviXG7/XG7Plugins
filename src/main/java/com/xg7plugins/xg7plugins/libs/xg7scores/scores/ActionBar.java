@@ -5,7 +5,10 @@ import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.libs.xg7scores.Score;
 import com.xg7plugins.xg7plugins.libs.xg7scores.ScoreCondition;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class ActionBar extends Score {
 
@@ -17,7 +20,9 @@ public class ActionBar extends Score {
 
     @Override
     public void update() {
-        for (Player player : super.getPlayers()) {
+        for (UUID id : super.getPlayers()) {
+            Player player = Bukkit.getPlayer(id);
+            if (player == null) continue;
             if (XG7Plugins.getInstance().getScoreManager().getSendActionBlackList().contains(player.getUniqueId())) continue;
             Text.format(super.getToUpdate()[super.getIndexUpdating()],plugin).sendScoreActionBar(player);
         }

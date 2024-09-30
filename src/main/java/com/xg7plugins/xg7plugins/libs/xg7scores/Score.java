@@ -2,10 +2,13 @@ package com.xg7plugins.xg7plugins.libs.xg7scores;
 
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Getter
 public abstract class Score {
@@ -15,7 +18,7 @@ public abstract class Score {
     private final String id;
     private final String[] toUpdate;
     private int indexUpdating = 0;
-    private final Set<Player> players;
+    private final Set<UUID> players;
     private final ScoreCondition condition;
 
     protected Plugin plugin;
@@ -30,17 +33,18 @@ public abstract class Score {
     }
 
     public void addPlayer(Player player) {
-        players.add(player);
+        players.add(player.getUniqueId());
         updating = true;
     }
 
     public void removePlayer(Player player) {
-        players.remove(player);
-        if (players.isEmpty()) updating = false;
+
+            players.remove(player.getUniqueId());
+            if (players.isEmpty()) updating = false;
     }
 
     public void removeAllPlayers() {
-        players.clear();
+        players.stream().map(Bukkit::getPlayer).collect(Collectors.toList()).forEach(this::removePlayer);
         updating = false;
     }
 
