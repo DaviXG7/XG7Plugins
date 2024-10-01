@@ -59,8 +59,6 @@ public class TextComponent {
             return;
         }
 
-        System.out.println("text: " + text);
-
         Player player = sender;
 
         String transletedRawText = Text.getWithPlaceholders(plugin, rawText, player);

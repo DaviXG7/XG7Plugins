@@ -2,6 +2,7 @@ package com.xg7plugins.xg7plugins.libs.xg7geyserforms.builders;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.boot.Plugin;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.geysermc.cumulus.form.Form;
 import org.geysermc.cumulus.form.ModalForm;
@@ -16,6 +17,7 @@ import java.util.function.Consumer;
 
 public abstract class FormCreator<FC extends FormCreator<FC>> {
 
+    @Getter
     protected String id;
     protected String title;
     protected final Plugin plugin;
@@ -27,7 +29,7 @@ public abstract class FormCreator<FC extends FormCreator<FC>> {
     public FormCreator(String id, Plugin plugin) {
         this.id = id;
         this.plugin = plugin;
-        XG7Plugins.getInstance().getFormManager().registerCreator(id, this);
+        XG7Plugins.getInstance().getFormManager().registerCreator(this);
 
     }
 
@@ -47,6 +49,15 @@ public abstract class FormCreator<FC extends FormCreator<FC>> {
     public <F extends Form> FC onClose(Consumer<F> consumer) {
         this.close = (Consumer<Form>) consumer;
         return (FC) this;
+    }
+    public static ModalFormCreator modal(String id, Plugin plugin) {
+        return new ModalFormCreator(id, plugin);
+    }
+    public static SimpleFormCreator simple(String id, Plugin plugin) {
+        return new SimpleFormCreator(id, plugin);
+    }
+    public static CustomFormCreator custom(String id, Plugin plugin) {
+        return new CustomFormCreator(id, plugin);
     }
 
 

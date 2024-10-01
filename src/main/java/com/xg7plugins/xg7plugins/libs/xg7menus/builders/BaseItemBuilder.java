@@ -5,6 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.xg7plugins.xg7plugins.boot.Plugin;
+import com.xg7plugins.xg7plugins.libs.xg7menus.XSeries.XMaterial;
+import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
+import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.SkullItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.ClickEvent;
 import com.xg7plugins.xg7plugins.utils.Text.Text;
 import com.xg7plugins.xg7plugins.utils.reflection.NMSUtil;
@@ -13,6 +16,7 @@ import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -219,5 +223,18 @@ public abstract class BaseItemBuilder<B extends BaseItemBuilder<B>> {
         inventoryItem.put("item", Base64.getEncoder().encodeToString(yaml.getBytes()));
 
         return gson.toJson(inventoryItem);
+    }
+
+    public static <B extends BaseItemBuilder<B>> B from(String material, Plugin plugin) {
+
+        if (material == null) return (B) ItemBuilder.from(Material.STONE,plugin);
+        if (material.startsWith("eyJ0")) return (B) new SkullItemBuilder(plugin).setValue(material);
+        if (material.equals("THIS_PLAYER")) return (B) new SkullItemBuilder(plugin).renderSkullPlayer();
+        if (material.split(", ").length == 2) {
+            String[] args = material.split(", ");
+            return (B) ItemBuilder.from(new MaterialData(XMaterial.valueOf(args[0]).parseMaterial(), Byte.parseByte(args[0])),plugin);
+        }
+
+        return (B) ItemBuilder.from(XMaterial.valueOf(material).parseItem(),plugin);
     }
 }

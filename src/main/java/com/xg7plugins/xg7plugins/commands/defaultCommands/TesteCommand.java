@@ -2,13 +2,19 @@ package com.xg7plugins.xg7plugins.commands.defaultCommands;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.commands.setup.*;
+import com.xg7plugins.xg7plugins.libs.xg7geyserforms.builders.ComponentFactory;
+import com.xg7plugins.xg7plugins.libs.xg7geyserforms.builders.FormCreator;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7scores.builder.BossBarBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7scores.builder.ScoreBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.geysermc.cumulus.component.ButtonComponent;
+import org.geysermc.cumulus.response.CustomFormResponse;
+import org.geysermc.cumulus.response.SimpleFormResponse;
 
 import java.util.Arrays;
 
@@ -29,50 +35,29 @@ public class TesteCommand implements ICommand {
 
     @Override
     public void onCommand(org.bukkit.command.Command command, Player player, String label) {
-        XG7Plugins.getInstance().getScoreManager().initTask();
-        ScoreBuilder.actionBar("teste")
-                .addTextUpdate("§aTeste")
-                .addTextUpdate("§cTeste")
-                .addTextUpdate("§eTeste")
-                .addTextUpdate("§bTeste")
-                .delay(200L)
-                .build(XG7Plugins.getInstance());
-        ScoreBuilder.XPBar("teste2")
-                .addXP("1, 0.1")
-                .addXP("2, 0.2")
-                .addXP("3, 0.3")
-                .addXP("4, 0.4")
-                .delay(200L)
-                .build(XG7Plugins.getInstance());
-        ScoreBuilder.scoreBoard("teste3")
-                .addTitleUpdate("§aTeste")
-                .addTitleUpdate("§cTeste")
-                .addTitleUpdate("§eTeste")
-                .addTitleUpdate("§bTeste")
-                .addLine("1")
-                .addLine("2")
-                .addLine("3")
-                .addLine("4")
-                .delay(200L)
-                .build(XG7Plugins.getInstance());
-        ScoreBuilder.tablist("teste5")
-                .addHeaderLine("§aTeste")
-                .addHeaderLine("§cTeste")
-                .addFooterLine("A")
-                .addFooterLine("A")
-                .playerSuffix("MDS")
-                .playerPrefix("MDS")
-                .delay(200L)
-                .build(XG7Plugins.getInstance());
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAA");
-        ScoreBuilder.bossBar("teste4")
-                .delay(200L)
-                .title(Arrays.asList("Teste1", "Teste2", "Teste3", "Teste4"))
-                .color(BarColor.BLUE)
-                .style(BarStyle.SEGMENTED_10)
-                .progress(0.5F)
-                .build(XG7Plugins.getInstance());
-        System.out.println("BBBBBBBBBBBBBBBBBBB");
+        try {
+            XG7Plugins.getInstance().getFormManager().registerCreator(
+                    FormCreator.custom("id", XG7Plugins.getInstance())
+                            .title("Teste")
+                            .addComponent(ComponentFactory.dropDown("lang:[formated-name]", Arrays.asList("op1", "op2"), 0))
+                            .onFinish((form, response) -> {
+                                player.sendMessage("Teste");
+
+                                CustomFormResponse response1 = (CustomFormResponse) response;
+                            })
+                            .onError((form, response) -> {
+                                player.sendMessage("Teste");
+                            })
+                            .onClose(form -> {
+                                player.sendMessage("Teste");
+                            })
+            );
+
+            XG7Plugins.getInstance().getFormManager().sendPlayerForm("id", Bukkit.getPlayer(".DaviXG7"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.xg7plugins.xg7plugins.commands.setup.ISubCommand;
 import com.xg7plugins.xg7plugins.commands.setup.SubCommand;
 import com.xg7plugins.xg7plugins.libs.xg7menus.Slot;
 import com.xg7plugins.xg7plugins.libs.xg7menus.XSeries.XMaterial;
+import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.menu.MenuBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.menu.PageMenuBuilder;
@@ -34,7 +35,7 @@ public class CommandMenu {
             return;
         }
 
-        List<ItemBuilder> commands = plugin.getCommands().stream().map(ICommand::getIcon).collect(Collectors.toList());
+        List<BaseItemBuilder<?>> commands = plugin.getCommands().stream().map(ICommand::getIcon).collect(Collectors.toList());
 
 
         PageMenuBuilder builder = MenuBuilder.page("commands")
@@ -66,7 +67,7 @@ public class CommandMenu {
             return;
         }
 
-        List<ItemBuilder> commands = Arrays.stream(command.getSubCommands()).map(ICommand::getIcon).collect(Collectors.toList());
+        List<BaseItemBuilder<?>> commands = Arrays.stream(command.getSubCommands()).map(ICommand::getIcon).collect(Collectors.toList());
         PageMenuBuilder builder = MenuBuilder.page("subcommands:" + commandName)
                 .title(commandName)
                 .rows(6)

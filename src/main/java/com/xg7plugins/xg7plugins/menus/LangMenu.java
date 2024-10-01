@@ -6,6 +6,7 @@ import com.xg7plugins.xg7plugins.data.lang.PlayerLanguage;
 import com.xg7plugins.xg7plugins.data.lang.PlayerLanguageDAO;
 import com.xg7plugins.xg7plugins.libs.xg7menus.Slot;
 import com.xg7plugins.xg7plugins.libs.xg7menus.XSeries.XMaterial;
+import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.menu.MenuBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.menu.PageMenuBuilder;
@@ -16,15 +17,17 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.util.*;
 
 public class LangMenu {
 
     @Getter
-    private static HashMap<UUID,Long> cooldownToToggle = new HashMap<>();
+    protected static HashMap<UUID,Long> cooldownToToggle = new HashMap<>();
 
     public static void create(Player player) {
+
 
         XG7Plugins plugin = XG7Plugins.getInstance();
 
@@ -39,9 +42,16 @@ public class LangMenu {
 
         Config config = plugin.getConfigsManager().getConfig("config");
 
-        List<ItemBuilder> items = new ArrayList<>();
+        if (XG7Plugins.isGeyserMC() && (boolean) config.get("enable-lang-form")) {
+            if (FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
+                LangForm.create(player);
+                return;
+            }
+        }
+
+        List<BaseItemBuilder<?>> items = new ArrayList<>();
         plugin.getLangManager().getLangs().asMap().forEach((s, c)-> {
-            ItemBuilder builder = ItemBuilder.from(XMaterial.WRITABLE_BOOK.parseItem(), plugin);
+            BaseItemBuilder<?> builder = BaseItemBuilder.from(c.getString("icon"), plugin);
             PlayerLanguage language = plugin.getLangManager().getPlayerLanguageDAO().getLanguage(player.getUniqueId());
 
             boolean selected = language != null && language.getLangId().equals(s);

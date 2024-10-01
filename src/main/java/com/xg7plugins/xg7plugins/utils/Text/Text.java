@@ -104,7 +104,7 @@ public class Text {
             textToTraslate = textToTraslate.replace(entry.getKey(),entry.getValue());
         }
 
-        return Text.format(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, textToTraslate) : textToTraslate, plugin).getText();
+        return Text.format(XG7Plugins.isPlaceholderAPI() ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, textToTraslate) : textToTraslate, plugin).getText();
     }
 
     public static String getWithPlaceholders(Plugin plugin, String text, Player player) {
@@ -122,7 +122,7 @@ public class Text {
 
         textToTraslate = textToTraslate.replace("[PLAYER]", player.getName());
 
-        return Text.format(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, textToTraslate) : textToTraslate, plugin).getText();
+        return Text.format(XG7Plugins.isPlaceholderAPI() ? PlaceholderAPI.setPlaceholders((OfflinePlayer) player, textToTraslate) : textToTraslate, plugin).getText();
     }
 
     public Text replace(String placeholder, String replacement) {

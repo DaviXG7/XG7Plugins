@@ -37,6 +37,7 @@ public class SimpleFormCreator extends FormCreator<SimpleFormCreator> {
         }
 
         SimpleForm.Builder builder = SimpleForm.builder();
+
         builder.title(Text.format(title,plugin).getWithPlaceholders(player));
         builder.content(Text.format(content,plugin).getWithPlaceholders(player));
 
@@ -51,6 +52,6 @@ public class SimpleFormCreator extends FormCreator<SimpleFormCreator> {
         if (close != null) {
             builder.closedResultHandler((form) -> XG7Plugins.getInstance().getTaskManager().runTask(() -> close.accept(form)));
         }
-        return null;
+        return builder.build();
     }
 }

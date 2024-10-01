@@ -11,14 +11,18 @@ public class FormManager {
 
     private final Map<String, FormCreator> creators = new HashMap<>();
 
-    public void registerCreator(String id, FormCreator creator) {
-        creators.put(id, creator);
+    public void registerCreator(FormCreator creator) {
+        creators.put(creator.getId(), creator);
     }
     public void sendPlayerForm(String id, Player player) {
 
         if (!FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) return;
 
         FloodgateApi.getInstance().sendForm(player.getUniqueId(), creators.get(id).build(player));
+    }
+
+    public boolean contaninsForm(String id) {
+        return creators.containsKey(id);
     }
 
 }

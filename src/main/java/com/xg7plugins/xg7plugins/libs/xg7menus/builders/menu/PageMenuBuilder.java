@@ -28,7 +28,7 @@ public class PageMenuBuilder extends BaseMenuBuilder<PageMenuBuilder> {
     protected int size;
     protected InventoryType type;
 
-    private List<ItemBuilder> pageItems = new ArrayList<>();
+    private List<BaseItemBuilder<?>> pageItems = new ArrayList<>();
     private Slot initSlot;
     private Slot finalSlot;
     private boolean keepSavingPageIndex = false;
@@ -53,11 +53,11 @@ public class PageMenuBuilder extends BaseMenuBuilder<PageMenuBuilder> {
         this.type = type;
         return this;
     }
-    public PageMenuBuilder items(ItemBuilder... items) {
+    public PageMenuBuilder items(BaseItemBuilder<?>... items) {
         this.pageItems.addAll(Arrays.asList(items));
         return this;
     }
-    public PageMenuBuilder setItems(@NotNull List<ItemBuilder> items) {
+    public PageMenuBuilder setItems(@NotNull List<BaseItemBuilder<?>> items) {
         this.pageItems = items;
         return this;
     }
@@ -102,7 +102,7 @@ public class PageMenuBuilder extends BaseMenuBuilder<PageMenuBuilder> {
                         )
                 );
 
-        List<ItemBuilder> buildedPlayerItens = pageItems.stream().map(item -> item.setPlaceHolders(player, item.getBuildReplacements())).collect(Collectors.toList());
+        List<BaseItemBuilder<?>> buildedPlayerItens = pageItems.stream().map(item -> item.setPlaceHolders(player, item.getBuildReplacements())).collect(Collectors.toList());
 
 
         return type == null ? new ItemsPageMenu(id,Text.getCentralizedText(Text.PixelsSize.INV.getPixels(),Text.format(title,plugin).getWithPlaceholders(player)), size, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,buildedPlayerItens,keepSavingPageIndex) : new ItemsPageMenu(id,Text.getCentralizedText(Text.PixelsSize.INV.getPixels(),Text.format(title,plugin).getWithPlaceholders(player)), type, buildItems, clickEventMap, defaultClickEvent, openMenuEvent, closeMenuEvent, allowedPermissions, player,initSlot,finalSlot,buildedPlayerItens,keepSavingPageIndex);

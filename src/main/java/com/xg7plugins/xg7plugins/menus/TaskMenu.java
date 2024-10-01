@@ -4,6 +4,7 @@ import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.libs.xg7menus.Slot;
 import com.xg7plugins.xg7plugins.libs.xg7menus.XSeries.XMaterial;
+import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.menu.MenuBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.menu.PageMenuBuilder;
@@ -31,7 +32,7 @@ public class TaskMenu {
         }
         Set<String> tasks = plugin.getTaskManager().getTasksRunning().keySet();
 
-        List<ItemBuilder> items = new ArrayList<>();
+        List<BaseItemBuilder<?>> items = new ArrayList<>();
 
         YamlConfiguration lang = plugin.getLangManager().getLangByPlayer(player);
         tasks.forEach(task -> {

@@ -100,16 +100,5 @@ public class ItemBuilder extends BaseItemBuilder<ItemBuilder> {
         return builder;
     }
 
-    public static <B extends BaseItemBuilder<B>> B from(@NotNull String material, Plugin plugin) {
-
-        if (material.startsWith("eyJ0")) return (B) new SkullItemBuilder(plugin).setValue(material);
-        if (material.equals("THIS_PLAYER")) return (B) new SkullItemBuilder(plugin).renderSkullPlayer();
-        if (material.split(", ").length == 2) {
-            String[] args = material.split(", ");
-            return (B) from(new MaterialData(XMaterial.valueOf(args[0]).parseMaterial(), Byte.parseByte(args[0])),plugin);
-        }
-
-        return (B) from(XMaterial.valueOf(material).parseItem(),plugin);
-    }
 
 }

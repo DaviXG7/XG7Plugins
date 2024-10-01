@@ -3,6 +3,7 @@ package com.xg7plugins.xg7plugins.libs.xg7menus.menus.gui;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuException;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuPermissions;
 import com.xg7plugins.xg7plugins.libs.xg7menus.Slot;
+import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.ClickEvent;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.MenuEvent;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
@@ -19,13 +20,13 @@ public class ItemsPageMenu extends Menu {
 
     private static final Map<UUID, Integer> indexs = new HashMap<>();
 
-    private List<ItemBuilder> pageItems;
+    private List<BaseItemBuilder<?>> pageItems;
     private final Slot initSlot;
     private final Slot finalSlot;
     private final int area;
     private final boolean keepSavingPageIndex;
 
-    public ItemsPageMenu(String id,String title, int size, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Slot initSlot, Slot finalSlot, List<ItemBuilder> pageItems, boolean keepSavingPageIndex) {
+    public ItemsPageMenu(String id,String title, int size, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Slot initSlot, Slot finalSlot, List<BaseItemBuilder<?>> pageItems, boolean keepSavingPageIndex) {
         super(id,title, size, items, clicks, defaultClick, openEvent, closeEvent, permissions, player);
         this.initSlot = initSlot;
         this.finalSlot = finalSlot;
@@ -34,7 +35,7 @@ public class ItemsPageMenu extends Menu {
         this.keepSavingPageIndex = keepSavingPageIndex;
     }
 
-    public ItemsPageMenu(String id,String title, InventoryType type, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Slot initSlot, Slot finalSlot, List<ItemBuilder> pageItems, boolean keepSavingPageIndex) {
+    public ItemsPageMenu(String id,String title, InventoryType type, Map<Integer, ItemStack> items, Map<Integer, Consumer<ClickEvent>> clicks, Consumer<ClickEvent> defaultClick, Consumer<MenuEvent> openEvent, Consumer<MenuEvent> closeEvent, EnumSet<MenuPermissions> permissions, HumanEntity player, Slot initSlot, Slot finalSlot, List<BaseItemBuilder<?>> pageItems, boolean keepSavingPageIndex) {
         super(id,title, type, items, clicks, defaultClick, openEvent, closeEvent, permissions, player);
         this.initSlot = initSlot;
         this.finalSlot = finalSlot;
@@ -43,7 +44,7 @@ public class ItemsPageMenu extends Menu {
         this.keepSavingPageIndex = keepSavingPageIndex;
     }
 
-    public void updatePage(List<ItemBuilder> pageItems) {
+    public void updatePage(List<BaseItemBuilder<?>> pageItems) {
         this.pageItems = pageItems;
     }
 
@@ -64,7 +65,7 @@ public class ItemsPageMenu extends Menu {
 
         indexs.put(player.getUniqueId(), index);
 
-        List<ItemBuilder> itemsToAdd = pageItems.subList(index * area, pageItems.size());
+        List<BaseItemBuilder<?>> itemsToAdd = pageItems.subList(index * area, pageItems.size());
 
 
         int indexToAdd = 0;

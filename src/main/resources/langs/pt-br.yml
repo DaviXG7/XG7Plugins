@@ -1,7 +1,8 @@
 
 locale: portugues
-
 formated-name: "Português"
+icon: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTY2OGExZmI2YWY4MWIyMzFiYmNjNGRlNWY3Zjk1ODAzYmJkMTk0ZjU4MjdkYTAyN2ZhNzAzMjFjZjQ3YyJ9fX0="
+bedrock-icon: "URL, https://www.google.com/imgres?q=bandeira%20br&imgurl=https%3A%2F%2Fs1.static.brasilescola.uol.com.br%2Fbe%2Fconteudo%2Fimages%2F2-bandeira-do-brasil.jpg&imgrefurl=https%3A%2F%2Fbrasilescola.uol.com.br%2Fbrasil%2Fbandeiradobrasil.htm&docid=2eiMTPG84DlFIM&tbnid=g6ztmXPVeANk4M&vet=12ahUKEwjO0uDasu2IAxXeGLkGHZfbOZoQM3oECB8QAA..i&w=600&h=400&hcb=2&ved=2ahUKEwjO0uDasu2IAxXeGLkGHZfbOZoQM3oECB8QAA"
 
 commands:
   syntax-error: "Você digitou o comando de maneira errada! A maneira certa é [SYNTAX]"
@@ -26,6 +27,8 @@ close-item: "Fechar"
 
 lang-menu:
   title: "Idiomas"
+
+  content: "Escolha um idioma para o servidor!"
 
   item-click:
     - "Clique para trocar o idioma para português"

@@ -41,11 +41,18 @@ public final class XG7Plugins extends Plugin {
 
     @Getter
     private static final int minecraftVersion;
+    @Getter
+    private static final boolean geyserMC;
+    @Getter
+    private static final boolean placeholderAPI;
 
     static {
         Pattern pattern = Pattern.compile("1\\.([0-9]?[0-9])");
         Matcher matcher = pattern.matcher(Bukkit.getServer().getVersion());
         minecraftVersion = matcher.find() ? Integer.parseInt(matcher.group(1)) : 0;
+
+        geyserMC = Bukkit.getPluginManager().getPlugin("floodgate") != null;
+        placeholderAPI = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
     }
 
     private DBManager databaseManager;
@@ -78,7 +85,7 @@ public final class XG7Plugins extends Plugin {
         this.scoreManager = new ScoreManager(this);
         this.eventManager.registerPlugin(this);
         this.databaseManager.connectPlugin(this);
-        this.formManager = new FormManager();
+        this.formManager = geyserMC ? new FormManager() : null;
         EntityProcessor.createTableOf(this, PlayerLanguage.class);
         this.packetEventManager = minecraftVersion < 8 ? new PacketEventManager1_7() : new PacketEventManager();
     }
