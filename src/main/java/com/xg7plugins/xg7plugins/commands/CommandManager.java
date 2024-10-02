@@ -4,7 +4,7 @@ import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.commands.setup.*;
 import com.xg7plugins.xg7plugins.commands.setup.Command;
-import com.xg7plugins.xg7plugins.utils.Text.Text;
+import com.xg7plugins.xg7plugins.utils.text.Text;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionClass;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionMethod;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
 

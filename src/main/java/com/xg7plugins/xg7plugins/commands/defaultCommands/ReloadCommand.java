@@ -6,13 +6,10 @@ import com.xg7plugins.xg7plugins.commands.setup.*;
 import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.libs.xg7menus.XSeries.XMaterial;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
-import com.xg7plugins.xg7plugins.utils.Text.Text;
+import com.xg7plugins.xg7plugins.utils.text.Text;
 import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.InvalidDescriptionException;
-import org.bukkit.plugin.InvalidPluginException;
 
 import java.util.*;
 import java.util.stream.Collectors;

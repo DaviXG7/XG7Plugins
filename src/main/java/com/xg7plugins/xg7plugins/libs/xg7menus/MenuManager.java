@@ -4,7 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.libs.xg7menus.menus.player.PlayerMenu;
-import com.xg7plugins.xg7plugins.utils.Text.Text;
+import com.xg7plugins.xg7plugins.utils.text.Text;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 

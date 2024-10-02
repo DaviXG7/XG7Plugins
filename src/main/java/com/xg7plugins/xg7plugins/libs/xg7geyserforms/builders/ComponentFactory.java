@@ -1,7 +1,7 @@
 package com.xg7plugins.xg7plugins.libs.xg7geyserforms.builders;
 
 import com.xg7plugins.xg7plugins.boot.Plugin;
-import com.xg7plugins.xg7plugins.utils.Text.Text;
+import com.xg7plugins.xg7plugins.utils.text.Text;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.entity.Player;

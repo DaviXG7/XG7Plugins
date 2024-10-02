@@ -1,5 +1,6 @@
 package com.xg7plugins.xg7plugins.utils.reflection;
 
+import com.xg7plugins.xg7plugins.XG7Plugins;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
@@ -17,6 +18,11 @@ public class NMSUtil {
 
     public static ReflectionClass getCraftBukkitClass(String className) {
         String fullName = "org.bukkit.craftbukkit." + version + "." + className;
+        return ReflectionClass.of(fullName);
+    }
+
+    public static ReflectionClass getNMSClassViaVersion(int version, String classNameOlder, String classNameNewer) {
+        String fullName = XG7Plugins.getMinecraftVersion() >= version ? "net.minecraft." + classNameNewer : "net.minecraft.server." + version + "." + classNameOlder;
         return ReflectionClass.of(fullName);
     }
 

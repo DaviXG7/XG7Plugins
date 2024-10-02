@@ -4,10 +4,15 @@ import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.commands.setup.*;
 import com.xg7plugins.xg7plugins.libs.xg7geyserforms.builders.ComponentFactory;
 import com.xg7plugins.xg7plugins.libs.xg7geyserforms.builders.FormCreator;
+import com.xg7plugins.xg7plugins.libs.xg7holograms.holograms.Hologram;
+import com.xg7plugins.xg7plugins.libs.xg7holograms.holograms.Hologram1_8_1_16;
+import com.xg7plugins.xg7plugins.libs.xg7holograms.utils.Location;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7scores.builder.BossBarBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7scores.builder.ScoreBuilder;
+import com.xg7plugins.xg7plugins.utils.Conversation;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.command.CommandSender;
@@ -28,35 +33,30 @@ import java.util.Arrays;
 )
 public class TesteCommand implements ICommand {
 
+    private static Hologram hologram;
+
     @Override
     public ISubCommand[] getSubCommands() {
-        return new ISubCommand[]{new Verify()};
+        return new ISubCommand[]{new Create(), new Update(), new Destroy()};
     }
 
     @Override
     public void onCommand(org.bukkit.command.Command command, Player player, String label) {
-        try {
-            XG7Plugins.getInstance().getFormManager().registerCreator(
-                    FormCreator.custom("id", XG7Plugins.getInstance())
-                            .title("Teste")
-                            .addComponent(ComponentFactory.dropDown("lang:[formated-name]", Arrays.asList("op1", "op2"), 0))
-                            .onFinish((form, response) -> {
-                                player.sendMessage("Teste");
-
-                                CustomFormResponse response1 = (CustomFormResponse) response;
-                            })
-                            .onError((form, response) -> {
-                                player.sendMessage("Teste");
-                            })
-                            .onClose(form -> {
-                                player.sendMessage("Teste");
-                            })
-            );
-
-            XG7Plugins.getInstance().getFormManager().sendPlayerForm("id", Bukkit.getPlayer(".DaviXG7"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Conversation
+                .create(XG7Plugins.getInstance())
+                .errorMessage("§cVocê digitou um valor inválido")
+                .addPrompt("Digite um número", Conversation.ResultType.INTEGER)
+                .addPrompt("Digite um texto", Conversation.ResultType.STRING)
+                .cancelWord("cancelar")
+                .onAbandon(conversationAbandonedEvent -> {
+                    if (conversationAbandonedEvent.gracefulExit()) return;
+                    player.sendMessage("§cVocê abandonou a conversa");
+                })
+                .onFinish(conversationResult -> {
+                    player.sendMessage("§aNúmero: " + conversationResult.get(0));
+                    player.sendMessage("§aTexto: " + conversationResult.get(1));
+                })
+                .start(player);
 
     }
 
@@ -66,25 +66,61 @@ public class TesteCommand implements ICommand {
     }
 
     @SubCommand(
-            name = "verify",
-            description = "Verify",
-            syntax = "/teste verify",
-            perm = "xg7plugins.command.teste.verify",
-            type = SubCommandType.NORMAL
+            name = "create",
+            description = "create",
+            syntax = "/teste create",
+            perm = "",
+            type = SubCommandType.PLAYER
     )
-    static class Verify implements ISubCommand {
+    static class Create implements ISubCommand {
 
         @Override
-        public void onSubCommand(CommandSender sender, String[] args, String label) {
-            XG7Plugins.getInstance().getScoreManager().getScoreboards().get("teste")
-                    .getPlayers().forEach(player -> {
-                        sender.sendMessage(player + "");
-                    });
+        public void onSubCommand(CommandSender sender, OfflinePlayer target, String label) {
+            hologram = new Hologram1_8_1_16(XG7Plugins.getInstance(), Arrays.asList("§aTeste 1", "§bTeste 2", "§cTeste 3", "lang:[formated-name]"), Location.fromBukkit(((Player)target).getLocation()));
+            hologram.create((Player) target);
         }
 
         @Override
             public ItemBuilder getIcon() {
                 return null;
             }
+    }
+    @SubCommand(
+            name = "update",
+            description = "update",
+            syntax = "/teste update",
+            perm = "",
+            type = SubCommandType.PLAYER
+    )
+    static class Update implements ISubCommand {
+
+        @Override
+        public void onSubCommand(CommandSender sender, OfflinePlayer target, String label) {
+            hologram.update((Player) target);
+        }
+
+        @Override
+        public ItemBuilder getIcon() {
+            return null;
+        }
+    }
+    @SubCommand(
+            name = "destroy",
+            description = "destroy",
+            syntax = "/teste destroy",
+            perm = "",
+            type = SubCommandType.PLAYER
+    )
+    static class Destroy implements ISubCommand {
+
+        @Override
+        public void onSubCommand(CommandSender sender, OfflinePlayer target, String label) {
+            hologram.destroy((Player) target);
+        }
+
+        @Override
+        public ItemBuilder getIcon() {
+            return null;
+        }
     }
 }

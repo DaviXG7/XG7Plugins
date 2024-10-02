@@ -5,8 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.data.config.Config;
-import com.xg7plugins.xg7plugins.utils.Text.Text;
-import lombok.AccessLevel;
+import com.xg7plugins.xg7plugins.utils.text.Text;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
@@ -17,8 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class DBManager {

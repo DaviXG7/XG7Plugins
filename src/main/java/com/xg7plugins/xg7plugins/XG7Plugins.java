@@ -8,6 +8,7 @@ import com.xg7plugins.xg7plugins.data.database.EntityProcessor;
 import com.xg7plugins.xg7plugins.data.lang.PlayerLanguage;
 import com.xg7plugins.xg7plugins.events.packetevents.PacketManagerBase;
 import com.xg7plugins.xg7plugins.libs.xg7geyserforms.FormManager;
+import com.xg7plugins.xg7plugins.libs.xg7holograms.HologramsManager;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuManager;
 import com.xg7plugins.xg7plugins.libs.xg7menus.listeners.MenuListener;
 import com.xg7plugins.xg7plugins.libs.xg7menus.listeners.PlayerMenuListener;
@@ -22,7 +23,6 @@ import com.xg7plugins.xg7plugins.events.defaultevents.JoinAndQuit;
 import com.xg7plugins.xg7plugins.events.packetevents.PacketEventManager;
 import com.xg7plugins.xg7plugins.events.packetevents.PacketEventManager1_7;
 import com.xg7plugins.xg7plugins.tasks.TaskManager;
-import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -42,7 +42,7 @@ public final class XG7Plugins extends Plugin {
     @Getter
     private static final int minecraftVersion;
     @Getter
-    private static final boolean geyserMC;
+    private static final boolean floodgate;
     @Getter
     private static final boolean placeholderAPI;
 
@@ -51,7 +51,7 @@ public final class XG7Plugins extends Plugin {
         Matcher matcher = pattern.matcher(Bukkit.getServer().getVersion());
         minecraftVersion = matcher.find() ? Integer.parseInt(matcher.group(1)) : 0;
 
-        geyserMC = Bukkit.getPluginManager().getPlugin("floodgate") != null;
+        floodgate = Bukkit.getPluginManager().getPlugin("floodgate") != null;
         placeholderAPI = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
     }
 
@@ -62,6 +62,7 @@ public final class XG7Plugins extends Plugin {
     private PacketManagerBase packetEventManager;
     private MenuManager menuManager;
     private FormManager formManager;
+    private HologramsManager hologramsManager;
 
     private List<Event> events;
     private List<ICommand> commands;
@@ -85,7 +86,7 @@ public final class XG7Plugins extends Plugin {
         this.scoreManager = new ScoreManager(this);
         this.eventManager.registerPlugin(this);
         this.databaseManager.connectPlugin(this);
-        this.formManager = geyserMC ? new FormManager() : null;
+        this.formManager = floodgate ? new FormManager() : null;
         EntityProcessor.createTableOf(this, PlayerLanguage.class);
         this.packetEventManager = minecraftVersion < 8 ? new PacketEventManager1_7() : new PacketEventManager();
     }

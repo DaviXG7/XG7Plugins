@@ -9,7 +9,7 @@ import com.xg7plugins.xg7plugins.libs.xg7menus.XSeries.XMaterial;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.SkullItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.events.ClickEvent;
-import com.xg7plugins.xg7plugins.utils.Text.Text;
+import com.xg7plugins.xg7plugins.utils.text.Text;
 import com.xg7plugins.xg7plugins.utils.reflection.NMSUtil;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionClass;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;

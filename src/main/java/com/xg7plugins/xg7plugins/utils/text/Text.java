@@ -1,14 +1,11 @@
-package com.xg7plugins.xg7plugins.utils.Text;
+package com.xg7plugins.xg7plugins.utils.text;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.utils.reflection.NMSUtil;
 import com.xg7plugins.xg7plugins.utils.reflection.PlayerNMS;
-import com.xg7plugins.xg7plugins.utils.reflection.ReflectionClass;
 import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatMessageType;
@@ -68,9 +65,9 @@ public class Text {
     public static Text format(String text, Plugin plugin) {
         return new Text(text,plugin);
     }
-    public static com.xg7plugins.xg7plugins.utils.Text.TextComponent formatComponent(String text, Plugin plugin) {
+    public static com.xg7plugins.xg7plugins.utils.text.TextComponent formatComponent(String text, Plugin plugin) {
         Text text1 = new Text(text, plugin);
-        return new com.xg7plugins.xg7plugins.utils.Text.TextComponent(text1.getText(),plugin);
+        return new com.xg7plugins.xg7plugins.utils.text.TextComponent(text1.getText(),plugin);
     }
 
     public Text setReplacements(HashMap<String, String> replacements) {

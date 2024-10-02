@@ -13,10 +13,8 @@ import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.menu.MenuBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.menu.PageMenuBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.menus.gui.ItemsPageMenu;
-import com.xg7plugins.xg7plugins.utils.Text.Text;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 
 import java.util.Arrays;

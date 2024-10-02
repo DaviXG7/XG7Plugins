@@ -2,17 +2,14 @@ package com.xg7plugins.xg7plugins.libs.xg7scores.scores;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.boot.Plugin;
-import com.xg7plugins.xg7plugins.libs.xg7scores.Score;
 import com.xg7plugins.xg7plugins.libs.xg7scores.ScoreCondition;
-import com.xg7plugins.xg7plugins.utils.Text.Text;
+import com.xg7plugins.xg7plugins.utils.text.Text;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
-
-import java.util.UUID;
 
 public class PublicBossBar extends GenericBossBar {
     

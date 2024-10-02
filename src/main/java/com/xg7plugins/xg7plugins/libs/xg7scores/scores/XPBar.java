@@ -4,7 +4,6 @@ import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.libs.xg7scores.Score;
 import com.xg7plugins.xg7plugins.libs.xg7scores.ScoreCondition;
-import com.xg7plugins.xg7plugins.utils.Text.Text;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

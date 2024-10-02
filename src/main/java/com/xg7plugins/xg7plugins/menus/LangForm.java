@@ -4,7 +4,7 @@ import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.data.config.Config;
 import com.xg7plugins.xg7plugins.data.lang.PlayerLanguage;
 import com.xg7plugins.xg7plugins.libs.xg7geyserforms.builders.SimpleFormCreator;
-import com.xg7plugins.xg7plugins.utils.Text.Text;
+import com.xg7plugins.xg7plugins.utils.text.Text;
 import org.bukkit.entity.Player;
 import org.geysermc.cumulus.component.ButtonComponent;
 import org.geysermc.cumulus.response.SimpleFormResponse;
@@ -16,8 +16,8 @@ public class LangForm {
 
         XG7Plugins plugin = XG7Plugins.getInstance();
 
-        if (plugin.getFormManager().contaninsForm("lang")) {
-            plugin.getFormManager().sendPlayerForm("lang", player);
+        if (plugin.getFormManager().contaninsForm("lang", player)) {
+            plugin.getFormManager().sendPlayerForm("lang:" + player.getUniqueId(), player);
             return;
         }
 
@@ -27,13 +27,14 @@ public class LangForm {
 
         Config config = plugin.getConfigsManager().getConfig("config");
 
-        PlayerLanguage language = plugin.getLangManager().getPlayerLanguageDAO().getLanguage(player.getUniqueId());
-
         formCreator.title("lang:[lang-menu.title]");
         formCreator.content("lang:[lang-menu.content]");
 
 
         plugin.getLangManager().getLangs().asMap().forEach((s, c)-> {
+
+            PlayerLanguage language = plugin.getLangManager().getPlayerLanguageDAO().getLanguage(player.getUniqueId());
+
 
             boolean selected = language != null && language.getLangId().equals(s);
 
@@ -56,9 +57,12 @@ public class LangForm {
         });
 
         formCreator.onFinish((form, res) -> {
+
+                    PlayerLanguage language = plugin.getLangManager().getPlayerLanguageDAO().getLanguage(player.getUniqueId());
+
                     SimpleFormResponse response = (SimpleFormResponse) res;
+
                     String lang = plugin.getLangManager().getLangs().asMap().keySet().toArray(new String[0])[response.clickedButtonId()];
-                    System.out.println(lang);
                     if (language != null && language.getLangId().equals(lang)) {
                         Text.formatComponent("lang:[lang-menu.already-selected]", plugin).send(player);
                         return;
@@ -77,6 +81,7 @@ public class LangForm {
 
                     plugin.getLangManager().getPlayerLanguageDAO().updatePlayerLanguage(lang, player.getUniqueId()).thenAccept(r -> {
                         plugin.getMenuManager().removePlayerFromAll(player);
+                        plugin.getFormManager().unregisterCreator("lang", player);
                         create(player);
                         Text.formatComponent("lang:[lang-menu.toggle-success]", plugin).send(player);
                     });
@@ -87,9 +92,9 @@ public class LangForm {
         }
         );
 
-        plugin.getFormManager().registerCreator(formCreator);
+        plugin.getFormManager().registerCreator(formCreator, player);
 
-        plugin.getFormManager().sendPlayerForm("lang", player);
+        plugin.getFormManager().sendPlayerForm("lang:" + player.getUniqueId(), player);
     }
 
 }

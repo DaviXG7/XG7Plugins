@@ -31,7 +31,7 @@ public class PlayerNMS {
     }
 
     public void sendPacket(Object packet) {
-        ReflectionMethod.of(playerConnection.getObject(), "sendPacket", NMSUtil.getNMSClass("Packet").getAClass()).invoke(packet);
+        ReflectionMethod.of(playerConnection.getObject(), "sendPacket", NMSUtil.getNMSClassViaVersion(17, "Packet", "network.protocol.Packet").getAClass()).invoke(packet);
     }
 
 

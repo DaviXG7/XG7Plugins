@@ -6,12 +6,11 @@ import com.xg7plugins.xg7plugins.libs.xg7menus.XSeries.XMaterial;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
 import com.xg7plugins.xg7plugins.menus.TaskMenu;
 import com.xg7plugins.xg7plugins.tasks.TaskManager;
-import com.xg7plugins.xg7plugins.utils.Text.Text;
+import com.xg7plugins.xg7plugins.utils.text.Text;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;

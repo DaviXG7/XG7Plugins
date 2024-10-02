@@ -14,6 +14,15 @@ public class FormManager {
     public void registerCreator(FormCreator creator) {
         creators.put(creator.getId(), creator);
     }
+    public void registerCreator(FormCreator creator, Player player) {
+        creators.put(creator.getId() + ":" + player.getUniqueId(), creator);
+    }
+    public void unregisterCreator(String id) {
+        creators.remove(id);
+    }
+    public void unregisterCreator(String id, Player player) {
+        creators.remove(id + ":" + player.getUniqueId());
+    }
     public void sendPlayerForm(String id, Player player) {
 
         if (!FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) return;
@@ -23,6 +32,9 @@ public class FormManager {
 
     public boolean contaninsForm(String id) {
         return creators.containsKey(id);
+    }
+    public boolean contaninsForm(String id, Player player) {
+        return creators.containsKey(id + ":" + player.getUniqueId());
     }
 
 }

@@ -6,7 +6,7 @@ import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseItemBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.BaseMenuBuilder;
 import com.xg7plugins.xg7plugins.libs.xg7menus.menus.gui.Menu;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.SkullItemBuilder;
-import com.xg7plugins.xg7plugins.utils.Text.Text;
+import com.xg7plugins.xg7plugins.utils.text.Text;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
