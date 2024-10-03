@@ -17,7 +17,7 @@ public class JoinAndQuit implements Event {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        XG7Plugins.getInstance().getPacketEventManager().stopEvent(event.getPlayer());
+        XG7Plugins.getInstance().getPacketEventManager().create(event.getPlayer());
     }
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {

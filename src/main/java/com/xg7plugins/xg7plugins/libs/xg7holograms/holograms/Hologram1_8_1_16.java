@@ -27,19 +27,19 @@ public class Hologram1_8_1_16 extends Hologram {
             System.out.println("???");
             for (int i = 0; i < names.size(); i++) {
 
-                Location spawnLocation = location.add(0,i * 0.3,0);
+                Location spawnLocation = location.add(0,-i * 0.3,0);
 
                 ReflectionObject armorStand = NMSClasses.ENTITY_ARMOR_STAND.getNmsClass()
-                        .getConstructor(nmsWorld.getObjectClass(), double.class, double.class, double.class)
+                        .getConstructor(NMSUtil.getNMSClass("World").getAClass(), double.class, double.class, double.class)
                         .newInstance(nmsWorld.getObject(), spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ());
 
                 armorStand.getMethod("setInvisible", boolean.class).invoke(true);
-                armorStand.getMethod("setCustomName", String.class).invoke(Text.format(names.get(i),plugin).getText());
+                armorStand.getMethod("setCustomName", String.class).invoke(Text.format(names.get(i),plugin).getWithPlaceholders(player));
                 armorStand.getMethod("setCustomNameVisible", boolean.class).invoke(true);
                 armorStand.getMethod("setGravity", boolean.class).invoke(false);
 
                 ReflectionObject packet = NMSClasses.SPAWN_ENTITY.getNmsClass()
-                        .getConstructor(NMSUtil.getNMSClassViaVersion(17, "Entity", "world.entity.Entity").getAClass())
+                        .getConstructor(NMSUtil.getNMSClass("EntityLiving").getAClass())
                         .newInstance(armorStand.getObject());
 
                 PlayerNMS playerNMS = PlayerNMS.cast(player);
@@ -69,13 +69,13 @@ public class Hologram1_8_1_16 extends Hologram {
     @Override
     public void update(Player player) {
 
-        ReflectionObject dataWatcher = NMSUtil.getNMSClass("DataWatcher").getConstructor(NMSUtil.getNMSClass("Entity").getAClass()).newInstance(NMSUtil.getNMSClass("Entity").cast(null));
-
         for (int i = 0; i < names.size(); i++) {
+
+            ReflectionObject dataWatcher = NMSUtil.getNMSClass("DataWatcher").getConstructor(NMSUtil.getNMSClass("Entity").getAClass()).newInstance(NMSUtil.getNMSClass("Entity").cast(null));
 
             ReflectionMethod aMethod = dataWatcher.getMethod("a", int.class, Object.class);
 
-            aMethod.invoke(2, Text.format(names.get(ids.get(player.getUniqueId()).get(i)),plugin).getWithPlaceholders(player)); // Custom Name
+            aMethod.invoke(2, Text.format(names.get(i),plugin).getWithPlaceholders(player)); // Custom Name
             aMethod.invoke(3, (byte) (ChatColor.stripColor(Text.format(names.get(i), plugin).getWithPlaceholders(player)).isEmpty() ? 0 : 1));
 
             ReflectionObject packetPlayOutEntityMetaData = NMSUtil.getNMSClass("PacketPlayOutEntityMetadata")

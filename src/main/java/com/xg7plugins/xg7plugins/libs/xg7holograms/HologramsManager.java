@@ -44,6 +44,9 @@ public class HologramsManager {
             throw new RuntimeException(e);
         }
     }
+    public void getHologramById(int id) {
+        holograms.stream().filter(hologram -> hologram.getId() == id).findFirst().orElse(null);
+    }
 
     public void addHologram(Hologram hologram) {
         holograms.add(hologram);

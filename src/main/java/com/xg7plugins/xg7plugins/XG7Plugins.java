@@ -8,6 +8,7 @@ import com.xg7plugins.xg7plugins.data.database.EntityProcessor;
 import com.xg7plugins.xg7plugins.data.lang.PlayerLanguage;
 import com.xg7plugins.xg7plugins.events.packetevents.PacketManagerBase;
 import com.xg7plugins.xg7plugins.libs.xg7geyserforms.FormManager;
+import com.xg7plugins.xg7plugins.libs.xg7holograms.ClickEventHandler;
 import com.xg7plugins.xg7plugins.libs.xg7holograms.HologramsManager;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuManager;
 import com.xg7plugins.xg7plugins.libs.xg7menus.listeners.MenuListener;
@@ -82,13 +83,15 @@ public final class XG7Plugins extends Plugin {
         this.databaseManager = new DBManager(this);
         this.menuManager = new MenuManager(this);
         this.eventManager = new EventManager();
+        this.packetEventManager = minecraftVersion < 8 ? new PacketEventManager1_7() : new PacketEventManager();
+        Bukkit.getOnlinePlayers().forEach(player -> packetEventManager.create(player));
         this.taskManager = new TaskManager(this);
         this.scoreManager = new ScoreManager(this);
         this.eventManager.registerPlugin(this);
+        this.packetEventManager.registerPlugin(this);
         this.databaseManager.connectPlugin(this);
         this.formManager = floodgate ? new FormManager() : null;
         EntityProcessor.createTableOf(this, PlayerLanguage.class);
-        this.packetEventManager = minecraftVersion < 8 ? new PacketEventManager1_7() : new PacketEventManager();
     }
 
 
@@ -124,7 +127,7 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public List<Event> getPacketEvents() {
-        return Collections.emptyList();
+        return Collections.singletonList(new ClickEventHandler());
     }
 
     @Override

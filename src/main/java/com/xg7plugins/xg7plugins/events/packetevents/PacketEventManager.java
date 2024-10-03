@@ -2,6 +2,7 @@ package com.xg7plugins.xg7plugins.events.packetevents;
 
 import com.xg7plugins.xg7plugins.events.Event;
 import com.xg7plugins.xg7plugins.utils.reflection.PlayerNMS;
+import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import io.netty.channel.*;
 import lombok.SneakyThrows;
 import org.bukkit.entity.Player;
@@ -25,11 +26,11 @@ public class PacketEventManager extends PacketManagerBase {
                     for (Method method : event.getClass().getMethods()) {
                         if (!method.isAnnotationPresent(PacketEventHandler.class)) continue;
                         PacketEventHandler eventHandler = method.getAnnotation(PacketEventHandler.class);
-                        if (Arrays.stream(eventHandler.packetsName()).anyMatch(s -> packet.getClass().getName().endsWith(s))) modPacket = method.invoke(event, player, packet);
+                        if (packet.getClass().getName().endsWith(eventHandler.packet())) modPacket = method.invoke(event, player, ReflectionObject.of(packet));
                     }
                 }
 
-                super.channelRead(context, packet);
+                super.channelRead(context, modPacket);
             }
 
             @Override
@@ -41,11 +42,11 @@ public class PacketEventManager extends PacketManagerBase {
                     for (Method method : event.getClass().getMethods()) {
                         if (!method.isAnnotationPresent(PacketEventHandler.class)) continue;
                         PacketEventHandler eventHandler = method.getAnnotation(PacketEventHandler.class);
-                        if (Arrays.stream(eventHandler.packetsName()).anyMatch(s -> packet.getClass().getName().endsWith(s))) modPacket = method.invoke(event, player, packet);
+                        if (packet.getClass().getName().endsWith(eventHandler.packet())) modPacket = method.invoke(event, player, ReflectionObject.of(packet));
                     }
                 }
 
-                super.write(context, packet, channelPromise);
+                super.write(context, modPacket, channelPromise);
             }
         };
 

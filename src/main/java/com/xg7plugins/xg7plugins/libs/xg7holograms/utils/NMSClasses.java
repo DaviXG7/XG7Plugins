@@ -7,7 +7,7 @@ import lombok.Getter;
 public enum NMSClasses {
 
     ENTITY_ARMOR_STAND("EntityArmorStand", "world.entity.decoration.EntityArmorStand"),
-    SPAWN_ENTITY("PacketPlayOutSpawnEntity", "network.protocol.game.PacketPlayOutSpawnEntity");
+    SPAWN_ENTITY("PacketPlayOutSpawnEntityLiving", "network.protocol.game.PacketPlayOutSpawnEntityLiving");
 
 
     @Getter
