@@ -3,6 +3,7 @@ package com.xg7plugins.xg7plugins.libs.xg7holograms.holograms;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.libs.xg7holograms.ClickEvent;
 import com.xg7plugins.xg7plugins.libs.xg7holograms.utils.Location;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+@Getter
 public abstract class Hologram {
 
     protected List<String> names;

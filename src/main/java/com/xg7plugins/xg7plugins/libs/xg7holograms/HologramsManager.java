@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.libs.xg7holograms.holograms.Hologram;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.FileReader;
@@ -44,8 +45,8 @@ public class HologramsManager {
             throw new RuntimeException(e);
         }
     }
-    public void getHologramById(int id) {
-        holograms.stream().filter(hologram -> hologram.getId() == id).findFirst().orElse(null);
+    public Hologram getHologramById(Player player, int id) {
+        return holograms.stream().filter(hologram -> hologram.getIds().get(player.getUniqueId()).contains(id)).findFirst().orElse(null);
     }
 
     public void addHologram(Hologram hologram) {
