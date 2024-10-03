@@ -16,10 +16,7 @@ public class ReflectionMethod {
     public <T> T invoke(Object... args) {
         try {
             return (T) this.method.invoke(object, args);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -34,7 +31,6 @@ public class ReflectionMethod {
         return new ReflectionMethod(object, object.getClass().getMethod(name, parameterTypes));
     }
 
-    @SneakyThrows
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         return method.getAnnotation(annotationClass);
     }

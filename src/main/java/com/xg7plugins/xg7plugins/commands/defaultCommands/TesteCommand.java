@@ -70,14 +70,21 @@ public class TesteCommand implements ICommand {
             description = "create",
             syntax = "/teste create",
             perm = "",
-            type = SubCommandType.PLAYER
+            type = SubCommandType.NORMAL
     )
     static class Create implements ISubCommand {
 
         @Override
-        public void onSubCommand(CommandSender sender, OfflinePlayer target, String label) {
-            hologram = new Hologram1_8_1_16(XG7Plugins.getInstance(), Arrays.asList("§aTeste 1", "§bTeste 2", "§cTeste 3", "lang:[formated-name]"), Location.fromBukkit(((Player)target).getLocation()));
-            hologram.create((Player) target);
+        public void onSubCommand(CommandSender sender, String[] args, String label) {
+            try {
+                System.out.println(Bukkit.getPlayer(args[1]).getName());
+                hologram = new Hologram1_8_1_16(XG7Plugins.getInstance(), Arrays.asList("§aTeste 1", "§bTeste 2", "§cTeste 3", "lang:[formated-name]"), Location.fromBukkit(Bukkit.getPlayer(args[1]).getLocation()));
+                System.out.println(">>>>");
+                hologram.create(Bukkit.getPlayer(args[1]));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
         @Override
@@ -90,13 +97,17 @@ public class TesteCommand implements ICommand {
             description = "update",
             syntax = "/teste update",
             perm = "",
-            type = SubCommandType.PLAYER
+            type = SubCommandType.NORMAL
     )
     static class Update implements ISubCommand {
 
         @Override
-        public void onSubCommand(CommandSender sender, OfflinePlayer target, String label) {
-            hologram.update((Player) target);
+        public void onSubCommand(CommandSender sender, String[] args, String label) {
+            try {
+                hologram.update(Bukkit.getPlayer(args[1]));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -109,13 +120,17 @@ public class TesteCommand implements ICommand {
             description = "destroy",
             syntax = "/teste destroy",
             perm = "",
-            type = SubCommandType.PLAYER
+            type = SubCommandType.NORMAL
     )
     static class Destroy implements ISubCommand {
 
         @Override
-        public void onSubCommand(CommandSender sender, OfflinePlayer target, String label) {
-            hologram.destroy((Player) target);
+        public void onSubCommand(CommandSender sender, String[] args, String label) {
+            try {
+                hologram.destroy(Bukkit.getPlayer(args[1]));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override

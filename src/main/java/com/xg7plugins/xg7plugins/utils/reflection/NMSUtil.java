@@ -21,8 +21,8 @@ public class NMSUtil {
         return ReflectionClass.of(fullName);
     }
 
-    public static ReflectionClass getNMSClassViaVersion(int version, String classNameOlder, String classNameNewer) {
-        String fullName = XG7Plugins.getMinecraftVersion() >= version ? "net.minecraft." + classNameNewer : "net.minecraft.server." + version + "." + classNameOlder;
+    public static ReflectionClass getNMSClassViaVersion(int targetVersion, String classNameOlder, String classNameNewer) {
+        String fullName = XG7Plugins.getMinecraftVersion() >= targetVersion ? "net.minecraft." + classNameNewer : "net.minecraft.server." + version + "." + classNameOlder;
         return ReflectionClass.of(fullName);
     }
 

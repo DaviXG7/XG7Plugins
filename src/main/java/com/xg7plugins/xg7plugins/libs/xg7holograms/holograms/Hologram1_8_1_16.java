@@ -21,32 +21,40 @@ public class Hologram1_8_1_16 extends Hologram {
 
     @Override
     public void create(Player player) {
-        ReflectionObject nmsWorld = NMSUtil.getCraftBukkitClass("CraftWorld").castToRObject(location.getWorld()).getMethod("getHandle").invokeToRObject();
+        try {
+            System.out.println("?");
+            ReflectionObject nmsWorld = NMSUtil.getCraftBukkitClass("CraftWorld").castToRObject(location.getWorld()).getMethod("getHandle").invokeToRObject();
+            System.out.println("???");
+            for (int i = 0; i < names.size(); i++) {
 
-        for (int i = 0; i < names.size(); i++) {
+                Location spawnLocation = location.add(0,i * 0.3,0);
 
-            Location spawnLocation = location.add(0,i * 0.3,0);
+                ReflectionObject armorStand = NMSClasses.ENTITY_ARMOR_STAND.getNmsClass()
+                        .getConstructor(nmsWorld.getObjectClass(), double.class, double.class, double.class)
+                        .newInstance(nmsWorld.getObject(), spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ());
 
-            ReflectionObject armorStand = NMSClasses.ENTITY_ARMOR_STAND.getNmsClass()
-                    .getConstructor(nmsWorld.getObjectClass(), double.class, double.class, double.class)
-                    .newInstance(nmsWorld.getObject(), spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ());
+                armorStand.getMethod("setInvisible", boolean.class).invoke(true);
+                armorStand.getMethod("setCustomName", String.class).invoke(Text.format(names.get(i),plugin).getText());
+                armorStand.getMethod("setCustomNameVisible", boolean.class).invoke(true);
+                armorStand.getMethod("setGravity", boolean.class).invoke(false);
 
-            armorStand.getMethod("setInvisible", boolean.class).invoke(true);
-            armorStand.getMethod("setCustomName", String.class).invoke(Text.format(names.get(i),plugin).getText());
-            armorStand.getMethod("setCustomNameVisible", boolean.class).invoke(true);
-            armorStand.getMethod("setGravity", boolean.class).invoke(false);
+                ReflectionObject packet = NMSClasses.SPAWN_ENTITY.getNmsClass()
+                        .getConstructor(NMSUtil.getNMSClassViaVersion(17, "Entity", "world.entity.Entity").getAClass())
+                        .newInstance(armorStand.getObject());
 
-            ReflectionObject packet = NMSClasses.SPAWN_ENTITY.getNmsClass()
-                    .getConstructor(NMSUtil.getNMSClassViaVersion(17, "Entity", "world.entity.Entity").getAClass())
-                    .newInstance(armorStand.getObject());
+                PlayerNMS playerNMS = PlayerNMS.cast(player);
+                playerNMS.sendPacket(packet.getObject());
 
-            PlayerNMS playerNMS = PlayerNMS.cast(player);
-            playerNMS.sendPacket(packet.getObject());
+                ids.putIfAbsent(player.getUniqueId(), new ArrayList<>());
 
-            ids.putIfAbsent(player.getUniqueId(), new ArrayList<>());
+                ids.get(player.getUniqueId()).add(armorStand.getMethod("getId").invoke());
 
-            ids.get(player.getUniqueId()).add(armorStand.getMethod("getId").invoke());
+                System.out.println(ids.get(player.getUniqueId()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     @Override

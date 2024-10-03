@@ -20,18 +20,25 @@ public class ReflectionObject {
         return new ReflectionObject(object);
     }
 
-    @SneakyThrows
     public void setField(String name, Object value) {
-        Field field = objectClass.getDeclaredField(name);
-        field.setAccessible(true);
-        field.set(object, value);
+        try {
+            Field field = objectClass.getDeclaredField(name);
+            field.setAccessible(true);
+            field.set(object, value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @SneakyThrows
     public <T> T getField(String name) {
-        Field field = objectClass.getDeclaredField(name);
-        field.setAccessible(true);
-        return (T) field.get(object);
+        try {
+            Field field = objectClass.getDeclaredField(name);
+            field.setAccessible(true);
+            return (T) field.get(object);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @SneakyThrows

@@ -17,26 +17,42 @@ public class ReflectionClass {
     private final Class<?> aClass;
     private Constructor<?> constructor;
 
-    @SneakyThrows
     public ReflectionObject newInstance(Object... args) {
-        if (constructor == null) return new ReflectionObject(aClass.getConstructor().newInstance());
-        return new ReflectionObject(constructor.newInstance(args));
+
+        if (constructor == null) {
+            try {
+                return new ReflectionObject(aClass.getConstructor().newInstance());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            return new ReflectionObject(constructor.newInstance(args));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @SneakyThrows
     public ReflectionClass getConstructor(Class<?>... parameterTypes) {
-        constructor = aClass.getDeclaredConstructor(parameterTypes);
-        constructor.setAccessible(true);
+        try {
+            constructor = aClass.getDeclaredConstructor(parameterTypes);
+            constructor.setAccessible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return this;
     }
 
     @Contract("_ -> new")
-    @SneakyThrows
     public static @NotNull ReflectionClass of(String name) {
-        return new ReflectionClass(Class.forName(name));
+        try {
+            return new ReflectionClass(Class.forName(name));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
     @Contract("_ -> new")
-    @SneakyThrows
     public static @NotNull ReflectionClass of(Class<?> clazz) {
         return new ReflectionClass(clazz);
     }
