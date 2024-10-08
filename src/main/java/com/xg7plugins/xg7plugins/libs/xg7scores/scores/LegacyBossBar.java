@@ -3,11 +3,8 @@ package com.xg7plugins.xg7plugins.libs.xg7scores.scores;
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.libs.xg7scores.ScoreCondition;
+import com.xg7plugins.xg7plugins.utils.reflection.*;
 import com.xg7plugins.xg7plugins.utils.text.Text;
-import com.xg7plugins.xg7plugins.utils.reflection.NMSUtil;
-import com.xg7plugins.xg7plugins.utils.reflection.PlayerNMS;
-import com.xg7plugins.xg7plugins.utils.reflection.ReflectionMethod;
-import com.xg7plugins.xg7plugins.utils.reflection.ReflectionObject;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -49,26 +46,25 @@ public class LegacyBossBar extends GenericBossBar {
                     .getConstructor(NMSUtil.getNMSClass("EntityLiving").getAClass())
                     .newInstance(wither.getObject());
 
-            ReflectionObject dataWatcher =  NMSUtil.getNMSClass("DataWatcher").getConstructor(NMSUtil.getNMSClass("Entity").getAClass()).newInstance(NMSUtil.getNMSClass("Entity").cast(null));
+            EntityDataWatcher dataWatcher = new EntityDataWatcher();
 
-            ReflectionMethod aMethod = dataWatcher.getMethod("a", int.class, Object.class);
-            aMethod.invoke(6, (healthPercent / 100) * 300);
+            dataWatcher.watch(6, (healthPercent / 100) * 300);
 
-            aMethod.invoke( 10, getToUpdate()[0]);
-            aMethod.invoke( 2, getToUpdate()[0]);
+            dataWatcher.watch( 10, getToUpdate()[0]);
+            dataWatcher.watch( 2, getToUpdate()[0]);
 
-            aMethod.invoke(11, (byte) 1);
-            aMethod.invoke(3, (byte) 1);
+            dataWatcher.watch(11, (byte) 1);
+            dataWatcher.watch(3, (byte) 1);
 
-            aMethod.invoke(17, 0);
-            aMethod.invoke(18, 0);
-            aMethod.invoke(19, 0);
+            dataWatcher.watch(17, 0);
+            dataWatcher.watch(18, 0);
+            dataWatcher.watch(19, 0);
 
-            aMethod.invoke(20, 1000);
-            aMethod.invoke(0, (byte) (1 << 5));
+            dataWatcher.watch(20, 1000);
+            dataWatcher.watch(0, (byte) (1 << 5));
 
             packetPlayOutEntityMetadata.setField("a", wither.getMethod("getId").invoke());
-            packetPlayOutEntityMetadata.setField("b", dataWatcher.getMethod("c").invoke());
+            packetPlayOutEntityMetadata.setField("b", dataWatcher.getWatcherAsARObject().getMethod("c").invoke());
 
             entities.put(player.getUniqueId(), wither.getMethod("getId").invoke());
 
@@ -120,15 +116,13 @@ public class LegacyBossBar extends GenericBossBar {
 
             playerNMS.sendPacket(packetPlayOutEntityTeleport.getObject());
 
-            ReflectionObject dataWatcher =  NMSUtil.getNMSClass("DataWatcher").getConstructor(NMSUtil.getNMSClass("Entity").getAClass()).newInstance(NMSUtil.getNMSClass("Entity").cast(null));
+            EntityDataWatcher dataWatcher = new EntityDataWatcher();
 
-            ReflectionMethod aMethod = dataWatcher.getMethod("a", int.class, Object.class);
-
-            aMethod.invoke(10, Text.format(getToUpdate()[getIndexUpdating()],plugin).getWithPlaceholders(player));
-            aMethod.invoke(2, Text.format(getToUpdate()[getIndexUpdating()],plugin).getWithPlaceholders(player));
+            dataWatcher.watch(10, Text.format(getToUpdate()[getIndexUpdating()],plugin).getWithPlaceholders(player));
+            dataWatcher.watch(2, Text.format(getToUpdate()[getIndexUpdating()],plugin).getWithPlaceholders(player));
 
             packetPlayOutEntityMetadata.setField("a", entities.get(player.getUniqueId()));
-            packetPlayOutEntityMetadata.setField("b", dataWatcher.getMethod("c").invoke());
+            packetPlayOutEntityMetadata.setField("b", dataWatcher.getWatcherAsARObject().getMethod("c").invoke());
 
             playerNMS.sendPacket(packetPlayOutEntityMetadata.getObject());
 

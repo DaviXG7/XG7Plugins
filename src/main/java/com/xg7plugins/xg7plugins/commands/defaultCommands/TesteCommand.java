@@ -2,24 +2,15 @@ package com.xg7plugins.xg7plugins.commands.defaultCommands;
 
 import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.commands.setup.*;
-import com.xg7plugins.xg7plugins.libs.xg7geyserforms.builders.ComponentFactory;
-import com.xg7plugins.xg7plugins.libs.xg7geyserforms.builders.FormCreator;
 import com.xg7plugins.xg7plugins.libs.xg7holograms.holograms.Hologram;
+import com.xg7plugins.xg7plugins.libs.xg7holograms.holograms.Hologram1_7_1_XX;
 import com.xg7plugins.xg7plugins.libs.xg7holograms.holograms.Hologram1_8_1_16;
 import com.xg7plugins.xg7plugins.libs.xg7holograms.utils.Location;
 import com.xg7plugins.xg7plugins.libs.xg7menus.builders.item.ItemBuilder;
-import com.xg7plugins.xg7plugins.libs.xg7scores.builder.BossBarBuilder;
-import com.xg7plugins.xg7plugins.libs.xg7scores.builder.ScoreBuilder;
 import com.xg7plugins.xg7plugins.utils.Conversation;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.geysermc.cumulus.component.ButtonComponent;
-import org.geysermc.cumulus.response.CustomFormResponse;
-import org.geysermc.cumulus.response.SimpleFormResponse;
 
 import java.util.Arrays;
 
@@ -37,7 +28,7 @@ public class TesteCommand implements ICommand {
 
     @Override
     public ISubCommand[] getSubCommands() {
-        return new ISubCommand[]{new Create(), new Update(), new Destroy()};
+        return new ISubCommand[]{new Create(), new Update(), new Destroy(), new Save()};
     }
 
     @Override
@@ -78,8 +69,9 @@ public class TesteCommand implements ICommand {
         public void onSubCommand(CommandSender sender, String[] args, String label) {
             try {
                 System.out.println(Bukkit.getPlayer(args[1]).getName());
-                hologram = new Hologram1_8_1_16(XG7Plugins.getInstance(), Arrays.asList("§aTeste 1", "§bTeste 2", "§cTeste 3", "lang:[formated-name]"), Location.fromBukkit(Bukkit.getPlayer(args[1]).getLocation()));
+                hologram = new Hologram1_7_1_XX(XG7Plugins.getInstance(), Arrays.asList("§aTeste 1", "§bTeste 2", "§cTeste 3", "lang:[formated-name]"), Location.fromBukkit(Bukkit.getPlayer(args[1]).getLocation()));
                 System.out.println(">>>>");
+
                 hologram.create(Bukkit.getPlayer(args[1]));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -128,6 +120,29 @@ public class TesteCommand implements ICommand {
         public void onSubCommand(CommandSender sender, String[] args, String label) {
             try {
                 hologram.destroy(Bukkit.getPlayer(args[1]));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public ItemBuilder getIcon() {
+            return null;
+        }
+    }
+    @SubCommand(
+            name = "save",
+            description = "save",
+            syntax = "/teste save",
+            perm = "",
+            type = SubCommandType.NORMAL
+    )
+    static class Save implements ISubCommand {
+
+        @Override
+        public void onSubCommand(CommandSender sender, String[] args, String label) {
+            try {
+                sender.sendMessage("Salvo!!!!!!!");
             } catch (Exception e) {
                 e.printStackTrace();
             }

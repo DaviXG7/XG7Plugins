@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 @RequiredArgsConstructor
@@ -41,6 +42,17 @@ public class ReflectionClass {
             e.printStackTrace();
         }
         return this;
+    }
+
+    public <T> T getStaticField(String name) {
+        try {
+            Field field = aClass.getDeclaredField(name);
+            field.setAccessible(true);
+            return (T) field.get(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     @Contract("_ -> new")

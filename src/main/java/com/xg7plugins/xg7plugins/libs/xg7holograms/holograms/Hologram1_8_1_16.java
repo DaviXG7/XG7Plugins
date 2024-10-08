@@ -1,5 +1,6 @@
 package com.xg7plugins.xg7plugins.libs.xg7holograms.holograms;
 
+import com.xg7plugins.xg7plugins.XG7Plugins;
 import com.xg7plugins.xg7plugins.boot.Plugin;
 import com.xg7plugins.xg7plugins.libs.xg7holograms.utils.Location;
 import com.xg7plugins.xg7plugins.utils.reflection.*;
@@ -10,17 +11,16 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Hologram1_8_1_16 extends Hologram {
-
-    public Hologram1_8_1_16(Plugin plugin, List<String> names, Location location) {
-        super(plugin, names, location);
+public class Hologram1_8_1_16 extends Hologram{
+    public Hologram1_8_1_16(Plugin plugin, List<String> lines, Location location) {
+        super(plugin, lines, location);
     }
 
     @Override
     public void create(Player player) {
         try {
             ReflectionObject nmsWorld = NMSUtil.getCraftBukkitClass("CraftWorld").castToRObject(location.getWorld()).getMethod("getHandle").invokeToRObject();
-            for (int i = 0; i < names.size(); i++) {
+            for (int i = 0; i < lines.size(); i++) {
 
                 Location spawnLocation = location.add(0,-i * 0.3,0);
 
@@ -28,10 +28,13 @@ public class Hologram1_8_1_16 extends Hologram {
                         .getConstructor(NMSUtil.getNMSClass("World").getAClass(), double.class, double.class, double.class)
                         .newInstance(nmsWorld.getObject(), spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ());
 
-                armorStand.getMethod("setInvisible", boolean.class).invoke(true);
-                armorStand.getMethod("setCustomName", String.class).invoke(Text.format(names.get(i),plugin).getWithPlaceholders(player));
-                armorStand.getMethod("setCustomNameVisible", boolean.class).invoke(true);
-                armorStand.getMethod("setGravity", boolean.class).invoke(false);
+                EntityDataWatcher dataWatcher = new EntityDataWatcher();
+
+                dataWatcher.watch(0 , (byte) 0x20);
+                dataWatcher.watch(2, Text.format(lines.get(i), XG7Plugins.getInstance().getPlugins().getOrDefault(pluginName, XG7Plugins.getInstance())).getWithPlaceholders(player));
+                dataWatcher.watch(3, XG7Plugins.getMinecraftVersion() >= 9 ? true : (byte) 1);
+                dataWatcher.watch(5, XG7Plugins.getMinecraftVersion() >= 9 ? true : (byte) 1);
+
 
                 ReflectionObject packet = NMSUtil.getNMSClass("PacketPlayOutSpawnEntityLiving")
                         .getConstructor(NMSUtil.getNMSClass("EntityLiving").getAClass())
@@ -39,6 +42,12 @@ public class Hologram1_8_1_16 extends Hologram {
 
                 PlayerNMS playerNMS = PlayerNMS.cast(player);
                 playerNMS.sendPacket(packet.getObject());
+
+                ReflectionObject packetPlayOutEntityMetadata = NMSUtil.getNMSClass("PacketPlayOutEntityMetadata").newInstance();
+                packetPlayOutEntityMetadata.setField("a", armorStand.getMethod("getId").invoke());
+                packetPlayOutEntityMetadata.setField("b", dataWatcher.getWatcherAsARObject().getMethod("c").invoke());
+
+                playerNMS.sendPacket(packetPlayOutEntityMetadata.getObject());
 
                 ids.putIfAbsent(player.getUniqueId(), new ArrayList<>());
 
@@ -57,23 +66,21 @@ public class Hologram1_8_1_16 extends Hologram {
                 .newInstance(ids.get(player.getUniqueId()).stream().mapToInt(i -> i).toArray());
         PlayerNMS playerNMS = PlayerNMS.cast(player);
         playerNMS.sendPacket(packet.getObject());
+        ids.remove(player.getUniqueId());
     }
 
     @Override
     public void update(Player player) {
 
-        for (int i = 0; i < names.size(); i++) {
+        for (int i = 0; i < lines.size(); i++) {
 
-            ReflectionObject dataWatcher = NMSUtil.getNMSClass("DataWatcher").getConstructor(NMSUtil.getNMSClass("Entity").getAClass()).newInstance(NMSUtil.getNMSClass("Entity").cast(null));
+            EntityDataWatcher dataWatcher = new EntityDataWatcher();
 
-            ReflectionMethod aMethod = dataWatcher.getMethod("a", int.class, Object.class);
-
-            aMethod.invoke(2, Text.format(names.get(i),plugin).getWithPlaceholders(player));
-            aMethod.invoke(3, (byte) (ChatColor.stripColor(Text.format(names.get(i), plugin).getWithPlaceholders(player)).isEmpty() ? 0 : 1));
+            dataWatcher.watch(2, Text.format(lines.get(i), XG7Plugins.getInstance().getPlugins().getOrDefault(pluginName, XG7Plugins.getInstance())).getWithPlaceholders(player));
 
             ReflectionObject packetPlayOutEntityMetaData = NMSUtil.getNMSClass("PacketPlayOutEntityMetadata")
-                    .getConstructor(int.class, dataWatcher.getObjectClass(), boolean.class)
-                    .newInstance(ids.get(player.getUniqueId()).get(i), dataWatcher.getObject(), true);
+                    .getConstructor(int.class, dataWatcher.getWatcherAsARObject().getObjectClass(), boolean.class)
+                    .newInstance(ids.get(player.getUniqueId()).get(i), dataWatcher.getWatcher(), true);
 
             PlayerNMS playerNMS = PlayerNMS.cast(player);
             playerNMS.sendPacket(packetPlayOutEntityMetaData.getObject());

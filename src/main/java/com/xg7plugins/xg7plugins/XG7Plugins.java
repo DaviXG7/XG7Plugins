@@ -8,7 +8,8 @@ import com.xg7plugins.xg7plugins.data.database.EntityProcessor;
 import com.xg7plugins.xg7plugins.data.lang.PlayerLanguage;
 import com.xg7plugins.xg7plugins.events.packetevents.PacketManagerBase;
 import com.xg7plugins.xg7plugins.libs.xg7geyserforms.FormManager;
-import com.xg7plugins.xg7plugins.libs.xg7holograms.ClickEventHandler;
+import com.xg7plugins.xg7plugins.libs.xg7holograms.TestEvent;
+import com.xg7plugins.xg7plugins.libs.xg7holograms.event.ClickEventHandler;
 import com.xg7plugins.xg7plugins.libs.xg7holograms.HologramsManager;
 import com.xg7plugins.xg7plugins.libs.xg7menus.MenuManager;
 import com.xg7plugins.xg7plugins.libs.xg7menus.listeners.MenuListener;
@@ -81,15 +82,19 @@ public final class XG7Plugins extends Plugin {
         Config config = getConfigsManager().getConfig("config");
         if (config.get("prefix") != null) this.setCustomPrefix(ChatColor.translateAlternateColorCodes('&', config.get("prefix")));
         this.databaseManager = new DBManager(this);
+        this.databaseManager.connectPlugin(this);
+        this.hologramsManager = minecraftVersion < 8 ? null : new HologramsManager();
         this.menuManager = new MenuManager(this);
         this.eventManager = new EventManager();
         this.packetEventManager = minecraftVersion < 8 ? new PacketEventManager1_7() : new PacketEventManager();
-        Bukkit.getOnlinePlayers().forEach(player -> packetEventManager.create(player));
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            packetEventManager.create(player);
+            hologramsManager.addPlayer(player);
+        });
         this.taskManager = new TaskManager(this);
         this.scoreManager = new ScoreManager(this);
         this.eventManager.registerPlugin(this);
         this.packetEventManager.registerPlugin(this);
-        this.databaseManager.connectPlugin(this);
         this.formManager = floodgate ? new FormManager() : null;
         EntityProcessor.createTableOf(this, PlayerLanguage.class);
     }
@@ -97,7 +102,10 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public void onDisable() {
-        Bukkit.getOnlinePlayers().forEach(player -> packetEventManager.stopEvent(player));
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            packetEventManager.stopEvent(player);
+            hologramsManager.removePlayer(player);
+        });
         scoreManager.removePlayers();
         taskManager.getExecutor().shutdown();
     }
@@ -121,7 +129,7 @@ public final class XG7Plugins extends Plugin {
 
     @Override
     public List<Event> getEvents() {
-        if (events == null) events = Arrays.asList(new JoinAndQuit(), new MenuListener(), new PlayerMenuListener(menuManager));
+        if (events == null) events = Arrays.asList(new JoinAndQuit(), new MenuListener(), new PlayerMenuListener(menuManager), new TestEvent());
         return events;
     }
 
